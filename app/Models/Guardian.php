@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Laravel\Sanctum\hasApiTokens;
 use Illuminate\Foundation\Auth\User;
 
+
 class Guardian extends Authenticatable implements AuthenticatableContract
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -52,5 +53,5 @@ class Guardian extends Authenticatable implements AuthenticatableContract
      
      public $timestamps = false;
     
-     
-}
+
+    }

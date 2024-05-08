@@ -23,30 +23,29 @@ class RelativeController extends Controller
             'relation' => 'required|string',
             'phone_number' => 'required|string',
             'date_time' => 'required|date_format:Y-m-d H:i:s',
-            'child_id' => 'required|exists:children,id'
             ]);
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return new JsonResponse([
-                'errors' => $e->validator->errors()->all()
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
-        }
+            // Create a new child instance
+            $relative = new Relative;
 
-        // Create a new child instance
-        $relative = new Relative;
+            // Assign values from the request to the child object
+            $relative->name = $validatedData['name'];
+            $relative->relation = $validatedData['relation'];
+            $relative->phone_number = $validatedData['phone_number'];
+            $relative->date_time = $validatedData['date_time'];
 
-        // Assign values from the request to the child object
-        $relative->name = $validatedData['name'];
-        $relative->relation = $validatedData['relation'];
-        $relative->phone_number = $validatedData['phone_number'];
-        $relative->date_time = $validatedData['date_time'];
-        $relative->child_id = $validatedData['child_id'];
+            // Save the child to the database
+            $relative->save();
 
-        // Save the child to the database
-        $relative->save();
-
-        // Redirect back after adding the child
-        return redirect()->back()->with('success', 'relative added successfully.');
+            // Return success response
+            return response()->json(['message' => 'Relative added successfully'], 201);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                // Return validation error response
+                return response()->json(['errors' => $e->validator->errors()->all()], 422);
+            } catch (\Exception $e) {
+                // Return generic error response
+                return response()->json(['message' => 'Failed to add relative', 'error' => $e->getMessage()], 500);
+            }
     }
 
     public function getRelative($name){

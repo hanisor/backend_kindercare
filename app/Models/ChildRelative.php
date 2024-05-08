@@ -5,17 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Note extends Model
+class ChildRelative extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'detail',
-        'status',
-        'date_time',
-        'guardian_id',
-        'caregiver_id',
+        'child_id',
+        'relative_id'
     ];
-
-    public $timestamps = false;
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\CaregiverController;
 use App\Http\Controllers\SicknessController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RelativeController;
+use App\Http\Controllers\ChildRelativeController;
 
 
 use App\Models\Guardian;
@@ -15,12 +16,7 @@ use App\Models\Caregiver;
 use App\Models\Sickness;
 use App\Models\Note;
 use App\Models\Relative;
-
-
-
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Models\ChildRelative;
 
 // Guardian
 // Register 
@@ -50,8 +46,10 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::post('guardian/add-note', [NoteController::class, 'addNote']);
     Route::get('note/by-guardianId/{guardian_id}', [NoteController::class, 'getNoteByGuardianId']);
     Route::post('guardian/add-relative', [RelativeController::class, 'addRelative']);
-    Route::get('/relative/by-relativeName/{name}', [RelativeController::class, 'getRelative']);
+    Route::get('relative/by-relativeName/{name}', [RelativeController::class, 'getRelative']);
+    Route::post('child_relative/relate', [ChildRelativeController::class, 'addChildRelative']);
 
+    
 
 });
 // Caregiver 

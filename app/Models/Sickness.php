@@ -19,5 +19,4 @@ class Sickness extends Model
     ];
 
     public $timestamps = false;
-
 }

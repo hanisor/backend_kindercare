@@ -13,16 +13,15 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('date_time')->nullable();
-            $table->string('day')->nullable();
-            $table->string('week')->nullable();
+            $table->dateTime('date_time_arrive')->nullable();
+            $table->dateTime('date_time_leave')->nullable();
             $table->string('month')->nullable();
-            $table->unsignedBigInteger('child_id');
+            $table->unsignedBigInteger('child_group_id');
             
 
-            $table->foreign('child_id')
+            $table->foreign('child_group_id')
                     ->references('id')
-                    ->on('children');        
+                    ->on('child_groups');  
         });
     }
 

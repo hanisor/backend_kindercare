@@ -22,7 +22,8 @@ return new class extends Migration
             $table->foreign('child_id')
                     ->references('id')
                     ->on('children');        
-            });
+
+        });
     }
 
     /**

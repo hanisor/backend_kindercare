@@ -18,5 +18,10 @@ class Relative extends Model
     
     ];
 
+    public function children()
+    {
+        return $this->belongsToMany(Child::class, 'child_relative', 'relative_id', 'child_id');
+    }
+
     public $timestamps = false;
 }

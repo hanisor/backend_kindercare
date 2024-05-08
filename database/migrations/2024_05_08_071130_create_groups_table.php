@@ -11,23 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('child_relative', function (Blueprint $table) {
-            $table ->id();
-            $table->unsignedBigInteger('child_id');
-            $table->unsignedBigInteger('relative_id');
-            $table->timestamps();
-
+        Schema::create('groups', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('session_id')->nullable();
+            $table->unsignedBigInteger('caregiver_id')->nullable();
 
             // Define foreign key constraints
-            $table->foreign('child_id')
+            $table->foreign('session_id')
                     ->references('id')
-                    ->on('children');
+                    ->on('kinder_sessions');
 
-            $table->foreign('relative_id')
+            $table->foreign('caregiver_id')
                     ->references('id')
-                    ->on('relatives');
+                    ->on('caregivers');
 
-        
         });
     }
 
@@ -36,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('child__relatives');
+        Schema::dropIfExists('groups');
     }
 };
