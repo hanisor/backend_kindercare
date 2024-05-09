@@ -16,4 +16,8 @@ class Child extends Model
         return $this->hasMany(Sickness::class);
     }
 
+    public function child_relative() // Corrected method name
+    {
+        return $this->hasMany(ChildRelative::class);
+    }
 }

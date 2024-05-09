@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreChild_RelativeRequest;
 use App\Http\Requests\UpdateChild_RelativeRequest;
 use Illuminate\Http\JsonResponse;
+use App\Models\Relative;
 
 
 class ChildRelativeController extends Controller
@@ -37,13 +38,60 @@ class ChildRelativeController extends Controller
          
 
             // Return success response
-            return response()->json(['message' => 'Child Relative added successfully'], 201);
+            return response()->json(['message' => 'Child and Relative added successfully'], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Return validation error response
             return response()->json(['errors' => $e->validator->errors()->all()], 422);
         } catch (\Exception $e) {
             // Return generic error response
             return response()->json(['message' => 'Failed to add child relative', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+   /*  public function getChildRelative()
+    {
+        try {
+            $childRelatives = ChildRelative::select(
+                'children.name as child_name', // Alias children name as child_name
+                'relatives.name as relative_name', // Alias relatives name as relative_name
+                'relatives.relation',
+                'relatives.date_time',
+                'relatives.phone_number'
+            )
+            ->join('children', 'children.id', '=', 'child_relatives.child_id')
+            ->join('relatives', 'relatives.id', '=', 'child_relatives.relative_id')
+            ->get();
+
+            return response()->json(['child_relatives' => $childRelatives], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch child relatives', 'error' => $e->getMessage()], 500);
+        }
+    } */
+
+    public function getChildRelative($relative_id)
+    {
+        // Retrieve the parent by their ID
+        $relative = Relative::find($relative_id);
+
+        // Check if the parent exists
+        if ($relative) {
+            try {
+                $childRelatives = ChildRelative::select(
+                    'children.name as child_name', // Alias children name as child_name
+                    'relatives.name as relative_name', // Alias relatives name as relative_name
+                    'relatives.relation',
+                    'relatives.date_time',
+                    'relatives.phone_number'
+                )
+                ->join('children', 'children.id', '=', 'child_relatives.child_id')
+                ->join('relatives', 'relatives.id', '=', 'child_relatives.relative_id')
+                ->where('relatives.status', 'active') // Add condition for active status
+                ->get();
+    
+                return response()->json(['child_relatives' => $childRelatives], 200);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Failed to fetch child relatives', 'error' => $e->getMessage()], 500);
+            }
         }
     }
 

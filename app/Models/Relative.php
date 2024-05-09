@@ -14,14 +14,12 @@ class Relative extends Model
         'relation',
         'phone_number',
         'date_time',
-        'child_id',
+        'status',
+        'guardian_id',
     
     ];
 
-    public function children()
-    {
-        return $this->belongsToMany(Child::class, 'child_relative', 'relative_id', 'child_id');
-    }
+   
 
     public $timestamps = false;
 }

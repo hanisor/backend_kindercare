@@ -43,6 +43,11 @@ class Guardian extends Authenticatable implements AuthenticatableContract
      {
          return $query->where('email', $email);
      }
+
+     public function relatives()
+    {
+        return $this->hasMany(Relative::class);
+    }
      
     /**
      * Indicates if the model should be timestamped
