@@ -165,6 +165,7 @@ class CaregiverController extends Controller
        return response()->json($caregivers);
    }
 
+
     public function getCaregiverByEmail(Request $request)
     {
         // Validate the email parameter
@@ -177,12 +178,13 @@ class CaregiverController extends Controller
 
         // Check if the caregiver exists
         if (!$caregiver) {
-            return response()->json(['message' => 'Caregiver not found'], 404);
+            return response()->json(['message' => 'caregiver not found'], 404);
         }
 
-        // Return the caregiver
+        // Return the guardian
         return response()->json($caregiver);
     }
+
 
    /**
     * Show the form for creating a new resource.

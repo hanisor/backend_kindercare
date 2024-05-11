@@ -51,7 +51,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('child-relatives/{relative_id}', [ChildRelativeController::class, 'getChildRelative']);
     Route::put('relative/delete/{guardian_id}', [RelativeController::class, 'deleteRelative']);
     Route::put('caregiver/update-profile/{id}', [CaregiverController::class,'updateCaregiver']);
-    Route::get('caregiver-email', [CaregiverController::class, 'getCaregiverByEmail']);
+    Route::get('caregiver-byEmail', [CaregiverController::class, 'getCaregiverByEmail']);
     Route::post('add-child', [ChildController::class, 'add_child']);
     Route::put('caregiver/update-sickness/{id}', [SicknessController::class,'updateSicknessStatus']);
 

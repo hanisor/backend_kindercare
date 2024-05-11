@@ -79,6 +79,7 @@ class ChildRelativeController extends Controller
                 $childRelatives = ChildRelative::select(
                     'children.name as child_name', // Alias children name as child_name
                     'relatives.name as relative_name', // Alias relatives name as relative_name
+                    'relatives.id',
                     'relatives.relation',
                     'relatives.date_time',
                     'relatives.phone_number'
