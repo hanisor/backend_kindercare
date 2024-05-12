@@ -19,7 +19,10 @@ class Relative extends Model
     
     ];
 
-   
+    public function children()
+    {
+        return $this->hasMany(ChildRelative::class, 'relative_id');
+    }
 
     public $timestamps = false;
 }

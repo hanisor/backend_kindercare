@@ -20,4 +20,9 @@ class Child extends Model
     {
         return $this->hasMany(ChildRelative::class);
     }
+
+    public function relatives()
+    {
+        return $this->hasMany(ChildRelative::class, 'child_id');
+    }
 }

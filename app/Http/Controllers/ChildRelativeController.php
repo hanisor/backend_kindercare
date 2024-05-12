@@ -96,6 +96,18 @@ class ChildRelativeController extends Controller
         }
     }
 
+    public function getAllChildRelative()
+    {
+        $childRelatives = ChildRelative::whereHas('relative', function ($query) {
+                $query->where('status', 'ACTIVE');
+            })
+            ->with('child', 'relative')
+            ->get();
+    
+        return response()->json($childRelatives);
+    }
+    
+
     /**
      * Display a listing of the resource.
      */

@@ -64,6 +64,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     // Relative
     Route::get('child-relatives/{relative_id}', [ChildRelativeController::class, 'getChildRelative']);
     Route::get('relative/by-relativeName/{name}', [RelativeController::class, 'getRelative']);
+    Route::get('childRelative-data', [ChildRelativeController::class, 'getAllChildRelative']);
     Route::post('guardian/add-relative', [RelativeController::class, 'addRelative']);
     Route::post('child_relative/relate', [ChildRelativeController::class, 'addChildRelative']);
     Route::put('relative/delete/{guardian_id}', [RelativeController::class, 'deleteRelative']);
