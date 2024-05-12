@@ -17,6 +17,10 @@ class Sickness extends Model
         'child_id',
     
     ];
+    public function child()
+    {
+        return $this->belongsTo(Child::class); // Assuming the foreign key is 'child_id'
+    }
 
     public $timestamps = false;
 }

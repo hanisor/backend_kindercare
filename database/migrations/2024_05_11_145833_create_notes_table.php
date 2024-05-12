@@ -16,6 +16,7 @@ return new class extends Migration
             $table->longText('detail')->nullable();
             $table->dateTime('date_time')->nullable();
             $table->string('status')->nullable();
+            $table->string('sender_type')->nullable();
             $table->unsignedBigInteger('guardian_id');
             $table->unsignedBigInteger('caregiver_id');
 
@@ -28,6 +29,7 @@ return new class extends Migration
                     ->references('id')
                     ->on('caregivers');
         });
+
     }
 
     /**

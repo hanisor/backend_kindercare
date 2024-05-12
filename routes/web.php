@@ -35,25 +35,42 @@ Route::post('api/caregiver-login', [CaregiverController::class,'login']);
 
 Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
-    Route::post('guardian-logout', [GuardianController::class, 'logout']);
+
+    // Guardian
     Route::get('guardian-data', [GuardianController::class, 'getGuardian']);
     Route::get('guardian-byEmail', [GuardianController::class, 'getGuardianByEmail']);
     Route::get('guardian-byKeyword', [GuardianController::class, 'getGuardianByKeyword']);
+    Route::post('guardian-logout', [GuardianController::class, 'logout']);
     Route::put('guardian/update/{id}', [GuardianController::class,'updateGuardian']);
+
+    // Children
     Route::get('child/by-guardianId/{guardian_id}', [ChildController::class, 'getChildrenByGuardianId']);
-    Route::post('add-sickness', [SicknessController::class, 'addSickness']);
-    Route::get('sickness/by-childId/{child_id}', [SicknessController::class, 'getSicknessbyChildId']);
-    Route::post('guardian/add-note', [NoteController::class, 'addNote']);
-    Route::get('note/by-guardianId/{guardian_id}', [NoteController::class, 'getNoteByGuardianId']);
-    Route::post('guardian/add-relative', [RelativeController::class, 'addRelative']);
-    Route::get('relative/by-relativeName/{name}', [RelativeController::class, 'getRelative']);
-    Route::post('child_relative/relate', [ChildRelativeController::class, 'addChildRelative']);
-    Route::get('child-relatives/{relative_id}', [ChildRelativeController::class, 'getChildRelative']);
-    Route::put('relative/delete/{guardian_id}', [RelativeController::class, 'deleteRelative']);
-    Route::put('caregiver/update-profile/{id}', [CaregiverController::class,'updateCaregiver']);
-    Route::get('caregiver-byEmail', [CaregiverController::class, 'getCaregiverByEmail']);
     Route::post('add-child', [ChildController::class, 'add_child']);
+
+    // Sickness
+    Route::get('sickness/by-childId/{child_id}', [SicknessController::class, 'getSicknessbyChildId']);
+    Route::get('sickness-data', [SicknessController::class, 'getSickness']);
+    Route::post('add-sickness', [SicknessController::class, 'addSickness']);
     Route::put('caregiver/update-sickness/{id}', [SicknessController::class,'updateSicknessStatus']);
+
+    // Notes
+    Route::get('note/by-guardianId/{guardian_id}', [NoteController::class, 'getNoteByGuardianId']);
+    Route::get('note/by-caregiverId/{caregiver_id}', [NoteController::class, 'getNoteByCaregiverId']);
+    Route::get('note/sendby-parent', [NoteController::class, 'getNotesByParent']);
+    Route::post('guardian/add-note', [NoteController::class, 'addNote']);
+    Route::put('note/update-status/{id}', [NoteController::class,'updateNoteStatus']);
+
+
+    // Relative
+    Route::get('child-relatives/{relative_id}', [ChildRelativeController::class, 'getChildRelative']);
+    Route::get('relative/by-relativeName/{name}', [RelativeController::class, 'getRelative']);
+    Route::post('guardian/add-relative', [RelativeController::class, 'addRelative']);
+    Route::post('child_relative/relate', [ChildRelativeController::class, 'addChildRelative']);
+    Route::put('relative/delete/{guardian_id}', [RelativeController::class, 'deleteRelative']);
+
+    // Caregiver
+    Route::get('caregiver-byEmail', [CaregiverController::class, 'getCaregiverByEmail']);
+    Route::put('caregiver/update-profile/{id}', [CaregiverController::class,'updateCaregiver']);
 
     
 

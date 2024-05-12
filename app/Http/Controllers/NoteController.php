@@ -10,6 +10,7 @@ use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
 use Illuminate\Http\JsonResponse;
 use App\Models\Guardian;
+use App\Models\Caregiver;
 
 
 class NoteController extends Controller
@@ -23,6 +24,7 @@ class NoteController extends Controller
             'detail' => 'required|string',
             'date_time' => 'required|date_format:Y-m-d H:i:s',
             'status' => 'required|in:UNREAD,READ',
+            'sender_type' => 'required|in:caregiver,parent',
             'guardian_id' => 'required|exists:guardians,id',
             'caregiver_id' => 'required|exists:caregivers,id'
             ]);
@@ -38,8 +40,9 @@ class NoteController extends Controller
 
         // Assign values from the request to the child object
         $note->detail = $validatedData['detail'];
-        $note->status = $validatedData['status'];
         $note->date_time = $validatedData['date_time'];
+        $note->status = $validatedData['status'];
+        $note->sender_type = $validatedData['sender_type'];
         $note->guardian_id = $validatedData['guardian_id'];
         $note->caregiver_id = $validatedData['caregiver_id'];
 
@@ -74,13 +77,44 @@ class NoteController extends Controller
         }
     }
 
- 
+    public function getNoteByCaregiverId($caregiver_id)
+    {
+        // Retrieve the parent by their ID
+        $caregiver = Caregiver::find($caregiver_id);
+
+        // Check if the parent exists
+        if ($caregiver) {
+            // Retrieve all note associated with this caregiver
+            // $notes = $guardian->notes() (this notes is from model Guardian) ->get();
+            $unreadNotes = $caregiver->notes()->where('status', 'UNREAD')->get();
+
+            return response()->json([
+                'notes' => $unreadNotes,
+                'message' => 'Unread note retrieved successfully'
+            ], 200);
+        } else {
+            // If the parent does not exist, return an error message
+            return response()->json([
+                'message' => 'caregiver  not found'
+            ], 404);
+        }
+    }
+
+    public function getNotesByParent() {
+        $notes = Note::where('status', 'UNREAD')
+                     ->where('sender_type', 'parent')
+                     ->with('guardian')
+                     ->get();
+    
+        return response()->json($notes);
+    }
+    
      // Update note status
      public function updateNoteStatus(Request $request, $id)
      {
          // validate the request data
          $request->validate([
-             'status' => 'required|in:Read', // Update the validation rule to require and only accept 'Taken'
+             'status' => 'required|in:READ', // Update the validation rule to require and only accept 'Taken'
              // Add validation rules for other fields you want to update
          ]);
  
@@ -101,8 +135,6 @@ class NoteController extends Controller
          // Return a success response
          return response()->json(['message' => 'Note record updated successfully', 'note' => $note]);
      }
-
-
 
     /**
      * Display a listing of the resource.

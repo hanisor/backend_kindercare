@@ -31,13 +31,10 @@ class Caregiver extends Authenticatable implements AuthenticatableContract
         return $query->where('email', $email);
     }
 
-      /**
-     * Indicates if the model should be timestamped
-     * 
-     *  @var bool
-     * 
-     */ 
-     
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
      public $timestamps = false;
 
 }

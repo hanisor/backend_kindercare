@@ -73,6 +73,16 @@ class SicknessController extends Controller
         }
     }
 
+    // To call child table with the sickness table
+    public function getSickness(){
+        $sicknesses = Sickness::where('status', 'Pending')
+            ->with('child') // Eager load the child relationship
+            ->get();
+    
+        return response()->json($sicknesses);
+    }
+    
+
     // Update sickness status
     public function updateSicknessStatus(Request $request, $id)
     {

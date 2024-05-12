@@ -13,9 +13,20 @@ class Note extends Model
         'detail',
         'status',
         'date_time',
+        'sender_type',
         'guardian_id',
         'caregiver_id',
     ];
+
+    public function guardian()
+    {
+        return $this->belongsTo(Guardian::class, 'guardian_id');
+    }
+
+    public function caregiver()
+    {
+        return $this->belongsTo(Caregiver::class, 'caregiver_id');
+    }
 
     public $timestamps = false;
 }
