@@ -18,6 +18,14 @@ use App\Models\Note;
 use App\Models\Relative;
 use App\Models\ChildRelative;
 
+Route::get('/', function(){
+    return view('welcome');
+});
+
+
+Route::get('/caregiver-homepage', function(){
+    return view('kindercare.template.index');
+});
 // Guardian
 // Register 
 Route::post('api/guardian-register', [GuardianController::class, 'registerGuardian']);
@@ -26,10 +34,13 @@ Route::post('api/guardian-login', [GuardianController::class,'login']);
 
 // Caregiver
 // Register 
-Route::post('api/caregiver-register', [CaregiverController::class, 'registerCaregiver']);
+Route::get('/caregiver-register', [CaregiverController::class, 'caregiverRegistration']) -> name('register');
+Route::post('/caregiver-register', [CaregiverController::class,'registerCaregiver']) -> name ('register.post');
+
 
 // Login
-Route::post('api/caregiver-login', [CaregiverController::class,'login']);
+Route::get('/caregiver-login',  [CaregiverController::class, 'caregiverLogin']) -> name('signin');
+Route::post('/login', [CaregiverController::class,'login']) -> name ('login.post');
 
 
 
@@ -70,6 +81,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::put('relative/delete/{guardian_id}', [RelativeController::class, 'deleteRelative']);
 
     // Caregiver
+    // Route::get('caregiver-homepage',  [CaregiverController::class, 'index']) -> name('homepage');
     Route::get('caregiver-byEmail', [CaregiverController::class, 'getCaregiverByEmail']);
     Route::put('caregiver/update-profile/{id}', [CaregiverController::class,'updateCaregiver']);
 

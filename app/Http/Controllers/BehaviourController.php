@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateBehaviourRequest;
 
 class BehaviourController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      */

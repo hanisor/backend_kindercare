@@ -16,8 +16,17 @@ use Illuminate\Http\JsonResponse;
 class CaregiverController extends Controller
 {
 
+
+    public function caregiverLogin(){
+        return view('kindercare.template.pages.samples.sign-in');
+    }
+
+    public function caregiverRegistration(){
+        return view('kindercare.template.pages.samples.sign-up');
+    }
+ 
     // Register user
-    public function registerCaregiver(Request $request)
+   /*  public function registerCaregiver(Request $request)
     {
         try {
             // Validate fields
@@ -57,7 +66,47 @@ class CaregiverController extends Controller
             'caregiver' => $caregiver,
             'token' => $caregiver->createToken('kiddy')->plainTextToken
         ], 200);
+        return view('caregiver-register');
+
+    } */
+
+    public function registerCaregiver(Request $request)
+{
+    try {
+        // Validate fields
+        $attrs = $request->validate([
+            'name' => 'nullable|string',
+            'ic_number' => 'nullable|string|unique:caregivers',
+            'phone_number' => 'nullable|string|unique:caregivers',
+            'email' => 'required|string|email|unique:caregivers',
+            'username' => 'required|string',
+            'password' => 'required|string|min:6',
+            'status' => 'required|string',
+            'role' => 'required|string',
+            'image' => 'nullable|image', // Allow the image field to be optional
+        ]);
+
+         // Assign default values for status and role
+         $attrs['status'] = 'ACTIVE';
+         $attrs['role'] = 'CAREGIVER';
+
+        // Create user
+        $caregiver = Caregiver::create([
+            'username' => $attrs['username'],
+            'email' => $attrs['email'],
+            'password' => bcrypt($attrs['password']),
+            'status' => 'ACTIVE', // Fixed value
+            'role' => 'CAREGIVER',
+        ]);
+
+        // Redirect user after successful registration
+        return redirect(route('signin'))->with("success", "Registration successful. You can now log in.");
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return new JsonResponse([
+            'errors' => $e->validator->errors()->all()
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
+}
 
    // Login caregiver
    public function login(Request $request)
@@ -83,8 +132,37 @@ class CaregiverController extends Controller
            'user' => $user,
            'token' => $token
        ], 200);
+
    }
 
+   
+/*  // Login caregiver
+ public function login(Request $request)
+ {
+     // validate fields
+     $attrs = $request->validate([
+      'email' => 'required|string',
+      'password' => 'required|min:6',
+     ]);
+
+     // Attempt to authenticate the user
+     if (!Auth::guard('caregiver')->attempt($attrs)) {
+         return response([
+             'message' => 'Invalid credentials.'
+         ], 403);
+     }
+
+     // If the authentication is successful, return user and token
+     $user = Auth::guard('caregiver')->user();
+     $token = $user->createToken('kiddy')->plainTextToken;
+
+     return response([
+         'user' => $user,
+         'token' => $token
+     ], 200);
+
+ }
+ */
 
    public function logout(Request $request)
    {
@@ -94,6 +172,7 @@ class CaregiverController extends Controller
        return response([
            'message' => 'Logout success.'
        ],200);
+       return redirect(route('signin'));
    }
 
    public function UserData($id)
@@ -185,6 +264,13 @@ class CaregiverController extends Controller
         return response()->json($caregiver);
     }
 
+    /**
+     * Display a listing of the resource.
+     */
+/*     public function index()
+    {
+        return view('caregiver-register');
+    } */
 
    /**
     * Show the form for creating a new resource.
