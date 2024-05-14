@@ -26,6 +26,12 @@ Route::get('/', function(){
 Route::get('/caregiver-homepage', function(){
     return view('kindercare.template.index');
 });
+
+Route::get('/add-parent', function(){
+    return view('kindercare.template.pages.forms.add-parent');
+});
+
+
 // Guardian
 // Register 
 Route::post('api/guardian-register', [GuardianController::class, 'registerGuardian']);
