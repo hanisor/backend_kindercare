@@ -8,6 +8,7 @@ use App\Http\Controllers\SicknessController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RelativeController;
 use App\Http\Controllers\ChildRelativeController;
+use App\Http\Controllers\RfidController;
 
 
 use App\Models\Guardian;
@@ -17,6 +18,8 @@ use App\Models\Sickness;
 use App\Models\Note;
 use App\Models\Relative;
 use App\Models\ChildRelative;
+use App\Models\Rfid;
+
 
 Route::get('/', function(){
     return view('welcome');
@@ -30,6 +33,22 @@ Route::get('/caregiver-homepage', function(){
 Route::get('/add-parent', function(){
     return view('kindercare.template.pages.forms.add-parent');
 });
+
+Route::get('/parent-table', function(){
+    return view('kindercare.template.pages.tables.parent-table');
+});
+
+
+
+/* Route::get('/sign-in', function(){
+    return view('kindercare.template.pages.samples.sign-in');
+});
+
+Route::get('/sign-up', function(){
+    return view('kindercare.template.pages.samples.sign-up');
+});
+ */
+
 
 
 // Guardian
@@ -48,6 +67,8 @@ Route::post('/caregiver-register', [CaregiverController::class,'registerCaregive
 Route::get('/caregiver-login',  [CaregiverController::class, 'caregiverLogin']) -> name('signin');
 Route::post('/login', [CaregiverController::class,'login']) -> name ('login.post');
 
+
+Route::post('guardian/add-rfid', [RfidController::class, 'addRfid']);
 
 
 Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
@@ -90,6 +111,8 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     // Route::get('caregiver-homepage',  [CaregiverController::class, 'index']) -> name('homepage');
     Route::get('caregiver-byEmail', [CaregiverController::class, 'getCaregiverByEmail']);
     Route::put('caregiver/update-profile/{id}', [CaregiverController::class,'updateCaregiver']);
+
+    // Rfid
 
     
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('rfids', function (Blueprint $table) {
             $table->id();
-            $table->string('number')->nullable();
+            $table->string('number');
         });
     }
 

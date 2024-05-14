@@ -26,6 +26,7 @@ class Guardian extends Authenticatable implements AuthenticatableContract
         'image',
         'status',
         'role',
+        'rfid_id'
     ];
 
     public function children()

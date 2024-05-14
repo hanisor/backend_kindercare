@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Database\QueryException;
 
 
+
 class GuardianController extends Controller
 {
     // Register user
@@ -31,6 +32,8 @@ class GuardianController extends Controller
             'status' => 'nullable|string',
             'role' => 'nullable|string',
             'image' => 'nullable|image', // Allow the image field to be optional
+            'rfid_id' => 'required|integer|exists:rfids,id'
+
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -48,9 +51,15 @@ class GuardianController extends Controller
             'username' => $attrs['username'],
             'password' => bcrypt($attrs['password']),
             'image' => $request->file('image') ? $request->file('image')->store('images') : null,
-            'status' =>'ACTIVE', // Fixed value
-            'role' => 'PARENT'
+            'status' => $attrs['status'],// Fixed value
+            'role' =>  $attrs['role'],
+            'rfid_id' => $attrs['rfid_id']
         ]);
+
+         // Check if the guardian was successfully created
+        if (!$guardian) {
+            return response(['message' => 'Failed to create guardian'], 404);
+        }
 
         // Return user & token in response
         return response([
