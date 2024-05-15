@@ -108,6 +108,15 @@ class NoteController extends Controller
     
         return response()->json($notes);
     }
+
+    public function getNotesByCaregiver() {
+        $notes = Note::where('status', 'UNREAD')
+                     ->where('sender_type', 'caregiver')
+                     ->with('caregiver')
+                     ->get();
+    
+        return response()->json($notes);
+    }
     
      // Update note status
      public function updateNoteStatus(Request $request, $id)

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth; // import the Auth facade
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\QueryException;
+use App\Models\Rfid; // Check if this import statement is present
 
 
 
@@ -169,6 +170,23 @@ class GuardianController extends Controller
         $guardians = Guardian::where ('status', 'ACTIVE')->get();
         return response()->json($guardians);
     }
+
+
+
+    public function getGuardianName($guardian_id)
+    {
+        // Retrieve the guardian by its ID
+        $guardian = Guardian::find($guardian_id);
+
+        // Check if the guardian exists
+        if ($guardian) {
+            return response()->json(['guardianName' => $guardian->name], 200);
+        } else {
+            return response()->json(['message' => 'guardian name not found'], 404);
+        }
+    }
+
+    
     public function getGuardianByEmail(Request $request)
     {
         // Validate the email parameter

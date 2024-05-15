@@ -26,7 +26,7 @@ class CaregiverController extends Controller
     }
  
     // Register user
-   /*  public function registerCaregiver(Request $request)
+     public function registerAppCaregiver(Request $request)
     {
         try {
             // Validate fields
@@ -68,7 +68,7 @@ class CaregiverController extends Controller
         ], 200);
         return view('caregiver-register');
 
-    } */
+    } 
 
     public function registerCaregiver(Request $request)
 {
@@ -136,8 +136,8 @@ class CaregiverController extends Controller
    }
 
    
-/*  // Login caregiver
- public function login(Request $request)
+  // Login caregiver
+ public function loginApp(Request $request)
  {
      // validate fields
      $attrs = $request->validate([
@@ -162,7 +162,7 @@ class CaregiverController extends Controller
      ], 200);
 
  }
- */
+ 
 
    public function logout(Request $request)
    {
@@ -188,6 +188,11 @@ class CaregiverController extends Controller
            ], 200);
        }
    }
+
+   public function getCaregiver(){
+    $caregivers = Caregiver::where ('status', 'ACTIVE')->get();
+    return response()->json($caregivers);
+}
 
    public function updateCaregiver(Request $request, $id)
     {
@@ -236,14 +241,6 @@ class CaregiverController extends Controller
             return response()->json(['message' => 'Database error'], 500);
         }
     }
-
-
-
-   public function getCaregiver(){
-       $caregivers = Caregiver::where ('status', 'ACTIVE')->get();
-       return response()->json($caregivers);
-   }
-
 
     public function getCaregiverByEmail(Request $request)
     {

@@ -75,7 +75,25 @@ class ChildController extends Controller
             ], 404);
         }
     }
-
+    public function getGuardianNameforChild(){
+        // Retrieve children records with guardian's status ACTIVE and include the guardian's name
+        $children = Child::join('guardians', 'children.guardian_id', '=', 'guardians.id')
+                        ->where('guardians.status', 'ACTIVE')
+                        ->select('children.*', 'guardians.name as guardian_name') // Adjust 'name' to your actual column name
+                        ->get();
+        
+        return response()->json($children);
+    }
+    
+    public function getChild(){
+        // Retrieve children records where the associated guardian's status is ACTIVE
+        $children = Child::join('guardians', 'children.guardian_id', '=', 'guardians.id')
+                        ->where('guardians.status', 'ACTIVE')
+                        ->get();
+        
+        return response()->json($children);
+    }
+    
 
 
 

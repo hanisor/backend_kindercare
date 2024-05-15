@@ -11,6 +11,8 @@ use App\Http\Requests\UpdateRfidRequest;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\QueryException;
+use App\Models\Guardian;
+
 
 class RfidController extends Controller
 {
@@ -43,6 +45,26 @@ class RfidController extends Controller
             'rfid' => $rfid,
         ], 200);
     }
+
+    public function getRfid(){
+        $rfids = Rfid::all();
+        return response()->json($rfids);
+    }
+
+    public function getRfidName($rfid_id)
+    {
+        // Retrieve the RFID by its ID
+        $rfid = Rfid::find($rfid_id);
+
+        // Check if the RFID exists
+        if ($rfid) {
+            return response()->json(['number' => $rfid->number], 200);
+        } else {
+            return response()->json(['message' => 'RFID not found'], 404);
+        }
+    }
+
+    
     /**
      * Display a listing of the resource.
      */
