@@ -9,6 +9,7 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RelativeController;
 use App\Http\Controllers\ChildRelativeController;
 use App\Http\Controllers\RfidController;
+use App\Http\Controllers\KinderSessionController;
 
 
 use App\Models\Guardian;
@@ -19,6 +20,7 @@ use App\Models\Note;
 use App\Models\Relative;
 use App\Models\ChildRelative;
 use App\Models\Rfid;
+use App\Models\KinderSession;
 
 
 Route::get('/', function(){
@@ -46,8 +48,16 @@ Route::get('/children-table', function(){
     return view('kindercare.template.pages.tables.children-table');
 });
 
+Route::get('/add-session', function(){
+    return view('kindercare.template.pages.forms.add-session');
+});
+
 Route::get('/example-table', function(){
     return view('kindercare.template.pages.tables.basic-table');
+});
+
+Route::get('/example-form', function(){
+    return view('kindercare.template.pages.forms.example');
 });
 
 
@@ -124,7 +134,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('childRelative-data', [ChildRelativeController::class, 'getAllChildRelative']);
     Route::post('guardian/add-relative', [RelativeController::class, 'addRelative']);
     Route::post('child_relative/relate', [ChildRelativeController::class, 'addChildRelative']);
-    Route::put('relative/delete/{guardian_id}', [RelativeController::class, 'deleteRelative']);
+    Route::put('relative/delete/{relative_id}', [RelativeController::class, 'deleteRelative']);
 
     // Caregiver
     // Route::get('caregiver-homepage',  [CaregiverController::class, 'index']) -> name('homepage');
@@ -137,7 +147,8 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('guardian-data', [GuardianController::class, 'getGuardian']);
     Route::get('guardian/get-rfid/{rfid_id}', [RfidController::class, 'getRfidName']);
 
-    
+    // Session
+    Route::post('add-session', [KinderSessionController::class, 'addSession']);
 
 });
 

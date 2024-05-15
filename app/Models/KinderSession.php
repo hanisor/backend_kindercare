@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class KinderSession extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'year'
+    ];
+
+    public $timestamps = false;
+
 }

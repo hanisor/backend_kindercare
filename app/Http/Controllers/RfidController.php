@@ -17,7 +17,7 @@ use App\Models\Guardian;
 class RfidController extends Controller
 {
 
-    // Add note
+    // Add rfid
     public function addRfid(Request $request)
     {
         try {
