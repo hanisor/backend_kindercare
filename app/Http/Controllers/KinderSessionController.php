@@ -12,35 +12,51 @@ use App\Http\Requests\UpdateKinderSessionRequest;
 class KinderSessionController extends Controller
 {
 
-     // Add session
-     public function addSession(Request $request)
-     {
-         try {
-             // Validate fields
-             $validatedData = $request->validate([
-             'year' => 'required|integer',
-             ]);
- 
-         } catch (\Illuminate\Validation\ValidationException $e) {
-             return new JsonResponse([
-                 'errors' => $e->validator->errors()->all()
-             ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
-         }
- 
-         // Create a new child instance
-         $kinderSession = new KinderSession;
- 
-         // Assign values from the request to the child object
-         $kinderSession->year = $validatedData['year'];
-   
-         // Save the child to the database
-         $kinderSession->save();
-         // Return user & token in response
-         return response([
-             'kinderSession' => $kinderSession,
-         ], 200);
-     }
- 
+    public function addSession(Request $request)
+{
+    try {
+        // Validate fields
+        $validatedData = $request->validate([
+            'year' => 'required|integer',
+        ]);
+
+        // Create a new KinderSession instance
+        $kinderSession = new KinderSession;
+
+        // Assign values from the request to the KinderSession object
+        $kinderSession->year = $validatedData['year'];
+
+        // Save the KinderSession to the database
+        $kinderSession->save();
+
+        // Return a success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Session added successfully',
+            'kinderSession' => $kinderSession,
+        ], 200);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        // Handle validation errors
+        return response()->json([
+            'success' => false,
+            'errors' => $e->validator->errors()->all()
+        ], 422);
+    }
+}
+
+public function getYearById($id)
+    {
+        $session = KinderSession::find($id);
+
+        if ($session) {
+            return response()->json(['year' => $session->year]);
+        } else {
+            return response()->json(['error' => 'Session not found'], 404);
+        }
+    }
+
+
+
     /**
      * Display a listing of the resource.
      */

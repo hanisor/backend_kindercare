@@ -148,7 +148,9 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('guardian/get-rfid/{rfid_id}', [RfidController::class, 'getRfidName']);
 
     // Session
+    Route::get('kinder-sessions/{id}', [KinderSessionController::class, 'getYearById']);
     Route::post('add-session', [KinderSessionController::class, 'addSession']);
+
 
 });
 

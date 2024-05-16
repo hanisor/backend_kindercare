@@ -190,9 +190,9 @@ class CaregiverController extends Controller
    }
 
    public function getCaregiver(){
-    $caregivers = Caregiver::where ('status', 'ACTIVE')->get();
-    return response()->json($caregivers);
-}
+        $caregivers = Caregiver::where ('status', 'ACTIVE')->get();
+        return response()->json($caregivers);
+    }
 
    public function updateCaregiver(Request $request, $id)
     {
