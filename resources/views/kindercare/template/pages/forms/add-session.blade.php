@@ -199,9 +199,9 @@
                         <label class="col-sm-4 col-form-label">Time Slot</label>
                         <div class="col-sm-8">
                           <select id="time-slot-dropdown" class="js-example-basic-single w-100">
-                            <option value="AM">08:00 AM - 03:00 PM</option>
-                            <option value="PM">02:00 PM - 06:00 PM</option>
-                            <option value="FULL">08:00 AM - 06:00 PM</option>
+                            <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM</option>
+                            <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM</option>
+                            <option value="08:00 AM - 06:00 PM">08:00 AM - 06:00 PM</option>
                           </select>
                         </div>
                       </div>
@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var data = {
       session_id: sessionId,
       caregiver_id: caregiverId,
-      time_slot: timeSlot
+      time: timeSlot
     };
 
     fetch('http://127.0.0.1:8000/api/add-group', {
