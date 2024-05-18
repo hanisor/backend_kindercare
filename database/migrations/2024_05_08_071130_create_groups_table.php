@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->datetime('time')->nullable();
+            $table->string('time')->nullable();
             $table->unsignedBigInteger('session_id')->nullable();
             $table->unsignedBigInteger('caregiver_id')->nullable();
 

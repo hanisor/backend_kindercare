@@ -10,6 +10,8 @@ use App\Http\Controllers\RelativeController;
 use App\Http\Controllers\ChildRelativeController;
 use App\Http\Controllers\RfidController;
 use App\Http\Controllers\KinderSessionController;
+use App\Http\Controllers\GroupController;
+
 
 
 use App\Models\Guardian;
@@ -21,7 +23,7 @@ use App\Models\Relative;
 use App\Models\ChildRelative;
 use App\Models\Rfid;
 use App\Models\KinderSession;
-
+use App\Models\Group;
 
 Route::get('/', function(){
     return view('welcome');
@@ -148,9 +150,12 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('guardian/get-rfid/{rfid_id}', [RfidController::class, 'getRfidName']);
 
     // Session
-    Route::get('kinder-sessions/{id}', [KinderSessionController::class, 'getYearById']);
+    Route::get('session-year', [KinderSessionController::class, 'getCurrentSession']);
     Route::post('add-session', [KinderSessionController::class, 'addSession']);
 
+
+    // Group
+    Route::post('add-group', [GroupController::class, 'addGroup']);
 
 });
 

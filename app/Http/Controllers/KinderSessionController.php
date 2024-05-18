@@ -13,48 +13,58 @@ class KinderSessionController extends Controller
 {
 
     public function addSession(Request $request)
-{
-    try {
-        // Validate fields
-        $validatedData = $request->validate([
-            'year' => 'required|integer',
-        ]);
-
-        // Create a new KinderSession instance
-        $kinderSession = new KinderSession;
-
-        // Assign values from the request to the KinderSession object
-        $kinderSession->year = $validatedData['year'];
-
-        // Save the KinderSession to the database
-        $kinderSession->save();
-
-        // Return a success response
-        return response()->json([
-            'success' => true,
-            'message' => 'Session added successfully',
-            'kinderSession' => $kinderSession,
-        ], 200);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        // Handle validation errors
-        return response()->json([
-            'success' => false,
-            'errors' => $e->validator->errors()->all()
-        ], 422);
-    }
-}
-
-public function getYearById($id)
     {
-        $session = KinderSession::find($id);
+        try {
+            // Validate fields
+            $validatedData = $request->validate([
+                'year' => 'required|integer',
+                'status' => 'required|in:Current,Pass',
 
-        if ($session) {
-            return response()->json(['year' => $session->year]);
-        } else {
-            return response()->json(['error' => 'Session not found'], 404);
+            ]);
+    
+            // Create a new KinderSession instance
+            $kinderSession = new KinderSession;
+    
+            // Assign values from the request to the KinderSession object
+            $kinderSession->year = $validatedData['year'];
+            $kinderSession->status = $validatedData['status'];
+
+    
+            // Save the KinderSession to the database
+            $kinderSession->save();
+    
+            // Return the ID of the newly created session in the response
+            return response()->json([
+                'success' => true,
+                'message' => 'Session added successfully',
+                'sessionId' => $kinderSession->id, // Include the ID of the newly created session
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors
+            return response()->json([
+                'success' => false,
+                'errors' => $e->validator->errors()->all()
+            ], 422);
         }
     }
+    
 
+    public function getCurrentSession()
+    {
+        $session = KinderSession::where('status', 'current')->first();
+    
+        if (!$session) {
+            return response()->json(['error' => 'No current sessions found'], 404);
+        } else {
+            return response()->json([
+                'sessionId' => $session->id,
+                'year' => $session->year
+            ]);
+        }
+    }
+    
+    
+    
 
 
     /**

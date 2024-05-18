@@ -152,183 +152,268 @@
     </div>
         
         <!-- partial -->
-        <div class="container-fluid page-body-wrapper">
-        <div class="main-panel">
-            <div class="content-wrapper">
-                <div class="container">
-                    <div class="col justify-content-center">
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Add Session</h4>
-                                    <p class="card-description">Select the academic year for which you want to add a session. Only the academic years available for registration will be listed in the dropdown.</p>
-                                    <form id="add-session-form">
-                                        <div class="form-group row align-items-center">
-                                            <label class="col-sm-4 col-form-label">Session</label>
-                                            <div class="col-sm-8">
-                                                <select id="year-dropdown" class="form-control">
-                                                    <!-- Options will be dynamically generated here -->
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-sm-12">
-                                                <button type="submit" class="btn btn-primary" onclick="addSession(document.getElementById('year-dropdown').value)">Add Session</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+        <div class="container-fluid page-body-wrapper d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-md-6 mb-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Add Session</h4>
+                    <p class="card-description">Select the academic year for which you want to add a session. Only the academic years available for registration will be listed in the dropdown.</p>
+                    <form id="add-session-form">
+                      <div class="form-group row align-items-center">
+                        <label class="col-sm-4 col-form-label">Session</label>
+                        <div class="col-sm-8">
+                          <select id="year-dropdown" class="form-control">
+                            <!-- Options will be dynamically generated here -->
+                          </select>
                         </div>
-
-                        <div class="col-md-6 grid-margin grid-margin-md-0 stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Group</h4>
-                                    <p class="card-description">Please select the available time slots for the session. You can choose from predefined time ranges such as 7am - 12pm, 12pm - 6pm, or 7am - 6pm. After selecting the time slots, assign caregivers who will be responsible for each session.</p>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Year</label>
-                                        <div class="col-sm-8">
-                                            <div id="the-basics">
-                                                <input class="typeahead form-control" type="text" placeholder="States of USA">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Time Slot</label>
-                                        <div class="col-sm-8">
-                                          <select class="js-exaple-basic-single w-100">
-                                            <option value="AM">08:00 AM - 03:00 PM</option>
-                                            <option value="PM">02:00 PM - 06:00 PM</option>
-                                            <option value="FULL">08:00 PM - 06:00 PM</option>
-                                          </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Assigned Caregiver</label>
-                                        <div class="col-sm-8">
-                                            <select id="caregiver-select" class="js-example-basic-multiple w-100" multiple="multiple">
-                                                <!-- Options will be dynamically generated here -->
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-12">
+                          <button type="submit" class="btn btn-primary">Add Session</button>
                         </div>
-
-                    </div>
+                      </div>
+                    </form>
+                  </div>
                 </div>
+              </div>
+
+              <div class="col-md-6 grid-margin grid-margin-md-0 stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Group</h4>
+                    <p class="card-description">Please select the available time slots for the session. You can choose from predefined time ranges such as 7am - 12pm, 12pm - 6pm, or 7am - 6pm. After selecting the time slots, assign caregivers who will be responsible for each session.</p>
+                    <form id="add-group-form">
+                      <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Year</label>
+                        <div class="col-sm-8">
+                          <div id="the-basics">
+                            <input id="year-input" class="typeahead form-control" type="text" placeholder="Year" readonly>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Time Slot</label>
+                        <div class="col-sm-8">
+                          <select id="time-slot-dropdown" class="js-example-basic-single w-100">
+                            <option value="AM">08:00 AM - 03:00 PM</option>
+                            <option value="PM">02:00 PM - 06:00 PM</option>
+                            <option value="FULL">08:00 AM - 06:00 PM</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Assigned Caregiver</label>
+                        <div class="col-sm-8">
+                          <select id="caregiver-select" class="js-example-basic-multiple w-100" multiple="multiple">
+                            <!-- Options will be dynamically generated here -->
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-12">
+                          <button type="submit" class="btn btn-primary">Add Group</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
-        <!-- content-wrapper ends -->
-        <!-- partial:../../partials/_footer.html -->
-        <footer class="footer">
-            <!-- Footer content -->
-        </footer>
-        <!-- partial -->
-    </div>
-    <!-- main-panel ends -->
-    </div>
-    <!-- page-body-wrapper ends -->
-    </div>
-    <!-- container-scroller -->
-    <!-- base:js -->
-    <script src="vendors/base/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
-    <!-- End plugin js for this page-->
-    <!-- inject:js -->
-    <script src="js/template.js"></script>
-    <!-- endinject -->
-    <!-- plugin js for this page -->
-    <script src="vendors/typeahead.js/typeahead.bundle.min.js"></script>
-    <script src="vendors/select2/select2.min.js"></script>
-    <!-- End plugin js for this page -->
-    <!-- Custom js for this page-->
-    <script src="js/file-upload.js"></script>
-    <script src="js/typeahead.js"></script>
-    <script src="js/select2.js"></script>
-    <!-- End custom js for this page-->
-
-    <script>
-      $(document).ready(function() {
-            // Initialize Select2 on the select element
-            $('.js-example-basic-multiple').select2();
-            const token = sessionStorage.getItem('token');
+    <!-- partial:../../partials/_footer.html -->
+    <footer class="footer">
+      <!-- Footer content -->
+    </footer>
+    <!-- partial -->
+  </div>
+  <!-- container-scroller -->
+  <!-- base:js -->
+  <script src="vendors/base/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page-->
+  <!-- End plugin js for this page-->
+  <!-- inject:js -->
+  <script src="js/template.js"></script>
+  <!-- endinject -->
+  <!-- plugin js for this page -->
+  <script src="vendors/typeahead.js/typeahead.bundle.min.js"></script>
+  <script src="vendors/select2/select2.min.js"></script>
+  <!-- End plugin js for this page -->
+  <!-- Custom js for this page-->
+  <script src="js/file-upload.js"></script>
+  <script src="js/typeahead.js"></script>
+  <script src="js/select2.js"></script>
+  <!-- End custom js for this page-->
 
 
-            // Fetch active caregivers and populate the select element
-            $.ajax({
-                url: 'http://127.0.0.1:8000/api/caregiver-data', // Update with your actual endpoint
-                method: 'GET',
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + token // Include the token in the request headers
-                },
-                success: function(data) {
-                    let caregiverSelect = $('#caregiver-select');
-                    caregiverSelect.empty(); // Clear any existing options
-                    data.forEach(function(caregiver) {
-                        caregiverSelect.append(new Option(caregiver.name, caregiver.id));
-                    });
-                },
-                error: function(error) {
-                    console.error('Error fetching caregivers:', error);
-                }
-            });
-        });
-      </script>
+  <input id="caregiver-id-input" type="hidden">
 
-    <script>
-    // JavaScript code to dynamically generate options for the dropdown
-    var currentYear = new Date().getFullYear();
-    var select = document.getElementById('year-dropdown');
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // JavaScript code to dynamically generate options for the dropdown
+  var currentYear = new Date().getFullYear();
+  var select = document.getElementById('year-dropdown');
 
-    // Add the current year as the first option
-    var currentYearOption = document.createElement('option');
-    currentYearOption.text = currentYear;
-    select.add(currentYearOption);
+  // Add the current year as the first option
+  var currentYearOption = document.createElement('option');
+  currentYearOption.text = currentYear;
+  select.add(currentYearOption);
 
-    // Add the other years in descending order
-    for (var i = currentYear - 1; i >= currentYear - 3; i--) {
-        var option = document.createElement('option');
-        option.text = i;
-        select.add(option);
+  // Add the other years in descending order
+  for (var i = currentYear - 1; i >= currentYear - 3; i--) {
+    var option = document.createElement('option');
+    option.text = i;
+    select.add(option);
+  }
+
+  // Bind event listener to the form's submit event
+  document.getElementById('add-session-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Get the selected session year from the dropdown
+    var selectedYear = document.getElementById('year-dropdown').value;
+
+    // Call the addSession function to add the session asynchronously
+    addSession(selectedYear);
+  });
+
+  // Bind event listener to the form's submit event
+  document.getElementById('add-group-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+   // Get the session ID
+    var sessionId = document.getElementById('year-input').dataset.sessionId;
+    var timeSlot = document.getElementById('time-slot-dropdown').value;
+    var caregiverId = document.getElementById('caregiver-select').value;
+
+    // Call the addGroup function to add the group asynchronously
+    addGroup(sessionId, timeSlot, caregiverId);
+  });
+
+  // Fetch active caregivers and populate the select element
+  const token = sessionStorage.getItem('token');
+
+  $.ajax({
+    url: 'http://127.0.0.1:8000/api/caregiver-data', // Update with your actual endpoint
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Authorization': 'Bearer ' + token // Include the token in the request headers
+    },
+    success: function(data) {
+      let caregiverSelect = document.getElementById('caregiver-select');
+      data.forEach(caregiver => {
+        const option = document.createElement('option');
+        option.value = caregiver.id;
+        option.textContent = caregiver.name;
+        caregiverSelect.appendChild(option);
+      });
+    },
+    error: function(error) {
+      console.error('Error fetching caregivers:', error);
+      alert('Error fetching caregivers: ' + error.responseText);
     }
+  });
 
-    function addSession(year) {
-        // Prepare the data to be sent in the request body
-        var data = {
-            year: year
-        };
+  // Function to add session asynchronously
+  function addSession(year) {
+    const token = sessionStorage.getItem('token');
+    var data = {
+      status: "Current",
+      year: year
+    };
 
-        // Retrieve the token from sessionStorage
-        var token = sessionStorage.getItem('token');
+    fetch('http://127.0.0.1:8000/api/add-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      // Extract the sessionId from the response
+      var sessionId = data.sessionId;
+      // Call fetchYearsForSession after successfully adding the session
+      fetchYearsForCurrentSessions();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
 
-        // Send an AJAX request to the controller
-        fetch('http://127.0.0.1:8000/api/add-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify(data) // Send the data object as JSON in the request body
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Log the response from the controller
-                // Handle the response as needed (e.g., display a success message)
-            })
-            .catch(error => {
-                console.error('Error:', error); // Log any errors
-                // Handle errors as needed (e.g., display an error message)
-            });
-    }
+  // Function to fetch years for current sessions
+  function fetchYearsForCurrentSessions() {
+    const token = sessionStorage.getItem('token');
+    fetch('http://127.0.0.1:8000/api/session-year', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      if (data.sessionId && data.year) {
+        // If a session ID and year are received, update the input field with the year
+        var yearInput = document.getElementById('year-input');
+        yearInput.value = data.year;
+        yearInput.dataset.sessionId = data.sessionId; // Store session ID in a data attribute
+        // Call the addGroup function with the session ID
+        // addGroup(data.sessionId); // No need to call here, will be called on form submit
+      } else {
+        console.error('No current session found:', data);
+      }
+    })  
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+  fetchYearsForCurrentSessions();
+
+  // Function to add group asynchronously
+  function addGroup(sessionId, timeSlot, caregiverId) {
+    const token = sessionStorage.getItem('token');
+
+    // Prepare the data object to send to the server
+    var data = {
+      session_id: sessionId,
+      caregiver_id: caregiverId,
+      time_slot: timeSlot
+    };
+
+    fetch('http://127.0.0.1:8000/api/add-group', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+});
 </script>
 
-
+  </script>
 </body>
 
 </html>

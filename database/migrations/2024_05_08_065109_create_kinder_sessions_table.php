@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('kinder_sessions', function (Blueprint $table) {
             $table->id();
             $table->integer('year')->nullable();
+            $table->string('status')->nullable();
+
 
         });
     }

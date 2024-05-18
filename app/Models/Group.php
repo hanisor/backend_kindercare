@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Group extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'session_id',
+        'caregiver_id',
+        'time'
+    ];
+
+    public $timestamps = false;
+
 }
