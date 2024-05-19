@@ -11,8 +11,7 @@ use App\Http\Controllers\ChildRelativeController;
 use App\Http\Controllers\RfidController;
 use App\Http\Controllers\KinderSessionController;
 use App\Http\Controllers\GroupController;
-
-
+use App\Http\Controllers\ChildGroupController;
 
 use App\Models\Guardian;
 use App\Models\Child;
@@ -24,6 +23,8 @@ use App\Models\ChildRelative;
 use App\Models\Rfid;
 use App\Models\KinderSession;
 use App\Models\Group;
+use App\Models\ChildGroup;
+
 
 Route::get('/', function(){
     return view('welcome');
@@ -155,7 +156,12 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
 
     // Group
+    Route::get('child-group/time', [GroupController::class, 'getGroupIdByTimeSlot']);
     Route::post('add-group', [GroupController::class, 'addGroup']);
+
+    // Child Group
+    Route::get('child-group/{group_id}', [ChildGroupController::class, 'getChildGroup']);
+    Route::post('child-group', [ChildGroupController::class, 'addChildGroup']);
 
 });
 

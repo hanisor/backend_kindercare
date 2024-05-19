@@ -15,6 +15,11 @@ class Group extends Model
         'time'
     ];
 
+    public function children()
+    {
+        return $this->hasMany(ChildRelative::class, 'group_id');
+    }
+
     public $timestamps = false;
 
 }

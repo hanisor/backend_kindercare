@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="vendors/base/vendor.bundle.base.css">
     <!-- endinject -->
     <!-- plugin css for this page -->
-    <link rel="stylesheet" href="public/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="vendors/select2/select2.min.css">
     <link rel="stylesheet" href="vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
@@ -151,38 +151,51 @@
     </div>
         <!-- partial -->
         <div class="container-fluid page-body-wrapper">
-        <div class="main-panel">
-            <div class="content-wrapper">
-            <div class="row justify-content-center"> <!-- Modified -->
-                <div class="col-lg-10 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                    <h4 class="card-title">List Of Children</h4>
-                    <div class="table-responsive">
-                        <table class="table">
-                        <thead>
-                            <tr class="header-row">
-                                <th>Number</th>
-                                <th>Full Name</th>
-                                <th>MyKid Number</th>
-                                <th>Age</th>
-                                <th>Gender</th>
-                                <th>Allergy</th>
-                                <th>Parent Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dynamic rows will be appended here by JavaScript -->
-                        </tbody>
-                        </table>
-                        <div id="error-message" class="text-danger"></div>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row justify-content-center">
+            <div class="col-lg-10 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">List Of Children</h4>
+                  <div class="table-responsive">
+                    <table class="table">
+                    <div class="col-md-6">
+                      <div class="form-group row align-items-center">
+                          <label class="col-sm-3 col-form-label">Session</label>
+                          <div class="col-sm-9">
+                              <select class="js-example-basic-single w-100" id="time-slot-dropdown" name="time-slot-dropdown">
+                                  <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM</option>
+                                  <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM</option>
+                                  <option value="08:00 AM - 06:00 PM">08:00 AM - 06:00 PM</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
 
-                    </div>
-                    </div>
+                      <thead>
+                        <tr class="header-row">
+                          <th>Number</th>
+                          <th>Full Name</th>
+                          <th>MyKid Number</th>
+                          <th>Date Of Birth</th>
+                          <th>Age</th>
+                          <th>Gender</th>
+                          <th>Allergy</th>
+                          <th>Parent Name</th>
+                        </tr>
+                      </thead>
+                      <tbody id="childrenTableBody">
+                        <!-- Dynamic rows will be appended here by JavaScript -->
+                      </tbody>
+                    </table>
+                    <div id="error-message" class="text-danger"></div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
+        </div>
             <!-- content-wrapper ends -->
             <footer class="footer">
             <div class="footer-wrap">
@@ -215,38 +228,68 @@
    <!-- Custom script to fetch and display children and their guardians -->
 <!-- Custom script to fetch and display children and their guardians -->
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+   // Custom function to parse date string in format "DD/MM/YYYY" to JavaScript Date object
+   function parseDate(dateString) {
+        var parts = dateString.split('/');
+        // Note: months are 0-based in JavaScript Date object, so subtract 1 from the month
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
 $(document).ready(function() {
     // Function to fetch and display children and their guardian data
-    function fetchChildren() {
+    function getChildGroup(group_id) {
+        console.log('Group ID:', group_id); // Debug: Log the group ID
+
         // Retrieve the token from sessionStorage
         const token = sessionStorage.getItem('token');
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/api/child-with-guardianName', // Adjust the URL to your actual endpoint
+            url: 'http://127.0.0.1:8000/api/child-group/' + group_id, // Adjust the URL to your actual endpoint
             method: 'GET',
             dataType: 'json',
             headers: {
                 'Authorization': 'Bearer ' + token // Include the token in the request headers
             },
-            success: function(data) {
-                var tableBody = $('table tbody');
-                tableBody.empty(); // Clear the existing table body
+            // Success callback function
+            success: function(response) {
+    console.log('Response:', response); // Debug: Log the fetched response
 
-                data.forEach(function(child, index) {
-                    // Append fetched data to the table row
-                    var row = `<tr>
-                        <td>${index + 1}</td>
-                        <td>${child.name}</td>
-                        <td>${child.my_kid_number}</td>
-                        <td>${child.age}</td>
-                        <td>${child.gender}</td>
-                        <td>${child.allergy}</td>
-                        <td>${child.guardian_name || 'N/A'}</td>
-                    </tr>`;
-                    tableBody.append(row);
-                });
-            },
+    // Check if response contains the expected key
+    if (response.hasOwnProperty('child_group')) {
+        var data = response.child_group; // Access the array of children data
+
+        var tableBody = $('#childrenTableBody');
+        tableBody.empty(); // Clear the existing table body
+
+        data.forEach(function(child, index) {
+          // Calculate age based on parsed date of birth
+          var dob = parseDate(child.date_of_birth);
+          var ageDate = new Date(Date.now() - dob.getTime());
+          var age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+          // Append fetched data to the table row including age
+          var row = `<tr>
+              <td>${index + 1}</td>
+              <td>${child.name}</td>
+              <td>${child.my_kid_number}</td>
+              <td>${child.date_of_birth}</td>
+              <td>${age}</td> <!-- Display calculated age -->
+              <td>${child.gender}</td>
+              <td>${child.allergy}</td>
+              <td>${child.guardian_name || 'N/A'}</td>
+          </tr>`;
+          tableBody.append(row);
+      });
+    } else {
+        // If the expected key is not found in the response
+        console.error('Invalid data format: Missing child_group key');
+        $('#error-message').text('Invalid data format. Please try again later.');
+    }
+},
+
+
             error: function(xhr, status, error) {
                 console.log('Error fetching children:', error);
                 // Display error message to the user
@@ -254,13 +297,42 @@ $(document).ready(function() {
             }
         });
     }
+  // Function to fetch the group ID by time slot
+  function getGroupIdByTimeSlot(timeSlot) {
+    const token = sessionStorage.getItem('token');
 
-    // Fetch children when the document is ready
-    fetchChildren();
+    fetch('http://127.0.0.1:8000/api/child-group/time?time=' + timeSlot, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Response from retrieving group ID:", data);
+        console.log("Response from retrieving group ID:", data.group_id);
+        if (data.group_id) {
+          // After retrieving the group ID, add the child to the group
+          getChildGroup(data.group_id);
+        } else {
+          console.error('Error retrieving group ID:', data.message);
+        }
+      })
+      .catch(error => console.error('Error retrieving group ID:', error));
+  }
+
+  // Fetch children when the document is ready
+  getGroupIdByTimeSlot($('#time-slot-dropdown').val());
+
+  // Event listener for time slot dropdown change
+  $('#time-slot-dropdown').change(function() {
+    var selectedTimeSlot = $(this).val();
+    // Call the function to fetch group ID by time slot
+    getGroupIdByTimeSlot(selectedTimeSlot);
+  });
 });
-</script>
 
+  </script>
+</body>
 
-    </body>
-
-    </html>
+</html>

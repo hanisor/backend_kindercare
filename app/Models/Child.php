@@ -9,6 +9,16 @@ class Child extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'my_kid_number',
+        'gender',
+        'date_of_birth',
+        'allergy',
+        'guardian_id',
+        
+    ];
+
     public $timestamps = false;
 
     public function sicknesses()
@@ -24,5 +34,10 @@ class Child extends Model
     public function relatives()
     {
         return $this->hasMany(ChildRelative::class, 'child_id');
+    }
+
+    public function groups()
+    {
+        return $this->hasMany(ChildRelative::class, 'group_id');
     }
 }

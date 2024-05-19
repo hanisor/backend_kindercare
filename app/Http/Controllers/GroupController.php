@@ -48,6 +48,35 @@ class GroupController extends Controller
             ], 422);
         }
     }
+
+
+    public function getGroupIdByTimeSlot(Request $request)
+    {
+        try {
+            // Validate fields
+            $validatedData = $request->validate([
+                'time' => 'required|string', // Validate the time slot
+            ]);
+    
+            // Query the database to find the group ID based on the provided time slot
+            $group_id = Group::where('time', $validatedData['time'])->value('id');
+    
+            if (!$group_id) {
+                return response()->json(['message' => 'Group not found for the provided time slot'], 404);
+            }
+    
+            // Return the group ID in response
+            return response()->json(['group_id' => $group_id], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return new JsonResponse([
+                'errors' => $e->validator->errors()->all()
+            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch group ID', 'error' => $e->getMessage()], 500);
+        }
+    }
+    
+
     
     /**
      * Display a listing of the resource.

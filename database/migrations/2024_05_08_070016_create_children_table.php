@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('my_kid_number')->nullable()->unique();
-            $table->integer('age')->nullable();
+            $table->string('date_of_birth')->nullable();
             $table->string('gender')->nullable();
             $table->string('allergy')->nullable();
             $table->unsignedBigInteger('guardian_id');

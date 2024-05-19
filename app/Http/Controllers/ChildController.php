@@ -22,7 +22,7 @@ class ChildController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string',
             'my_kid_number' => 'required|string|unique:children',
-            'age' => 'required|integer',
+            'date_of_birth' => 'required|string',
             'gender' => 'required|string',
             'allergy' => 'required|string',
             'guardian_id' => 'required|exists:guardians,id', // Ensure guardian_id exists in guardians table
@@ -34,7 +34,7 @@ class ChildController extends Controller
         // Assign values from the request to the child object
         $child->name = $validatedData['name'];
         $child->my_kid_number = $validatedData['my_kid_number'];
-        $child->age = $validatedData['age'];    
+        $child->date_of_birth = $validatedData['date_of_birth'];    
         $child->gender = $validatedData['gender'];
         $child->allergy = $validatedData['allergy'];
         $child->guardian_id = $validatedData['guardian_id'];
@@ -43,7 +43,7 @@ class ChildController extends Controller
         $child->save();
 
         // Return success response
-        return response()->json(['message' => 'Child added successfully'], 201);
+        return response()->json(['message' => $child], 201);
     } catch (\Illuminate\Validation\ValidationException $e) {
         // Return validation error response
         return response()->json(['errors' => $e->validator->errors()->all()], 422);
