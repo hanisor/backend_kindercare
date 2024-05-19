@@ -164,16 +164,24 @@ class CaregiverController extends Controller
  }
  
 
-   public function logout(Request $request)
-   {
-       // Revoke all tokens for the authenticated user using the 'caregiver' guard
-       auth()-> guard('caregiver')->user()->tokens()-> delete();
+ public function logout(Request $request)
+{
+    $user = auth()->guard('caregiver')->user();
 
-       return response([
-           'message' => 'Logout success.'
-       ],200);
-       return redirect(route('signin'));
-   }
+    if ($user) {
+        // Revoke all tokens for the authenticated user using the 'caregiver' guard
+        $user->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Logout success.'
+        ], 200);
+    }
+
+    return response()->json([
+        'message' => 'No authenticated user found.'
+    ], 401);
+}
+
 
    public function UserData($id)
    {
@@ -192,6 +200,25 @@ class CaregiverController extends Controller
    public function getCaregiver(){
         $caregivers = Caregiver::where ('status', 'ACTIVE')->get();
         return response()->json($caregivers);
+    }
+
+    public function getCaregiverCount() {
+        $caregiverCount = Caregiver::where('status', 'ACTIVE')->count();
+        return response()->json(['totalCaregivers' => $caregiverCount]);
+    }
+    
+
+    public function getCaregiverName($caregiver_id)
+    {
+        // Retrieve the guardian by its ID
+        $caregiver = Caregiver::find($caregiver_id);
+
+        // Check if the guardian exists
+        if ($caregiver) {
+            return response()->json(['caregiverUsername' => $caregiver->username], 200);
+        } else {
+            return response()->json(['message' => 'caregiver username not found'], 404);
+        }
     }
 
    public function updateCaregiver(Request $request, $id)

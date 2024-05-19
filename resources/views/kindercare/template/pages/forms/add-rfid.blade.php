@@ -2,22 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Parent Record</title>
-    <!-- base:css -->
-    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="vendors/base/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- plugin css for this page -->
-    <link rel="stylesheet" href="vendors/select2/select2.min.css">
-    <link rel="stylesheet" href="vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <link rel="stylesheet" href="css/style.css">
-    <!-- endinject -->
-    <link rel="shortcut icon" href="images/favicon.png" />
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>RFID</title>
+  <!-- base:css -->
+  <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="vendors/base/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- plugin css for this page -->
+  <link rel="stylesheet" href="vendors/select2/select2.min.css">
+  <link rel="stylesheet" href="vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="images/favicon.png" />
 </head>
+
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_horizontal-navbar.html -->
@@ -131,128 +133,113 @@
         </div>
       </nav >
     </div>
-    <!-- partial -->
-    <div class="container-fluid page-body-wrapper">
-        <div class="main-panel">
-            <div class="content-wrapper">
-                <div class="row justify-content-center"> <!-- Modified -->
-                    <div class="col-lg-10 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">List Of Parents</h4>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Full Name</th>
-                                                <th>Identification Number</th>
-                                                <th>Phone Number</th>
-                                                <th>Rfid Number</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="guardian-table-body">
-                                            <!-- Dynamic rows will be appended here by JavaScript -->
-                                        </tbody>
-                                    </table>
-                                    <div id="error-message" class="text-danger"></div>
+        
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="row justify-content-center">
+                <!-- Add a div to display the success message -->
+                <!-- Place the success message div before the "Add RFID" row -->
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div id="successMessage" class="alert alert-success d-none" role="alert">
+                        RFID number successfully registered!
+                    </div>
+                </div>
+            </div>  
+                <div class="col-md-5 grid-margin grid-margin-md-0 stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Add Rfid</h4>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Add RFID Number</label>
+                                <div class="col-sm-6">
+                                    <div id="the-basics">
+                                        <input id="rfidNumber" class="rfid form-control" type="text" placeholder="RFID number">
+                                    </div>
+                                </div>
+                                <div class="mb-4"></div>
+                                <div class="form-group row">
+                                    <div class="col-sm-16">
+                                    <button type="submit" class="btn btn-primary" onclick="addRfid(value)">Add RFID</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- content-wrapper ends -->
-            <footer class="footer">
-                <div class="footer-wrap">
-                    <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
-                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
-                    </div>
-                </div>
-            </footer>
         </div>
-        <!-- main-panel ends -->
+    </div>
+</div>
+
+
+
+        <!-- content-wrapper ends -->
+        <!-- partial:../../partials/_footer.html -->
+        <footer class="footer">
+          <div class="footer-wrap">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
+              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
+            </div>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
     </div>
     <!-- page-body-wrapper ends -->
-</div>
-<!-- container-scroller -->
-<!-- base:js -->
-<script src="../../vendors/base/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<!-- End plugin js for this page-->
-<!-- inject:js -->
-<script src="../../js/template.js"></script>
-<!-- endinject -->
-<!-- plugin js for this page -->
-<!-- End plugin js for this page -->
-<!-- Custom js for this page-->
-<!-- End custom js for this page -->
+  </div>
+  <!-- container-scroller -->
+  <!-- base:js -->
+  <script src="../../vendors/base/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page-->
+  <!-- End plugin js for this page-->
+  <!-- inject:js -->
+  <script src="../../js/template.js"></script>
+  <!-- endinject -->
+  <!-- plugin js for this page -->
+  <script src="../../vendors/typeahead.js/typeahead.bundle.min.js"></script>
+  <script src="../../vendors/select2/select2.min.js"></script>
+  <!-- End plugin js for this page -->
+  <!-- Custom js for this page-->
+  <script src="../../js/file-upload.js"></script>
+  <script src="../../js/typeahead.js"></script>
+  <script src="../../js/select2.js"></script>
+  <!-- End custom js for this page-->
 
-<!-- Custom script to fetch and display guardians -->
-<script>
-    $(document).ready(function() {
-        // Function to fetch and display guardian data
-        function fetchGuardians() {
-            // Retrieve the token from sessionStorage
-            const token = sessionStorage.getItem('token');
+  <script>
+    function addRfid() {
+        const token = sessionStorage.getItem('token');
+        // Retrieve RFID number from the input field
+        const rfidNumber = document.getElementById('rfidNumber').value;
+        var data = {
+            number: rfidNumber, // Use the retrieved RFID number
+        };
 
-            $.ajax({
-                url: 'http://127.0.0.1:8000/api/guardian-data', // Adjust the URL to your actual endpoint
-                method: 'GET',
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + token // Include the token in the request headers
-                },
-                success: function(data) {
-                    var tableBody = $('#guardian-table-body');
-                    tableBody.empty(); // Clear the existing table body
-
-                    // Collect promises for RFID data fetching
-                    var rfidPromises = data.map(function(guardian) {
-                        return $.ajax({
-                            url: 'http://127.0.0.1:8000/api/get-rfid/' + guardian.rfid_id, // Adjust the URL to your actual endpoint
-                            method: 'GET',
-                            dataType: 'json',
-                            headers: {
-                                'Authorization': 'Bearer ' + token // Include the token in the request headers
-                            }
-                        }).then(function(rfidData) {
-                            return {
-                                guardian: guardian,
-                                rfidNumber: rfidData.number || 'N/A'
-                            };
-                        });
-                    });
-
-                    // Process all promises
-                    Promise.all(rfidPromises).then(function(results) {
-                        results.forEach(function(result) {
-                            var row = `<tr>
-                                <td>${result.guardian.name}</td>
-                                <td>${result.guardian.ic_number}</td>
-                                <td>${result.guardian.phone_number}</td>
-                                <td>${result.rfidNumber}</td>
-                            </tr>`;
-                            tableBody.append(row);
-                        });
-                    }).catch(function(error) {
-                        console.log('Error fetching RFID data:', error);
-                        // Display error message to the user
-                        $('#error-message').text('Error fetching RFID data. Please try again later.');
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.log('Error fetching guardians:', error);
-                    // Display error message to the user
-                    $('#error-message').text('Error fetching guardians. Please try again later.');
-                }
-            });
-        }
-
-        // Fetch guardians when the document is ready
-        fetchGuardians();
-    });
+        fetch('http://127.0.0.1:8000/api/add-rfid', { // Adjust the URL to match the route for adding an RFID
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            // Show the success message
+            document.getElementById('successMessage').classList.remove('d-none');
+            // You can optionally reset the input field here
+            document.getElementById('rfidNumber').value = '';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 </script>
 
 <script>
@@ -288,6 +275,6 @@ function signOut() {
 }
 
 </script>
-
 </body>
+
 </html>

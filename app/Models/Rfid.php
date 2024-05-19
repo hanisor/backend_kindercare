@@ -13,6 +13,12 @@ class Rfid extends Model
         'number'
     ];
 
+    public function guardian()
+    {
+        return $this->belongsTo(Guardian::class, 'rfid_id');
+    }
+
+
     public $timestamps = false;
 
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Parent Record</title>
+    <title>Caregiver Record</title>
     <!-- base:css -->
     <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="vendors/base/vendor.bundle.base.css">
@@ -139,7 +139,7 @@
                     <div class="col-lg-10 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">List Of Parents</h4>
+                                <h4 class="card-title">List Of Caregivers</h4>
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -147,10 +147,9 @@
                                                 <th>Full Name</th>
                                                 <th>Identification Number</th>
                                                 <th>Phone Number</th>
-                                                <th>Rfid Number</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="guardian-table-body">
+                                        <tbody id="caregiver-table-body">
                                             <!-- Dynamic rows will be appended here by JavaScript -->
                                         </tbody>
                                     </table>
@@ -191,67 +190,39 @@
 
 <!-- Custom script to fetch and display guardians -->
 <script>
-    $(document).ready(function() {
-        // Function to fetch and display guardian data
-        function fetchGuardians() {
-            // Retrieve the token from sessionStorage
-            const token = sessionStorage.getItem('token');
+   
+   $(document).ready(function() {
+    const token = sessionStorage.getItem('token');
 
+        function fetchCaregivers() {
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/guardian-data', // Adjust the URL to your actual endpoint
+                url: 'http://127.0.0.1:8000/api/caregiver-data', // Adjust the URL to your actual endpoint
                 method: 'GET',
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + token // Include the token in the request headers
                 },
                 success: function(data) {
-                    var tableBody = $('#guardian-table-body');
+                    var tableBody = $('#caregiver-table-body');
                     tableBody.empty(); // Clear the existing table body
 
-                    // Collect promises for RFID data fetching
-                    var rfidPromises = data.map(function(guardian) {
-                        return $.ajax({
-                            url: 'http://127.0.0.1:8000/api/get-rfid/' + guardian.rfid_id, // Adjust the URL to your actual endpoint
-                            method: 'GET',
-                            dataType: 'json',
-                            headers: {
-                                'Authorization': 'Bearer ' + token // Include the token in the request headers
-                            }
-                        }).then(function(rfidData) {
-                            return {
-                                guardian: guardian,
-                                rfidNumber: rfidData.number || 'N/A'
-                            };
-                        });
-                    });
-
-                    // Process all promises
-                    Promise.all(rfidPromises).then(function(results) {
-                        results.forEach(function(result) {
-                            var row = `<tr>
-                                <td>${result.guardian.name}</td>
-                                <td>${result.guardian.ic_number}</td>
-                                <td>${result.guardian.phone_number}</td>
-                                <td>${result.rfidNumber}</td>
-                            </tr>`;
-                            tableBody.append(row);
-                        });
-                    }).catch(function(error) {
-                        console.log('Error fetching RFID data:', error);
-                        // Display error message to the user
-                        $('#error-message').text('Error fetching RFID data. Please try again later.');
+                    data.forEach(function(caregiver) {
+                        var row = `<tr>
+                            <td>${caregiver.name}</td>
+                            <td>${caregiver.ic_number}</td>
+                            <td>${caregiver.phone_number}</td>
+                        </tr>`;
+                        tableBody.append(row);
                     });
                 },
                 error: function(xhr, status, error) {
-                    console.log('Error fetching guardians:', error);
-                    // Display error message to the user
-                    $('#error-message').text('Error fetching guardians. Please try again later.');
+                    console.log('Error fetching caregivers:', error);
+                    $('#error-message').text('Error fetching caregivers. Please try again later.');
                 }
             });
         }
 
-        // Fetch guardians when the document is ready
-        fetchGuardians();
+        fetchCaregivers();
     });
 </script>
 

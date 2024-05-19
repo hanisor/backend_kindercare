@@ -59,9 +59,9 @@
                         <i class="mdi mdi-settings text-primary"></i>
                         Settings
                       </a>
-                      <a class="dropdown-item">
-                        <i class="mdi mdi-logout text-primary"></i>
-                        Logout
+                      <a class="dropdown-item d-flex align-items-center" href="#" onClick="signOut()">
+                      <i class="mdi mdi-logout text-primary"></i>
+                        <span>Sign Out</span>
                       </a>
                   </div>
                 </li>
@@ -84,6 +84,19 @@
               <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="mdi mdi-cube-outline menu-icon"></i>
+                    <span class="menu-title">Session</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+                  <div class="submenu">
+                      <ul>
+                          <li class="nav-item"><a class="nav-link" href="/add-rfid">RFID</a></li>
+                          <li class="nav-item"><a class="nav-link" href="/add-session">Session</a></li>
+                      </ul>
+                  </div>
+              </li>
+              <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="mdi mdi-cube-outline menu-icon"></i>
                     <span class="menu-title">Registration</span>
                     <i class="menu-arrow"></i>
                   </a>
@@ -94,13 +107,8 @@
                       </ul>
                   </div>
               </li>
-              <li class="nav-item">
-                  <a href="/add-session" class="nav-link">
-                    <i class="mdi mdi-chart-areaspline menu-icon"></i>
-                    <span class="menu-title">Add Session</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-              </li>
+             
+              
               <li class="nav-item">
                   <a href="pages/charts/chartjs.html" class="nav-link">
                     <i class="mdi mdi-finance menu-icon"></i>
@@ -121,36 +129,10 @@
                     </ul>
                 </div>
                 </li>
-                <li class="nav-item">
-                <a href="../../pages/icons/mdi.html" class="nav-link">
-                    <i class="mdi mdi-emoticon menu-icon"></i>
-                    <span class="menu-title">Icons</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="mdi mdi-codepen menu-icon"></i>
-                    <span class="menu-title">Sample Pages</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-                  <div class="submenu">
-                      <ul class="submenu-item">
-                          <li class="nav-item"><a class="nav-link" href="/caregiver-login">Login</a></li>
-                          <li class="nav-item"><a class="nav-link" href="/caregiver-register">Register</a></li>
-                      </ul>
-                  </div>
-              </li>
-              <li class="nav-item">
-                  <a href="../../docs/documentation.html" class="nav-link">
-                    <i class="mdi mdi-file-document-box-outline menu-icon"></i>
-                    <span class="menu-title">Documentation</span></a>
-              </li>
             </ul>
         </div>
       </nav >
     </div>
-        
         <!-- partial -->
         <div class="container-fluid page-body-wrapper d-flex justify-content-center align-items-center" style="min-height: 100vh;">
       <div class="main-panel">
@@ -173,7 +155,7 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-12">
-                          <button type="submit" class="btn btn-primary">Add Session</button>
+                          <button type="submit" class="btn btn-primary" >Add Session</button>
                         </div>
                       </div>
                     </form>
@@ -413,7 +395,39 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-  </script>
+<script>
+
+function signOut() {
+  const token = sessionStorage.getItem('token');
+
+  const data = {};
+
+  fetch('http://127.0.0.1:8000/api/logout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token // Ensure token is stored and retrieved correctly
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Network response was not ok.');
+    }
+  })
+  .then(data => {
+    console.log('Response:', data);
+    // Redirect to the login page
+    window.location.replace('http://127.0.0.1:8000/caregiver-login');
+  })
+  .catch(error => {
+    console.error('Error during fetch:', error);
+  });
+}
+
+</script>
 </body>
 
 </html>

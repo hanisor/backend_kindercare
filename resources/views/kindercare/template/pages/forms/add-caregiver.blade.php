@@ -126,6 +126,7 @@
                     <ul>
                     <li class="nav-item"><a class="nav-link" href="/parent-table">Parents Record</a></li>
                     <li class="nav-item"><a class="nav-link" href="/children-table">Children Record</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/caregiver-table">Caregiver Record</a></li>
                     </ul>
                 </div>
                 </li>
@@ -142,7 +143,7 @@
                 <div class="col-7 grid-margin stretch-card">
                   <div class="card">
                     <div class="card-body">
-                      <h4 class="card-title">Parent Registration</h4>
+                      <h4 class="card-title">Caregiver Registration</h4>
                       <form id="parentForm" class="row g-3 needs-validation" novalidate>
                         <div class="form-group">
                           <label for="name">Name</label>
@@ -175,21 +176,8 @@
                        <!-- Fixed role and status fields -->
                         <input type="hidden" id="role" name="role" value="PARENT">
                         <input type="hidden" id="status" name="status" value="ACTIVE">
-                        <div class="col-md-6">
-                        <label for="form" class="form-label">RFID Number<span style="color: red;"> *</label>
-                        <select class="form-select" id="rfid_id" name="rfid_id" required>
-                            <option selected disabled hidden></option>
-                     
-                        </select>
-                        <div class="valid-feedback">
-                            Looks good!
-                          </div>
-                        <div class="invalid-feedback">
-                            Please select a RFID Number!
-                          </div>
-                    </div>
                         <div class="text-center">
-                            <button type="button" class="btn btn-primary" onclick="addGuardian()">Save</button>
+                            <button type="button" class="btn btn-primary" onclick="addCaregiver()">Save</button>
                             <button type="button" class="btn btn-secondary" onclick="returnToIndex()">Cancel</button>
                         </div>
                       </form>
@@ -235,33 +223,10 @@
 
 
   <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const token = sessionStorage.getItem('token');
 
-  fetch('http://127.0.0.1:8000/api/get-rfid', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    })    .then(response => response.json())
-    .then(data => {
-        const rfidSelect = document.getElementById('rfid_id');
-        data.forEach(rfid => {
-            const option = document.createElement('option');
-            option.value = rfid.id;
-            option.textContent = rfid.number; // Assuming 'number' is the field you want to display
-            rfidSelect.appendChild(option);
-        });
-    })
-    .catch(error => {
-        console.error('Error fetching RFIDs:', error);
-    });
-});
-    
-
-function addGuardian() {
+function addCaregiver() {
     var status = "ACTIVE";
-    var role = "PARENT";
+    var role = "CAREGIVER";
     var name = document.getElementById('name').value;
     var ic_number = document.getElementById('ic_number').value;
     var phone_number = document.getElementById('phone_number').value;
@@ -269,7 +234,6 @@ function addGuardian() {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
     var image = document.getElementById('image').files[0];
-    var rfid_id = document.getElementById('rfid_id').value;
 
     const data = {
         name: name,
@@ -281,10 +245,9 @@ function addGuardian() {
         image: image,
         role: role,
         status: status,
-        rfid_id: rfid_id
     };
 
-    fetch('http://127.0.0.1:8000/api/guardian-register', {
+    fetch('http://127.0.0.1:8000/caregiver-register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

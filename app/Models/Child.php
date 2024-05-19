@@ -38,6 +38,6 @@ class Child extends Model
 
     public function groups()
     {
-        return $this->hasMany(ChildRelative::class, 'group_id');
+        return $this->belongsToMany(Group::class, 'child_groups', 'child_id', 'group_id');
     }
 }

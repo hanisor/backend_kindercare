@@ -75,6 +75,34 @@ class ChildGroupController extends Controller
             }
         }
     }
+
+    public function getChildCountInGroups()
+{
+    $morningSessionCounts = Group::where('time', ['08:00 AM - 03:00 PM'])
+                                 ->withCount('children')
+                                 ->get()
+                                 ->pluck('children_count');
+
+    $afternoonSessionCounts = Group::where('time', ['02:00 PM - 06:00 PM'])
+                                   ->withCount('children')
+                                   ->get()
+                                   ->pluck('children_count');
+
+    $fullDaySessionCounts = Group::where('time', ['08:00 AM - 06:00 PM'])
+                                 ->withCount('children')
+                                 ->get()
+                                 ->pluck('children_count');
+
+    return response()->json([
+        'morningSessionCounts' => $morningSessionCounts,
+        'afternoonSessionCounts' => $afternoonSessionCounts,
+        'fullDaySessionCounts' => $fullDaySessionCounts
+    ]);
+}
+
+    
+
+
     
     /**
      * Display a listing of the resource.

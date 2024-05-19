@@ -17,7 +17,7 @@ class Group extends Model
 
     public function children()
     {
-        return $this->hasMany(ChildRelative::class, 'group_id');
+        return $this->belongsToMany(Child::class, 'child_groups', 'group_id', 'child_id');
     }
 
     public $timestamps = false;

@@ -75,6 +75,19 @@ class GroupController extends Controller
             return response()->json(['message' => 'Failed to fetch group ID', 'error' => $e->getMessage()], 500);
         }
     }
+
+    /* public function getGroupCount() {
+        $morningSessionCount = Group::where('time', '08:00 AM - 03:00 PM')->count();
+        $afternoonSessionCount = Group::where('time', '02:00 PM - 06:00 PM')->count();
+        $fullDaySessionCount = Group::where('time', '08:00 AM - 06:00 PM')->count();
+    
+        return response()->json([
+            'totalMorningSession' => $morningSessionCount,
+            'totalAfternoonSession' => $afternoonSessionCount,
+            'totalFullDaySession' => $fullDaySessionCount
+        ]);
+    } */
+    
     
 
     

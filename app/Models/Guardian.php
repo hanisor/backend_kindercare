@@ -50,9 +50,9 @@ class Guardian extends Authenticatable implements AuthenticatableContract
         return $this->hasMany(Relative::class);
     }
 
-    public function rfid()
+    public function rfids()
     {
-        return $this->belongsTo(Rfid::class, 'rfid_id');
+        return $this->hasMany(Rfid::class, 'rfid_id');
     }
      
     /**

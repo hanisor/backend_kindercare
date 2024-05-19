@@ -49,19 +49,19 @@
                   <button type="button" class="btn btn-inverse-primary btn-sm">Settings</button>
                 </li>
                 <li class="nav-item nav-profile dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
-                    <span class="nav-profile-name">Johnson</span>
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown" data-caregiver-id="1">
+                    <span class="nav-profile-name">Loading...</span>
                     <span class="online-status"></span>
                     <img src="images/faces/face28.png" alt="profile"/>
-                  </a>
+                </a>
                   <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                       <a class="dropdown-item">
                         <i class="mdi mdi-settings text-primary"></i>
                         Settings
                       </a>
-                      <a class="dropdown-item">
-                        <i class="mdi mdi-logout text-primary"></i>
-                        Logout
+                      <a class="dropdown-item d-flex align-items-center" href="#" onClick="signOut()">
+                      <i class="mdi mdi-logout text-primary"></i>
+                        <span>Sign Out</span>
                       </a>
                   </div>
                 </li>
@@ -84,6 +84,19 @@
               <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="mdi mdi-cube-outline menu-icon"></i>
+                    <span class="menu-title">Session</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+                  <div class="submenu">
+                      <ul>
+                          <li class="nav-item"><a class="nav-link" href="/add-rfid">RFID</a></li>
+                          <li class="nav-item"><a class="nav-link" href="/add-session">Session</a></li>
+                      </ul>
+                  </div>
+              </li>
+              <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="mdi mdi-cube-outline menu-icon"></i>
                     <span class="menu-title">Registration</span>
                     <i class="menu-arrow"></i>
                   </a>
@@ -91,16 +104,13 @@
                       <ul>
                           <li class="nav-item"><a class="nav-link" href="/add-parent">Parents</a></li>
                           <li class="nav-item"><a class="nav-link" href="/add-children">Children</a></li>
+                          <li class="nav-item"><a class="nav-link" href="/add-caregiver">Caregiver</a></li>
+
                       </ul>
                   </div>
               </li>
-              <li class="nav-item">
-                  <a href="/add-session" class="nav-link">
-                    <i class="mdi mdi-chart-areaspline menu-icon"></i>
-                    <span class="menu-title">Add Session</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-              </li>
+             
+              
               <li class="nav-item">
                   <a href="pages/charts/chartjs.html" class="nav-link">
                     <i class="mdi mdi-finance menu-icon"></i>
@@ -118,34 +128,11 @@
                     <ul>
                     <li class="nav-item"><a class="nav-link" href="/parent-table">Parents Record</a></li>
                     <li class="nav-item"><a class="nav-link" href="/children-table">Children Record</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/caregiver-table">Caregiver Record</a></li>
+
                     </ul>
                 </div>
                 </li>
-                <li class="nav-item">
-                <a href="../../pages/icons/mdi.html" class="nav-link">
-                    <i class="mdi mdi-emoticon menu-icon"></i>
-                    <span class="menu-title">Icons</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="mdi mdi-codepen menu-icon"></i>
-                    <span class="menu-title">Sample Pages</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-                  <div class="submenu">
-                      <ul class="submenu-item">
-                          <li class="nav-item"><a class="nav-link" href="/caregiver-login">Login</a></li>
-                          <li class="nav-item"><a class="nav-link" href="/caregiver-register">Register</a></li>
-                      </ul>
-                  </div>
-              </li>
-              <li class="nav-item">
-                  <a href="../../docs/documentation.html" class="nav-link">
-                    <i class="mdi mdi-file-document-box-outline menu-icon"></i>
-                    <span class="menu-title">Documentation</span></a>
-              </li>
             </ul>
         </div>
       </nav >
@@ -155,80 +142,55 @@
 		<div class="container-fluid page-body-wrapper">
 			<div class="main-panel">
 				<div class="content-wrapper">
-					<div class="row">
-						<div class="col-lg-2 grid-margin stretch-card">
-							<div class="card">
-								<div class="card-body pb-0">
-									<div class="d-flex align-items-center justify-content-between">
-										<h2 class="text-success font-weight-bold">18390</h2>
-										<i class="mdi mdi-account-outline mdi-18px text-dark"></i>
-									</div>
-								</div>
-								<canvas id="newClient"></canvas>
-								<div class="line-chart-row-title">MY NEW CLIENTS</div>
-							</div>
-						</div>
-						<div class="col-lg-2 grid-margin stretch-card">
-							<div class="card">
-								<div class="card-body pb-0">
-									<div class="d-flex align-items-center justify-content-between">
-										<h2 class="text-danger font-weight-bold">839</h2>
-										<i class="mdi mdi-refresh mdi-18px text-dark"></i>
-									</div>
-								</div>
-								<canvas id="allProducts"></canvas>
-								<div class="line-chart-row-title">All Products</div>
-							</div>
-						</div>
-						<div class="col-lg-2 grid-margin stretch-card">
-							<div class="card">
-								<div class="card-body pb-0">
-									<div class="d-flex align-items-center justify-content-between">
-										<h2 class="text-info font-weight-bold">244</h2>
-										<i class="mdi mdi-file-document-outline mdi-18px text-dark"></i>
-									</div>
-								</div>
-								<canvas id="invoices"></canvas>
-								<div class="line-chart-row-title">NEW INVOICES</div>
-							</div>
-						</div>
-						<div class="col-lg-2 grid-margin stretch-card">
-							<div class="card">
-								<div class="card-body pb-0">
-									<div class="d-flex align-items-center justify-content-between">
-										<h2 class="text-warning font-weight-bold">3259</h2>
-										<i class="mdi mdi-folder-outline mdi-18px text-dark"></i>
-									</div>
-								</div>
-								<canvas id="projects"></canvas>
-								<div class="line-chart-row-title">All PROJECTS</div>
-							</div>
-						</div>
-						<div class="col-lg-2 grid-margin stretch-card">
-							<div class="card">
-								<div class="card-body pb-0">
-									<div class="d-flex align-items-center justify-content-between">
-										<h2 class="text-secondary font-weight-bold">586</h2>
-										<i class="mdi mdi-cart-outline mdi-18px text-dark"></i>
-									</div>
-								</div>
-								<canvas id="orderRecieved"></canvas>
-								<div class="line-chart-row-title">Orders Received</div>
-							</div>
-						</div>
-						<div class="col-lg-2 grid-margin stretch-card">
-							<div class="card">
-								<div class="card-body pb-0">
-									<div class="d-flex align-items-center justify-content-between">
-										<h2 class="text-dark font-weight-bold">7826</h2>
-										<i class="mdi mdi-cash text-dark mdi-18px"></i>
-									</div>
-								</div>
-								<canvas id="transactions"></canvas>
-								<div class="line-chart-row-title">TRANSACTIONS</div>
-							</div>
-						</div>
-					</div>
+        <div class="row justify-content-center">
+          <div class="col-lg-2 grid-margin stretch-card">
+              <div class="card">
+                  <div class="card-body pb-0">
+                      <div class="d-flex align-items-center justify-content-between">
+                          <h2 id="caregiverCount" class="text-success font-weight-bold">Loading...</h2>
+                          <i class="mdi mdi-account-outline mdi-18px text-dark"></i>
+                      </div>
+                  </div>
+                  <canvas id="newClient"></canvas>
+                  <div class="line-chart-row-title">MY CAREGIVER</div>
+              </div>
+          </div>
+          <div class="col-lg-2 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 id="morningSessionCount" class="text-danger font-weight-bold">Loading...</h2>
+                        <i class="mdi mdi-refresh mdi-18px text-dark"></i>
+                    </div>
+                </div>
+                <canvas id="allProducts"></canvas>
+                <div class="line-chart-row-title">Morning Session</div>
+            </div>
+        </div>
+        <div class="col-lg-2 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 id="afternoonSessionCount" class="text-info font-weight-bold">Loading...</h2>
+                        <i class="mdi mdi-file-document-outline mdi-18px text-dark"></i>
+                    </div>
+                </div>
+                <canvas id="invoices"></canvas>
+                <div class="line-chart-row-title">Afternoon Session</div>
+            </div>
+        </div>
+        <div class="col-lg-2 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 id="fullDaySessionCount" class="text-warning font-weight-bold">Loading...</h2>
+                        <i class="mdi mdi-folder-outline mdi-18px text-dark"></i>
+                    </div>
+                </div>
+                <canvas id="projects"></canvas>
+                <div class="line-chart-row-title">Full Day Session</div>
+            </div>
+        </div>
 					<div class="row">
 						<div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
 							<div class="card">
@@ -293,5 +255,126 @@
     <!-- Custom js for this page-->
     <script src="js/dashboard.js"></script>
     <!-- End custom js for this page-->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = sessionStorage.getItem('token');
+
+            function fetchCaregiverCount() {
+                fetch('http://127.0.0.1:8000/api/caregiver-count', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('caregiverCount').textContent = data.totalCaregivers;
+                })
+                .catch(error => {
+                    console.error('Error fetching caregiver count:', error);
+                    document.getElementById('caregiverCount').textContent = 'Error';
+                });
+            }
+
+            fetchCaregiverCount();
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+          const token = sessionStorage.getItem('token');
+
+            // Retrieve the caregiver ID from the data attribute
+            var caregiverId = $('#profileDropdown').data('caregiver-id');
+            
+            // Log the caregiver ID to console for debugging
+            console.log("Caregiver ID:", caregiverId);
+
+            $.ajax({
+                url: 'http://127.0.0.1:8000/api/get-caregiverUsername/' + caregiverId,
+                method: 'GET',
+                dataType: 'json', // Specify the expected data type of the response
+                headers: {
+                    'Authorization': 'Bearer ' + token // Include the token in the request headers
+                },
+                success: function(data) {
+                    if(data.caregiverUsername) {
+                      console.log("Caregiver data.caregiverUsername:", data.caregiverUsername);
+
+                        $('.nav-profile-name').text(data.caregiverUsername);
+                    }
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+
+        });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const token = sessionStorage.getItem('token');
+
+        function fetchChildCounts() {
+            fetch('http://127.0.0.1:8000/api/childgroup-count', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('morningSessionCount').textContent = data.morningSessionCounts;
+                document.getElementById('afternoonSessionCount').textContent = data.afternoonSessionCounts;
+                document.getElementById('fullDaySessionCount').textContent = data.fullDaySessionCounts;
+            })
+            .catch(error => {
+                console.error('Error fetching group counts:', error);
+                document.getElementById('morningSessionCount').textContent = 'Error';
+                document.getElementById('afternoonSessionCount').textContent = 'Error';
+                document.getElementById('fullDaySessionCount').textContent = 'Error';
+            }); 
+        }
+
+        fetchChildCounts();
+    });
+</script>
+
+
+
+    <script>
+
+    function signOut() {
+      const token = sessionStorage.getItem('token');
+
+      const data = {};
+
+      fetch('http://127.0.0.1:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token // Ensure token is stored and retrieved correctly
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Network response was not ok.');
+        }
+      })
+      .then(data => {
+        console.log('Response:', data);
+        // Redirect to the login page
+        window.location.replace('http://127.0.0.1:8000/caregiver-login');
+      })
+      .catch(error => {
+        console.error('Error during fetch:', error);
+      });
+    }
+
+</script>
   </body>
 </html>

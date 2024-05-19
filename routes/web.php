@@ -43,12 +43,20 @@ Route::get('/add-children', function(){
     return view('kindercare.template.pages.forms.add-children');
 });
 
+Route::get('/add-caregiver', function(){
+    return view('kindercare.template.pages.forms.add-caregiver');
+});
+
 Route::get('/parent-table', function(){
     return view('kindercare.template.pages.tables.parent-table');
 });
 
 Route::get('/children-table', function(){
     return view('kindercare.template.pages.tables.children-table');
+});
+
+Route::get('/caregiver-table', function(){
+    return view('kindercare.template.pages.tables.caregiver-table');
 });
 
 Route::get('/add-session', function(){
@@ -63,15 +71,11 @@ Route::get('/example-form', function(){
     return view('kindercare.template.pages.forms.example');
 });
 
-
-/* Route::get('/sign-in', function(){
-    return view('kindercare.template.pages.samples.sign-in');
+Route::get('/add-rfid', function(){
+    return view('kindercare.template.pages.forms.add-rfid');
 });
 
-Route::get('/sign-up', function(){
-    return view('kindercare.template.pages.samples.sign-up');
-});
- */
+
 
 
 
@@ -142,13 +146,18 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     // Caregiver
     // Route::get('caregiver-homepage',  [CaregiverController::class, 'index']) -> name('homepage');
     Route::get('caregiver-data', [CaregiverController::class, 'getCaregiver']);
+    Route::get('caregiver-count', [CaregiverController::class, 'getCaregiverCount']);
     Route::get('caregiver-byEmail', [CaregiverController::class, 'getCaregiverByEmail']);
+    Route::get('get-caregiverUsername/{caregiver_id}', [CaregiverController::class, 'getCaregiverName']);
     Route::put('caregiver/update-profile/{id}', [CaregiverController::class,'updateCaregiver']);
+    Route::post('logout', [CaregiverController::class, 'logout']);
+
 
     // Rfid
-    Route::post('guardian/add-rfid', [RfidController::class, 'addRfid']);
+    Route::post('add-rfid', [RfidController::class, 'addRfid']);
+    Route::get('get-rfid', [RfidController::class, 'getRfid']);
     Route::get('guardian-data', [GuardianController::class, 'getGuardian']);
-    Route::get('guardian/get-rfid/{rfid_id}', [RfidController::class, 'getRfidName']);
+    Route::get('get-rfid/{rfid_id}', [RfidController::class, 'getRfidName']);
 
     // Session
     Route::get('session-year', [KinderSessionController::class, 'getCurrentSession']);
@@ -161,6 +170,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
     // Child Group
     Route::get('child-group/{group_id}', [ChildGroupController::class, 'getChildGroup']);
+    Route::get('childgroup-count', [ChildGroupController::class, 'getChildCountInGroups']);
     Route::post('child-group', [ChildGroupController::class, 'addChildGroup']);
 
 });

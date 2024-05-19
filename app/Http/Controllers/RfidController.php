@@ -46,11 +46,18 @@ class RfidController extends Controller
         ], 200);
     }
 
-    public function getRfid(){
-        $rfids = Rfid::all();
+    public function getRfid()
+    {
+        // Retrieve the RFID numbers that are not associated with any guardian
+        $rfids = Rfid::leftJoin('guardians', 'rfids.id', '=', 'guardians.rfid_id')
+                    ->whereNull('guardians.rfid_id')
+                    ->select('rfids.*')
+                    ->get();
+        
         return response()->json($rfids);
     }
 
+    
     public function getRfidName($rfid_id)
     {
         // Retrieve the RFID by its ID
