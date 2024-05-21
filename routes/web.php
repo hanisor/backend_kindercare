@@ -12,6 +12,7 @@ use App\Http\Controllers\RfidController;
 use App\Http\Controllers\KinderSessionController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ChildGroupController;
+use App\Http\Controllers\BehaviourController;
 
 use App\Models\Guardian;
 use App\Models\Child;
@@ -24,7 +25,7 @@ use App\Models\Rfid;
 use App\Models\KinderSession;
 use App\Models\Group;
 use App\Models\ChildGroup;
-
+use App\Models\Behaviour;
 
 Route::get('/', function(){
     return view('welcome');
@@ -170,8 +171,14 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
     // Child Group
     Route::get('child-group/{group_id}', [ChildGroupController::class, 'getChildGroup']);
+    Route::get('child-group/caregiverId/{caregiver_id}', [ChildGroupController::class, 'getChildGroupfromCaregiverId']);
     Route::get('childgroup-count', [ChildGroupController::class, 'getChildCountInGroups']);
     Route::post('child-group', [ChildGroupController::class, 'addChildGroup']);
+
+    // Behaviour
+    Route::get('behaviour/{caregiver_id}', [BehaviourController::class, 'getChildBehavioursFromCaregiverId']);
+    Route::post('add-behaviour', [BehaviourController::class, 'addBehaviour']);
+
 
 });
 

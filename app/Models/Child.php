@@ -40,4 +40,9 @@ class Child extends Model
     {
         return $this->belongsToMany(Group::class, 'child_groups', 'child_id', 'group_id');
     }
+
+    public function behaviours()
+    {
+        return $this->hasMany(Behaviour::class);
+    }
 }

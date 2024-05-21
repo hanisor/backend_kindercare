@@ -76,6 +76,36 @@ class ChildGroupController extends Controller
         }
     }
 
+    public function getChildGroupfromCaregiverId($caregiver_id)
+    {
+        // Retrieve the parent by their ID
+        $group = Group::find($caregiver_id);
+    
+        // Check if the parent exists
+        if ($group) {
+            try {
+                $childGroup = ChildGroup::select(
+                    'children.id', 
+                    'children.name', 
+                    'children.my_kid_number',
+                    'children.date_of_birth',
+                    'children.gender',
+                    'children.allergy',
+                    'guardians.name as guardian_name' // Alias the guardian's name column
+                    )
+                ->join('children', 'children.id', '=', 'child_groups.child_id')
+                ->join('groups', 'groups.id', '=', 'child_groups.group_id')
+                ->leftJoin('guardians', 'guardians.id', '=', 'children.guardian_id') // Left join to get guardian's name
+                ->where('child_groups.group_id', $caregiver_id) // Add a condition to filter by group ID
+                ->get();
+    
+                return response()->json(['child_group' => $childGroup], 200);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Failed to fetch child groups', 'error' => $e->getMessage()], 500);
+            }
+        }
+    }
+
     public function getChildCountInGroups()
 {
     $morningSessionCounts = Group::where('time', ['08:00 AM - 03:00 PM'])

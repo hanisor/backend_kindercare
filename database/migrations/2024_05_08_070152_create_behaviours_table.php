@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('behaviours', function (Blueprint $table) {
             $table->id();
             $table->string('type')->nullable();
+            $table->string('description')->nullable();
             $table->dateTime('date_time')->nullable();
             $table->unsignedBigInteger('child_id');
 
