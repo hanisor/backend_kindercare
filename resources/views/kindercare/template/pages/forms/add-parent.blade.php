@@ -21,7 +21,7 @@
 </head>
 
 <body>
-  <div class="container-scroller">
+<div class="container-scroller">
     <!-- partial:partials/_horizontal-navbar.html -->
         
         <div class="horizontal-menu">
@@ -49,11 +49,11 @@
                   <button type="button" class="btn btn-inverse-primary btn-sm">Settings</button>
                 </li>
                 <li class="nav-item nav-profile dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
-                    <span class="nav-profile-name">Johnson</span>
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown" data-caregiver-id="1">
+                    <span class="nav-profile-name">Loading...</span>
                     <span class="online-status"></span>
                     <img src="images/faces/face28.png" alt="profile"/>
-                  </a>
+                </a>
                   <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                       <a class="dropdown-item">
                         <i class="mdi mdi-settings text-primary"></i>
@@ -104,6 +104,8 @@
                       <ul>
                           <li class="nav-item"><a class="nav-link" href="/add-parent">Parents</a></li>
                           <li class="nav-item"><a class="nav-link" href="/add-children">Children</a></li>
+                          <li class="nav-item"><a class="nav-link" href="/add-caregiver">Caregiver</a></li>
+
                       </ul>
                   </div>
               </li>
@@ -117,7 +119,7 @@
                   </a>
               </li>
               <li class="nav-item">
-              <a href="../../pages/tables/basic-table.html" class="nav-link">
+              <a  href="#" class="nav-link">
                     <i class="mdi mdi-grid menu-icon"></i>
                     <span class="menu-title">Tables</span>
                     <i class="menu-arrow"></i>
@@ -126,6 +128,8 @@
                     <ul>
                     <li class="nav-item"><a class="nav-link" href="/parent-table">Parents Record</a></li>
                     <li class="nav-item"><a class="nav-link" href="/children-table">Children Record</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/caregiver-table">Caregiver Record</a></li>
+
                     </ul>
                 </div>
                 </li>
