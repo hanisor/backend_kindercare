@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePerformanceRequest;
 use App\Http\Requests\UpdatePerformanceRequest;
 use App\Models\ChildGroup;
+use App\Models\Child;
+
 
 class PerformanceController extends Controller
 {
@@ -65,6 +67,29 @@ class PerformanceController extends Controller
             }
         }
         
+          // Get sickness by child Id
+          public function getPerformanceByChildId($child_id)
+          {
+              // Retrieve the parent by their ID
+              $child = Child::find($child_id);
+  
+              // Check if the parent exists
+              if ($child) {
+                  // Retrieve all children associated with this parent
+                  $performances = $child->performances()->get();
+  
+                  return response()->json([
+                      'performances' => $performances,
+                      'message' => 'performances retrieved successfully'
+                  ], 200);
+              } else {
+                  // If the parent does not exist, return an error message
+                  return response()->json([
+                      'message' => 'performances not found'
+                  ], 404);
+              }
+          }
+  
         
     /**
      * Display a listing of the resource.

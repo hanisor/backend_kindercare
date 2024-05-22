@@ -10,6 +10,8 @@ use App\Http\Requests\StoreSicknessRequest;
 use App\Http\Requests\UpdateSicknessRequest;
 use Illuminate\Http\JsonResponse;
 use App\Models\Child;
+use App\Models\ChildGroup;
+
 
 class SicknessController extends Controller
 {
@@ -41,7 +43,7 @@ class SicknessController extends Controller
             $sickness->save();
 
             // Return a success response
-            return response()->json(['message' => 'Sickness added successfully'], 201);
+            return response()->json(['message' => 'Sickness added successfully'], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()->all()], 422);
         } catch (\Exception $e) {
@@ -102,6 +104,21 @@ class SicknessController extends Controller
         return response()->json(['message' => 'Sickness record updated successfully', 'sickness' => $sickness]);
     }
 
+    public function getSickness($caregiver_id)
+        {
+            try {
+                // Retrieve the child group associated with the caregiver ID
+                $childGroup = ChildGroup::whereHas('group', function($query) use ($caregiver_id) {
+                        $query->where('caregiver_id', $caregiver_id);
+                    })
+                    ->with('child.sicknesses') // Eager load the child and their behaviours
+                    ->get();
+        
+                return response()->json(['child_group' => $childGroup], 200);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Failed to fetch child groups and behaviours', 'error' => $e->getMessage()], 500);
+            }
+        }
     /**
      * Display a listing of the resource.
      */

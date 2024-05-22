@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBehaviourRequest;
 use App\Http\Requests\UpdateBehaviourRequest;
 use App\Models\ChildGroup;
+use App\Models\Child;
 
 
 class BehaviourController extends Controller
@@ -65,7 +66,28 @@ class BehaviourController extends Controller
             }
         }
         
-        
+         // Get sickness by child Id
+        public function getBehaviourByChildId($child_id)
+        {
+            // Retrieve the parent by their ID
+            $child = Child::find($child_id);
+
+            // Check if the parent exists
+            if ($child) {
+                // Retrieve all children associated with this parent
+                $behaviours = $child->behaviours()->get();
+
+                return response()->json([
+                    'behaviours' => $behaviours,
+                    'message' => 'Behaviour retrieved successfully'
+                ], 200);
+            } else {
+                // If the parent does not exist, return an error message
+                return response()->json([
+                    'message' => 'Sickness not found'
+                ], 404);
+            }
+        }
 
  
     /**

@@ -126,7 +126,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
     // Sickness
     Route::get('sickness/by-childId/{child_id}', [SicknessController::class, 'getSicknessbyChildId']);
-    Route::get('sickness-data', [SicknessController::class, 'getSickness']);
+    Route::get('sickness-data/{caregiver_id}', [SicknessController::class, 'getSickness']);
     Route::post('add-sickness', [SicknessController::class, 'addSickness']);
     Route::put('caregiver/update-sickness/{id}', [SicknessController::class,'updateSicknessStatus']);
 
@@ -179,10 +179,12 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::post('child-group', [ChildGroupController::class, 'addChildGroup']);
 
     // Behaviour
+    Route::get('behaviour/by-childId/{child_id}', [BehaviourController::class, 'getBehaviourByChildId']);
     Route::get('behaviour/{caregiver_id}', [BehaviourController::class, 'getChildBehavioursFromCaregiverId']);
     Route::post('add-behaviour', [BehaviourController::class, 'addBehaviour']);
 
     // Performance
+    Route::get('performance/by-childId/{child_id}', [PerformanceController::class, 'getPerformanceByChildId']);
     Route::get('performance/{caregiver_id}', [PerformanceController::class, 'getChildPerformanceFromCaregiverId']);
     Route::post('add-performance', [PerformanceController::class, 'addPerformance']);
 });
