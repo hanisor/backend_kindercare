@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('skill')->nullable();
             $table->string('level')->nullable();
+            $table->date('date')->nullable();
             $table->unsignedBigInteger('child_id');
 
             $table->foreign('child_id')

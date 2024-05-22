@@ -13,6 +13,8 @@ use App\Http\Controllers\KinderSessionController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ChildGroupController;
 use App\Http\Controllers\BehaviourController;
+use App\Http\Controllers\PerformanceController;
+
 
 use App\Models\Guardian;
 use App\Models\Child;
@@ -26,6 +28,7 @@ use App\Models\KinderSession;
 use App\Models\Group;
 use App\Models\ChildGroup;
 use App\Models\Behaviour;
+use App\Models\Performance;
 
 Route::get('/', function(){
     return view('welcome');
@@ -179,6 +182,8 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('behaviour/{caregiver_id}', [BehaviourController::class, 'getChildBehavioursFromCaregiverId']);
     Route::post('add-behaviour', [BehaviourController::class, 'addBehaviour']);
 
-
+    // Performance
+    Route::get('performance/{caregiver_id}', [PerformanceController::class, 'getChildPerformanceFromCaregiverId']);
+    Route::post('add-performance', [PerformanceController::class, 'addPerformance']);
 });
 

@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Performance extends Model
 {
     use HasFactory;
+
+    
+    protected $fillable = [
+        'skill',
+        'level',
+        'date',
+        'child_id',
+    ];
+
+    public $timestamps = false;
 }

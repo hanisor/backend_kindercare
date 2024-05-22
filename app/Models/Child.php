@@ -45,4 +45,9 @@ class Child extends Model
     {
         return $this->hasMany(Behaviour::class);
     }
+
+    public function performances()
+    {
+        return $this->hasMany(Performance::class);
+    }
 }
