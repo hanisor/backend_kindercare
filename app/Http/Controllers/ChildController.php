@@ -25,6 +25,7 @@ class ChildController extends Controller
             'date_of_birth' => 'required|string',
             'gender' => 'required|string',
             'allergy' => 'required|string',
+            'status' => 'required|string',
             'guardian_id' => 'required|exists:guardians,id', // Ensure guardian_id exists in guardians table
         ]);
 
@@ -37,6 +38,7 @@ class ChildController extends Controller
         $child->date_of_birth = $validatedData['date_of_birth'];    
         $child->gender = $validatedData['gender'];
         $child->allergy = $validatedData['allergy'];
+        $child->status = $validatedData['status'];
         $child->guardian_id = $validatedData['guardian_id'];
 
         // Save the child to the database
@@ -57,7 +59,9 @@ class ChildController extends Controller
     public function getChildrenByGuardianId($guardian_id)
     {
         // Retrieve the parent by their ID
-        $guardian = Guardian::find($guardian_id);
+        $guardian = Guardian::where('id', $guardian_id)
+                    ->where('status', 'ACTIVE')
+                    ->first();
 
         // Check if the parent exists
         if ($guardian) {
@@ -79,6 +83,7 @@ class ChildController extends Controller
         // Retrieve children records with guardian's status ACTIVE and include the guardian's name
         $children = Child::join('guardians', 'children.guardian_id', '=', 'guardians.id')
                         ->where('guardians.status', 'ACTIVE')
+                        ->where('children.status', 'ACTIVE')
                         ->select('children.*', 'guardians.name as guardian_name') // Adjust 'name' to your actual column name
                         ->get();
         
@@ -89,13 +94,39 @@ class ChildController extends Controller
         // Retrieve children records where the associated guardian's status is ACTIVE
         $children = Child::join('guardians', 'children.guardian_id', '=', 'guardians.id')
                         ->where('guardians.status', 'ACTIVE')
+                        ->where('chidlren.status', 'ACTIVE')
                         ->get();
         
         return response()->json($children);
     }
     
 
+    // Update child status
+    public function updateChildStatus(Request $request, $id)
+    {
+        // validate the request data
+        $request->validate([
+            'status' => 'required|in:INACTIVE', // Update the validation rule to require and only accept 'Taken'
+            // Add validation rules for other fields you want to update
+        ]);
 
+        // retrieve the sickness record by ID
+        $child = Child::find($id);
+
+        // check if the sickness record exists
+        if (!$child) {
+            return response()->json(['message' => 'child record not found'], 404);
+        }
+
+        // Update the status field
+        $child->status = $request->input('status');
+
+        // Save the changes to the database
+        $child->save();
+
+        // Return a success response
+        return response()->json(['message' => 'child record updated successfully', 'child' => $child]);
+    }
 
     /**
      * Display a listing of the resource.

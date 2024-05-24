@@ -225,6 +225,38 @@ class GuardianController extends Controller
         return response()->json($guardian);
     }
 
+    public function updateGuardianStatus(Request $request, $id)
+{
+    // Validate the request data
+    $request->validate([
+        'status' => 'required|in:INACTIVE', // Update the validation rule to require and only accept 'INACTIVE'
+        // Add validation rules for other fields you want to update
+    ]);
+
+    // Retrieve the guardian record by ID
+    $guardian = Guardian::find($id);
+
+    // Check if the guardian record exists
+    if (!$guardian) {
+        return response()->json(['message' => 'Guardian record not found'], 404);
+    }
+
+    // Update the guardian status
+    $guardian->status = $request->input('status');
+    
+    // Save the changes to the database
+    $guardian->save();
+
+    // Update the status of all associated children to 'INACTIVE'
+    if ($guardian->status === 'INACTIVE') {
+        $guardian->children()->update(['status' => 'INACTIVE']);
+    }
+
+    // Return a success response
+    return response()->json(['message' => 'Guardian record updated successfully', 'guardian' => $guardian]);
+}
+
+
     /**
      * Show the form for creating a new resource.
      */

@@ -75,11 +75,20 @@ Route::get('/example-form', function(){
     return view('kindercare.template.pages.forms.example');
 });
 
+Route::get('/attendance', function(){
+    return view('kindercare.template.pages.tables.attendance');
+});
+
 Route::get('/add-rfid', function(){
     return view('kindercare.template.pages.forms.add-rfid');
 });
 
-
+Route::get('/buttons', function(){
+    return view('kindercare.template.pages.ui-features.buttons');
+});
+Route::get('/typo', function(){
+    return view('kindercare.template.pages.ui-features.typography');
+});
 
 
 
@@ -117,12 +126,15 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('guardian/get-guardianName/{guardian_id}', [GuardianController::class, 'getGuardianName']);
     Route::post('guardian-logout', [GuardianController::class, 'logout']);
     Route::put('guardian/update/{id}', [GuardianController::class,'updateGuardian']);
+    Route::put('guardian/update-status/{id}', [GuardianController::class,'updateGuardianStatus']);
 
     // Children
     Route::get('child/by-guardianId/{guardian_id}', [ChildController::class, 'getChildrenByGuardianId']);
     Route::get('child-data', [ChildController::class, 'getChild']);
     Route::get('child-with-guardianName', [ChildController::class, 'getGuardianNameforChild']);
     Route::post('add-child', [ChildController::class, 'add_child']);
+    Route::put('child/update-status/{id}', [ChildController::class,'updateChildStatus']);
+
 
     // Sickness
     Route::get('sickness/by-childId/{child_id}', [SicknessController::class, 'getSicknessbyChildId']);
@@ -155,6 +167,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('get-caregiverUsername/{caregiver_id}', [CaregiverController::class, 'getCaregiverName']);
     Route::put('caregiver/update-profile/{id}', [CaregiverController::class,'updateCaregiver']);
     Route::post('logout', [CaregiverController::class, 'logout']);
+    Route::put('caregiver/update-status/{id}', [CaregiverController::class,'updateCaregiverStatus']);
 
 
     // Rfid

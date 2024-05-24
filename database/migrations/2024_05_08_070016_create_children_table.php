@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('date_of_birth')->nullable();
             $table->string('gender')->nullable();
             $table->string('allergy')->nullable();
+            $table->string('status')->nullable();
             $table->unsignedBigInteger('guardian_id');
 
             $table->foreign('guardian_id')

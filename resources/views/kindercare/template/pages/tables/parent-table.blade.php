@@ -139,6 +139,7 @@
     <div class="container-fluid page-body-wrapper">
         <div class="main-panel">
             <div class="content-wrapper">
+            <div id="message" class="alert" role="alert" style="display: none;"></div> <!-- Message container -->
                 <div class="row justify-content-center"> <!-- Modified -->
                     <div class="col-lg-10 grid-margin stretch-card">
                         <div class="card">
@@ -152,6 +153,7 @@
                                                 <th>Identification Number</th>
                                                 <th>Phone Number</th>
                                                 <th>Rfid Number</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="guardian-table-body">
@@ -180,6 +182,28 @@
     <!-- page-body-wrapper ends -->
 </div>
 <!-- container-scroller -->
+
+<!-- Modal for delete confirmation -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this guardian?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- base:js -->
 <script src="../../vendors/base/vendor.bundle.base.js"></script>
 <!-- endinject -->
@@ -192,6 +216,9 @@
 <!-- End plugin js for this page -->
 <!-- Custom js for this page-->
 <!-- End custom js for this page -->
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Custom script to fetch and display guardians -->
 <script>
@@ -237,6 +264,9 @@
                                 <td>${result.guardian.ic_number}</td>
                                 <td>${result.guardian.phone_number}</td>
                                 <td>${result.rfidNumber}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-rounded btn-fw" onclick="confirmDelete(${result.guardian.id})">Delete</button>
+                                </td>
                             </tr>`;
                             tableBody.append(row);
                         });
@@ -257,6 +287,46 @@
         // Fetch guardians when the document is ready
         fetchGuardians();
     });
+
+    function confirmDelete(guardianId) {
+        $('#deleteModal').modal('show');
+        $('#confirmDeleteButton').off('click').on('click', function() {
+            deleteGuardian(guardianId);
+            $('#deleteModal').modal('hide');
+        });
+    }
+
+    function deleteGuardian(guardianId) {
+        const token = sessionStorage.getItem('token');
+        
+        $.ajax({
+            url: 'http://127.0.0.1:8000/api/guardian/update-status/' + guardianId,
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({ status: 'INACTIVE' }),
+            success: function(response) {
+                // Remove the guardian row from the table
+                $('#guardian-table-body').find(`tr:has(button[onclick="confirmDelete(${guardianId})"])`).remove();
+                showMessage('You successfully deleted the record.', 'success');
+            },
+            error: function(xhr, status, error) {
+                console.log('Error deleting guardian:', error);
+                showMessage('You unsuccessfully deleted the record.', 'danger');
+                $('#error-message').text('Error deleting guardian. Please try again later.');
+            }
+        });
+    }
+
+    function showMessage(message, type) {
+        const messageDiv = $('#message');
+        messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();
+        setTimeout(function() {
+            messageDiv.fadeOut();
+        }, 5000);
+    }
 </script>
 
 <script>

@@ -4,7 +4,7 @@
     <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Children Record</title>
+    <title>Children Attendance</title>
     <!-- base:css -->
     <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="vendors/base/vendor.bundle.base.css">
@@ -146,9 +146,30 @@
             <div class="col-lg-10 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">List Of Children</h4>
+                  <h4 class="card-title">Children Attendance</h4>
                   <div class="table-responsive">
                     <table class="table">
+                    <div class="col-md-6">
+                  <div class="form-group row align-items-center">
+                      <label class="col-sm-3 col-form-label">Month</label>
+                      <div class="col-sm-9">
+                          <select class="js-example-basic-single w-100" id="month-dropdown" name="month-dropdown">
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                          </select>
+                      </div>
+                  </div>
+                </div>
                     <div class="col-md-6">
                       <div class="form-group row align-items-center">
                           <label class="col-sm-3 col-form-label">Session</label>
@@ -164,14 +185,9 @@
 
                       <thead>
                         <tr class="header-row">
-                          <th>Number</th>
-                          <th>Full Name</th>
-                          <th>MyKid Number</th>
-                          <th>Date Of Birth</th>
-                          <th>Age</th>
-                          <th>Gender</th>
-                          <th>Allergy</th>
-                          <th>Parent Name</th>
+                          <th>Children Name</th>
+                          <th>Arrive</th>
+                          <th>Leave</th>
                           <th>Action</th>
                         </tr>
                       </thead>

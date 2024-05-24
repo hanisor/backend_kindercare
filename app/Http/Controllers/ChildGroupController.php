@@ -56,6 +56,7 @@ class ChildGroupController extends Controller
         if ($group) {
             try {
                 $childGroup = ChildGroup::select(
+                    'children.id',
                     'children.name', 
                     'children.my_kid_number',
                     'children.date_of_birth',
@@ -67,6 +68,7 @@ class ChildGroupController extends Controller
                 ->join('groups', 'groups.id', '=', 'child_groups.group_id')
                 ->leftJoin('guardians', 'guardians.id', '=', 'children.guardian_id') // Left join to get guardian's name
                 ->where('child_groups.group_id', $group_id) // Add a condition to filter by group ID
+                ->where('children.status', 'ACTIVE') // Add a condition to filter by children's status
                 ->get();
     
                 return response()->json(['child_group' => $childGroup], 200);

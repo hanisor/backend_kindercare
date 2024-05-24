@@ -288,6 +288,33 @@ class CaregiverController extends Controller
         return response()->json($caregiver);
     }
 
+    // Update caregiver status
+    public function updateCaregiverStatus(Request $request, $id)
+    {
+        // validate the request data
+        $request->validate([
+            'status' => 'required|in:INACTIVE', // Update the validation rule to require and only accept 'Taken'
+            // Add validation rules for other fields you want to update
+        ]);
+
+        // retrieve the sickness record by ID
+        $caregiver = Caregiver::find($id);
+
+        // check if the sickness record exists
+        if (!$caregiver) {
+            return response()->json(['message' => 'Caregiver record not found'], 404);
+        }
+
+        // Update the status field
+        $caregiver->status = $request->input('status');
+
+        // Save the changes to the database
+        $caregiver->save();
+
+        // Return a success response
+        return response()->json(['message' => 'caregiver record updated successfully', 'caregiver' => $caregiver]);
+    }
+
     /**
      * Display a listing of the resource.
      */

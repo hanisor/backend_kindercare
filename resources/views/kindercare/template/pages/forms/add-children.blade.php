@@ -223,6 +223,7 @@
                           </select>
                         </div>
                       </div>
+                      <input type="hidden" id="status" name="status" value="ACTIVE">
                       <div  class="col-sm-3 col-form-label" >
                         <button type="button" class="btn btn-primary mr-2" onclick="addChild()">Save</button>
                         <button type="button" class="btn btn-secondary" onclick="returnToIndex()">Cancel</button>
@@ -305,6 +306,7 @@
     }
 
     function addChild() {
+      const status = "ACTIVE";
       const guardianId = document.getElementById('selected-guardian-id').value;
       const name = document.getElementById('name').value;
       const my_kid_number = document.getElementById('my_kid_number').value;
@@ -320,7 +322,8 @@
         my_kid_number: my_kid_number,
         date_of_birth: date_of_birth,
         gender: gender,
-        allergy: allergy
+        allergy: allergy,
+        status: status
       };
       fetch('http://127.0.0.1:8000/api/add-child', {
       method: 'POST',
