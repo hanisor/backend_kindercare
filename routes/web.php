@@ -14,6 +14,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ChildGroupController;
 use App\Http\Controllers\BehaviourController;
 use App\Http\Controllers\PerformanceController;
+use App\Http\Controllers\AttendanceController;
 
 
 use App\Models\Guardian;
@@ -29,6 +30,8 @@ use App\Models\Group;
 use App\Models\ChildGroup;
 use App\Models\Behaviour;
 use App\Models\Performance;
+use App\Models\Attendance;
+
 
 Route::get('/', function(){
     return view('welcome');
@@ -183,11 +186,13 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
     // Group
     Route::get('child-group/time', [GroupController::class, 'getGroupIdByTimeSlot']);
+    Route::post('get-group', [GroupController::class, 'getGroupIdByCaregiverId']);
     Route::post('add-group', [GroupController::class, 'addGroup']);
 
     // Child Group
     Route::get('child-group/{group_id}', [ChildGroupController::class, 'getChildGroup']);
     Route::get('child-group/caregiverId/{caregiver_id}', [ChildGroupController::class, 'getChildGroupfromCaregiverId']);
+    Route::post('get-child-group-id', [ChildGroupController::class, 'getChildGroupId']);
     Route::get('childgroup-count', [ChildGroupController::class, 'getChildCountInGroups']);
     Route::post('child-group', [ChildGroupController::class, 'addChildGroup']);
 
@@ -200,5 +205,13 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('performance/by-childId/{child_id}', [PerformanceController::class, 'getPerformanceByChildId']);
     Route::get('performance/{caregiver_id}', [PerformanceController::class, 'getChildPerformanceFromCaregiverId']);
     Route::post('add-performance', [PerformanceController::class, 'addPerformance']);
+
+
+    // Attendance
+    Route::get('attendance/{attendanceId}/childgroupid', [AttendanceController::class, 'getChildGroupId']);
+    Route::post('attendance/all', [AttendanceController::class, 'getAllAttendance']);
+    Route::post('add-attendance-arrival', [AttendanceController::class, 'addAttendanceArrival']);
+    Route::post('add-attendance-departure', [AttendanceController::class, 'addAttendanceDeparture']);
+
 });
 

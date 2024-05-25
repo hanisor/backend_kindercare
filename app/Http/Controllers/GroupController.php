@@ -76,18 +76,33 @@ class GroupController extends Controller
         }
     }
 
-    /* public function getGroupCount() {
-        $morningSessionCount = Group::where('time', '08:00 AM - 03:00 PM')->count();
-        $afternoonSessionCount = Group::where('time', '02:00 PM - 06:00 PM')->count();
-        $fullDaySessionCount = Group::where('time', '08:00 AM - 06:00 PM')->count();
-    
-        return response()->json([
-            'totalMorningSession' => $morningSessionCount,
-            'totalAfternoonSession' => $afternoonSessionCount,
-            'totalFullDaySession' => $fullDaySessionCount
+
+    public function getGroupIdByCaregiverId(Request $request)
+{
+    try {
+        // Validate fields
+        $validatedData = $request->validate([
+            'caregiver_id' => 'required|exists:caregivers,id', // Validate that caregiver_id exists in caregivers table
         ]);
-    } */
-    
+
+        // Query the database to find the group ID based on the provided caregiver ID
+        $group_id = Group::where('caregiver_id', $validatedData['caregiver_id'])->value('id');
+
+        if (!$group_id) {
+            return response()->json(['message' => 'Group not found for the provided caregiver ID'], 404);
+        }
+
+        // Return the group ID in response
+        return response()->json(['group_id' => $group_id], 200);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return new JsonResponse([
+            'errors' => $e->validator->errors()->all()
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to fetch group ID', 'error' => $e->getMessage()], 500);
+    }
+}
+
     
 
     

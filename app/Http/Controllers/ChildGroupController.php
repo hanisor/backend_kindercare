@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreChildGroupRequest;
 use App\Http\Requests\UpdateChildGroupRequest;
 use App\Models\Group;
+use Illuminate\Support\Facades\Log;
 
 
 class ChildGroupController extends Controller
@@ -48,6 +49,37 @@ class ChildGroupController extends Controller
     }
 
     public function getChildGroup($group_id)
+    {
+        // Retrieve the parent by their ID
+        $group = Group::find($group_id);
+    
+        // Check if the parent exists
+        if ($group) {
+            try {
+                $childGroup = ChildGroup::select(
+                    'children.id',
+                    'children.name', 
+                    'children.my_kid_number',
+                    'children.date_of_birth',
+                    'children.gender',
+                    'children.allergy',
+                    'guardians.name as guardian_name' // Alias the guardian's name column
+                    )
+                ->join('children', 'children.id', '=', 'child_groups.child_id')
+                ->join('groups', 'groups.id', '=', 'child_groups.group_id')
+                ->leftJoin('guardians', 'guardians.id', '=', 'children.guardian_id') // Left join to get guardian's name
+                ->where('child_groups.group_id', $group_id) // Add a condition to filter by group ID
+                ->where('children.status', 'ACTIVE') // Add a condition to filter by children's status
+                ->get();
+    
+                return response()->json(['child_group' => $childGroup], 200);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Failed to fetch child groups', 'error' => $e->getMessage()], 500);
+            }
+        }
+    }
+
+    public function getChildGroupbyChildId($child_id)
     {
         // Retrieve the parent by their ID
         $group = Group::find($group_id);
@@ -132,7 +164,42 @@ class ChildGroupController extends Controller
     ]);
 }
 
-    
+public function getChildGroupId(Request $request)
+{
+    try {
+        // Validate fields
+        $validatedData = $request->validate([
+            'child_id' => 'required|exists:children,id', // Validate that child_id exists in children table
+            'group_id' => 'required|exists:groups,id',   // Validate that group_id exists in groups table
+        ]);
+
+        // Debug print to log received parameters
+        Log::debug("Received child_id: " . $validatedData['child_id']);
+        Log::debug("Received group_id: " . $validatedData['group_id']);
+
+        // Query the database to find the child group ID based on the provided child_id and group_id
+        $childGroup = ChildGroup::where('child_id', $validatedData['child_id'])
+                                ->where('group_id', $validatedData['group_id'])
+                                ->first();
+
+        // Debug print to log query results
+        Log::debug("Child group query result: " . print_r($childGroup, true));
+
+        if (!$childGroup) {
+            return response()->json(['message' => 'Child group not found for the provided child ID and group ID'], 404);
+        }
+
+        // Return the child group ID in response
+        return response()->json(['child_group_id' => $childGroup->id], 200);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return new JsonResponse([
+            'errors' => $e->validator->errors()->all()
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to fetch child group ID', 'error' => $e->getMessage()], 500);
+    }
+}
+
 
 
     

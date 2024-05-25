@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Attendance extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'date_time_arrive',
+        'date_time_leave',
+        'month',
+        'child_group_id',
+    ];
+
+    public $timestamps = false;
 }
