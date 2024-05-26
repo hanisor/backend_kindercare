@@ -147,6 +147,61 @@ public function addAttendanceDeparture(Request $request)
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function getAttendancebyChildGroup(Request $request)
+{
+    try {
+        // Validate fields
+        $validatedData = $request->validate([
+            'child_group_id' => 'required|exists:child_groups,id',
+        ]);
+
+        // Get all the days for which you want to fetch attendance
+        $start_date = now()->subDays(30); // Fetch attendance for the past 30 days
+        $end_date = now();
+
+        // Create an array to hold attendance data for each day
+        $attendanceByDay = [];
+
+        // Loop through each day and fetch attendance data
+        for ($date = $start_date; $date->lte($end_date); $date->addDay()) {
+            // Retrieve attendance records for the current day
+            $attendance = Attendance::join('child_groups', 'attendances.child_group_id', '=', 'child_groups.id')
+                ->join('children', 'child_groups.child_id', '=', 'children.id')
+                ->join('groups', 'child_groups.group_id', '=', 'groups.id') // Join with groups table
+                ->where('child_groups.id', '=', $validatedData['child_group_id'])
+                ->whereDate('attendances.date_time_arrive', $date->toDateString())
+                ->orderBy('attendances.date_time_arrive', 'desc')
+                ->get([
+                    'attendances.*',
+                    'children.name as child_name',
+                    'children.date_of_birth as child_dob',
+                    'children.gender as child_gender',
+                    'children.allergy as child_allergy',
+                    'groups.time as group_timeslot' // Select timeslot from groups table
+                ]);
+
+            // If attendance record doesn't exist for the day, assume child is absent
+            if ($attendance->isEmpty()) {
+                $attendanceByDay[$date->toDateString()] = 'Absent';
+            } else {
+                // If attendance record exists, add it to the array
+                $attendanceByDay[$date->toDateString()] = $attendance;
+            }
+        }
+
+        // Return the attendance records by day
+        return response()->json(['attendance_by_day' => $attendanceByDay], 200);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['errors' => $e->validator->errors()->all()], 422);
+    } catch (\Exception $e) {
+        // Handle other exceptions
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+    
+    
     
     /**
      * Display a listing of the resource.

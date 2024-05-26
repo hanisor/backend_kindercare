@@ -56,29 +56,30 @@ class ChildController extends Controller
 }
 
 
-    public function getChildrenByGuardianId($guardian_id)
-    {
-        // Retrieve the parent by their ID
-        $guardian = Guardian::where('id', $guardian_id)
-                    ->where('status', 'ACTIVE')
-                    ->first();
+public function getChildrenByGuardianId($guardian_id)
+{
+    // Retrieve the parent by their ID
+    $guardian = Guardian::where('id', $guardian_id)
+                ->where('status', 'ACTIVE')
+                ->first();
 
-        // Check if the parent exists
-        if ($guardian) {
-            // Retrieve all children associated with this parent
-            $children = $guardian->children()->get();
+    // Check if the parent exists
+    if ($guardian) {
+        // Retrieve all active children associated with this parent
+        $children = $guardian->children()->where('status', 'ACTIVE')->get();
 
-            return response()->json([
-                'children' => $children,
-                'message' => 'Children retrieved successfully'
-            ], 200);
-        } else {
-            // If the parent does not exist, return an error message
-            return response()->json([
-                'message' => 'Parent not found'
-            ], 404);
-        }
+        return response()->json([
+            'children' => $children,
+            'message' => 'Children retrieved successfully'
+        ], 200);
+    } else {
+        // If the parent does not exist, return an error message
+        return response()->json([
+            'message' => 'Parent not found'
+        ], 404);
     }
+}
+
     public function getGuardianNameforChild(){
         // Retrieve children records with guardian's status ACTIVE and include the guardian's name
         $children = Child::join('guardians', 'children.guardian_id', '=', 'guardians.id')
