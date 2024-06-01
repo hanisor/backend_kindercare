@@ -19,6 +19,11 @@ class ChildGroup extends Model
         return $this->belongsTo(Group::class, 'group_id');
     }
 
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+    
     public $timestamps = false;
 
 }

@@ -114,7 +114,7 @@
               <li class="nav-item">
                   <a href="/attendance" class="nav-link">
                     <i class="mdi mdi-finance menu-icon"></i>
-                    <span class="menu-title">Charts</span>
+                    <span class="menu-title">Attendance</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>

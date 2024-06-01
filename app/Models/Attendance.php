@@ -17,4 +17,9 @@ class Attendance extends Model
     ];
 
     public $timestamps = false;
+
+    public function childGroup()
+    {
+        return $this->belongsTo(ChildGroup::class, 'child_group_id');
+    }
 }

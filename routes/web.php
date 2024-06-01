@@ -94,6 +94,7 @@ Route::get('/typo', function(){
 });
 
 
+Route::post('add-rfid', [RfidController::class, 'addRfid']);
 
 // Guardian
 // Register 
@@ -174,7 +175,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
 
     // Rfid
-    Route::post('add-rfid', [RfidController::class, 'addRfid']);
+    //Route::post('add-rfid', [RfidController::class, 'addRfid']);
     Route::get('get-rfid', [RfidController::class, 'getRfid']);
     Route::get('guardian-data', [GuardianController::class, 'getGuardian']);
     Route::get('get-rfid/{rfid_id}', [RfidController::class, 'getRfidName']);

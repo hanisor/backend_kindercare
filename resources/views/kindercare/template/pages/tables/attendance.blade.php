@@ -138,70 +138,56 @@
     </div>
         <!-- partial -->
         <div class="container-fluid page-body-wrapper">
-      <div class="main-panel">
-        <div class="content-wrapper">
-        <div id="message" class="alert" role="alert" style="display: none;"></div> <!-- Message container -->
-
-          <div class="row justify-content-center">
-            <div class="col-lg-10 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title">Children Attendance</h4>
-                  <div class="table-responsive">
-                    <table class="table">
-                    <div class="col-md-6">
-                  <div class="form-group row align-items-center">
-                      <label class="col-sm-3 col-form-label">Month</label>
-                      <div class="col-sm-9">
-                          <select class="js-example-basic-single w-100" id="month-dropdown" name="month-dropdown">
-                            <option value="01">January</option>
-                            <option value="02">February</option>
-                            <option value="03">March</option>
-                            <option value="04">April</option>
-                            <option value="05">May</option>
-                            <option value="06">June</option>
-                            <option value="07">July</option>
-                            <option value="08">August</option>
-                            <option value="09">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                          </select>
-                      </div>
-                  </div>
-                </div>
-                    <div class="col-md-6">
-                      <div class="form-group row align-items-center">
-                          <label class="col-sm-3 col-form-label">Session</label>
-                          <div class="col-sm-9">
-                              <select class="js-example-basic-single w-100" id="time-slot-dropdown" name="time-slot-dropdown">
-                                  <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM</option>
-                                  <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM</option>
-                                  <option value="08:00 AM - 06:00 PM">08:00 AM - 06:00 PM</option>
-                              </select>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div id="message" class="alert" role="alert" style="display: none;"></div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-10 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Children Attendance</h4>
+                                <div class="table-responsive">
+                                <div class="col-md-6">
+                                            <div class="form-group row align-items-center">
+                                                <label class="col-sm-3 col-form-label">Date</label>
+                                                <div class="col-sm-9">
+                                                    <input type="date" class="form-control" id="date-input">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row align-items-center">
+                                            <label class="col-sm-3 col-form-label">Session</label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="time-slot-dropdown" name="time-slot-dropdown">
+                                                    <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM</option>
+                                                    <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM</option>
+                                                    <option value="08:00 AM - 06:00 PM">08:00 AM - 06:00 PM</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="header-row">
+                                                <th>Date</th>
+                                                <th>Child Name</th>
+                                                <th>Arrive Time</th>
+                                                <th>Leave Time</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="attendanceTableBody">
+                                            <!-- Dynamic rows will be appended here by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                    <div id="error-message" class="text-danger"></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                      </div>
-                  </div>
-
-                      <thead>
-                        <tr class="header-row">
-                          <th>Children Name</th>
-                          <th>Arrive</th>
-                          <th>Leave</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody id="childrenTableBody">
-                        <!-- Dynamic rows will be appended here by JavaScript -->
-                      </tbody>
-                    </table>
-                    <div id="error-message" class="text-danger"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                        </div>
             <!-- content-wrapper ends -->
             <footer class="footer">
             <div class="footer-wrap">
@@ -260,189 +246,204 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const dateInput = document.getElementById('date-input');
+                const timeSlotDropdown = document.getElementById('time-slot-dropdown');
+                const attendanceTableBody = document.getElementById('attendanceTableBody');
+                const errorMessage = document.getElementById('error-message');
 
-   // Custom function to parse date string in format "DD/MM/YYYY" to JavaScript Date object
-   function parseDate(dateString) {
-        var parts = dateString.split('/');
-        // Note: months are 0-based in JavaScript Date object, so subtract 1 from the month
-        return new Date(parts[2], parts[1] - 1, parts[0]);
-    }
-$(document).ready(function() {
-    // Function to fetch and display children and their guardian data
-    function getChildGroup(group_id) {
-        console.log('Group ID:', group_id); // Debug: Log the group ID
+                function fetchAttendance() {
+                  const selectedDate = dateInput.value;
+                    const selectedTimeSlot = timeSlotDropdown.value;
 
-        // Retrieve the token from sessionStorage
-        const token = sessionStorage.getItem('token');
+            
 
-        $.ajax({
-            url: 'http://127.0.0.1:8000/api/child-group/' + group_id, // Adjust the URL to your actual endpoint
-            method: 'GET',
-            dataType: 'json',
-            headers: {
-                'Authorization': 'Bearer ' + token // Include the token in the request headers
-            },
-            // Success callback function
-            success: function(response) {
-    console.log('Response:', response); // Debug: Log the fetched response
+                    // Clear existing table body
+                    attendanceTableBody.innerHTML = '';
 
-    // Check if response contains the expected key
-    if (response.hasOwnProperty('child_group')) {
-        var data = response.child_group; // Access the array of children data
+                    // Display a loading message
+                    const loadingRow = document.createElement('tr');
+                    const loadingCell = document.createElement('td');
+                    loadingCell.colSpan = 5;
+                    loadingCell.textContent = 'Loading...';
+                    loadingRow.appendChild(loadingCell);
+                    attendanceTableBody.appendChild(loadingRow);
 
-        var tableBody = $('#childrenTableBody');
-        tableBody.empty(); // Clear the existing table body
+                    getGroupIdByTimeSlot(selectedTimeSlot).then(group_id => {
+                        const token = sessionStorage.getItem('token');
+                        if (!token) {
+                            errorMessage.textContent = 'Unauthorized. Please log in again.';
+                            return;
+                        }
+                        console.log({
+                            child_group_id: group_id,
+                            date_time_arrive: selectedDate
+                        });
 
-        data.forEach(function(child, index) {
-          // Calculate age based on parsed date of birth
-          var dob = parseDate(child.date_of_birth);
-          var ageDate = new Date(Date.now() - dob.getTime());
-          var age = Math.abs(ageDate.getUTCFullYear() - 1970);
+                        axios.post('http://127.0.0.1:8000/api/attendance/child', {
+                            child_group_id: group_id,
+                            date_time_arrive: selectedDate
+                        }, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        }).then(response => {
+                          console.log('Response from backend:', response.data);
 
-          // Append fetched data to the table row including age
-          var row = `<tr>
-              <td>${index + 1}</td>
-              <td>${child.name}</td>
-              <td>${child.my_kid_number}</td>
-              <td>${child.date_of_birth}</td>
-              <td>${age}</td> <!-- Display calculated age -->
-              <td>${child.gender}</td>
-              <td>${child.allergy}</td>
-              <td>${child.guardian_name || 'N/A'}</td>
-              <td><button type="button" class="btn btn-danger btn-rounded btn-fw" onclick="confirmDelete(${child.id})">Delete</button></td>
-          </tr>`;
-          tableBody.append(row);
-      });
-    } else {
-        // If the expected key is not found in the response
-        console.error('Invalid data format: Missing child_group key');
-        $('#error-message').text('Invalid data format. Please try again later.');
-    }
-},
+                            attendanceTableBody.innerHTML = '';
+                            const attendanceData = response.data.attendance_by_day;
 
+                            if (attendanceData && Object.keys(attendanceData).length > 0) {
+                              // Update the table body accordingly
+                                for (const [date, records] of Object.entries(attendanceData)) {
+                                    records.forEach(record => {
+                                        const row = document.createElement('tr');
+                                        const status = record.date_time_arrive ? 'Present' : 'Absent'; // Check if date_time_arrive is defined
+                                        const statusClass = status === 'Present' ? 'badge-success' : 'badge-danger'; // Determine status class
+                                        row.innerHTML = `
+                                            <td>${date}</td>
+                                            <td>${record.child_name}</td>
+                                            <td>${record.date_time_arrive || 'No Record'}</td> <!-- Display 'No Record' if date_time_arrive is undefined -->
+                                            <td>${record.date_time_leave || 'No Record'}</td> <!-- Display 'No Record' if date_time_leave is undefined -->
+                                            <td><label class="badge ${statusClass}">${status}</label></td> <!-- Add label with appropriate class -->
+                                        `;
+                                        attendanceTableBody.appendChild(row);
+                                    });
+                                }
+                            } else {
+                                const noDataRow = document.createElement('tr');
+                                const noDataCell = document.createElement('td');
+                                noDataCell.colSpan = 5;
+                                noDataCell.textContent = 'No data available for the selected date and session.';
+                                noDataRow.appendChild(noDataCell);
+                                attendanceTableBody.appendChild(noDataRow);
+                            }
+                        }).catch(error => {
+                            errorMessage.textContent = 'An error occurred while fetching attendance data. Please try again.';
+                        });
+                    });
+                }
 
-            error: function(xhr, status, error) {
-                console.log('Error fetching children:', error);
-                // Display error message to the user
-                $('#error-message').text('Error fetching children. Please try again later.');
-            }
-        });
-    }
-  // Function to fetch the group ID by time slot
-  function getGroupIdByTimeSlot(timeSlot) {
-    const token = sessionStorage.getItem('token');
+                function getGroupIdByTimeSlot(timeSlot) {
+                    const token = sessionStorage.getItem('token');
+                    return fetch('http://127.0.0.1:8000/api/child-group/time?time=' + timeSlot, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.group_id) {
+                            return data.group_id;
+                        } else {
+                            throw new Error('Error retrieving group ID: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error retrieving group ID:', error);
+                        errorMessage.textContent = 'Error retrieving group ID. Please try again later.';
+                    });
+                }
 
-    fetch('http://127.0.0.1:8000/api/child-group/time?time=' + timeSlot, {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + token
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Response from retrieving group ID:", data);
-        console.log("Response from retrieving group ID:", data.group_id);
-        if (data.group_id) {
-          // After retrieving the group ID, add the child to the group
-          getChildGroup(data.group_id);
-        } else {
-          console.error('Error retrieving group ID:', data.message);
-        }
-      })
-      .catch(error => console.error('Error retrieving group ID:', error));
-  }
+                function getChildGroup(group_id) {
+                    const token = sessionStorage.getItem('token');
+                    return fetch('http://127.0.0.1:8000/api/child-group/' + group_id, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.child_group) {
+                            const childIDs = data.child_group.map(child => child.id);
+                            const childGroupPromises = childIDs.map(child_id => fetchChildGroupId(child_id, group_id));
+                            return Promise.all(childGroupPromises).then(child_group_ids => child_group_ids[0]); // Assuming we need only one child_group_id
+                        } else {
+                            throw new Error('Invalid data format: Missing child_group key');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching children:', error);
+                        errorMessage.textContent = 'Error fetching children. Please try again later.';
+                    });
+                }
+                timeSlotDropdown.addEventListener('change', fetchAttendance);
 
-  // Fetch children when the document is ready
-  getGroupIdByTimeSlot($('#time-slot-dropdown').val());
+                // Event listener for date input change
+            dateInput.addEventListener('change', fetchAttendance);
 
-  // Event listener for time slot dropdown change
-  $('#time-slot-dropdown').change(function() {
-    var selectedTimeSlot = $(this).val();
-    // Call the function to fetch group ID by time slot
-    getGroupIdByTimeSlot(selectedTimeSlot);
-  });
-});
+              // Initialize attendance display with current date
+              const currentDate = new Date().toISOString().split('T')[0];
+              dateInput.value = currentDate;
+              fetchAttendance();
+         
+                function confirmDelete(childId) {
+                    $('#deleteModal').modal('show');
+                    $('#confirmDeleteButton').off('click').on('click', function() {
+                        deleteChild(childId);
+                        $('#deleteModal').modal('hide');
+                    });
+                }
 
-function confirmDelete(childId) {
-        $('#deleteModal').modal('show');
-        $('#confirmDeleteButton').off('click').on('click', function() {
-          console.log("confirmDelete child ID:", childId);
-          deleteChild(childId);
-            $('#deleteModal').modal('hide');
-        });
-    }
+                function deleteChild(childId) {
+                    const token = sessionStorage.getItem('token');
 
-    function deleteChild(childId) {
-        const token = sessionStorage.getItem('token');
+                    $.ajax({
+                        url: 'http://127.0.0.1:8000/api/child/update-status/' + childId,
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify({ status: 'INACTIVE' }),
+                        success: function(response) {
+                            $('#childrenTableBody').find(`tr:has(button[onclick="confirmDelete(${childId})"])`).remove();
+                            showMessage('You successfully deleted the record.', 'success');
+                        },
+                        error: function(xhr, status, error) {
+                            console.log('Error deleting child:', error);
+                            showMessage('You unsuccessfully deleted the record.', 'danger');
+                            $('#error-message').text('Error deleting child. Please try again later.');
+                        }
+                    });
+                }
 
-        console.log("child ID:", childId);
-        
-        $.ajax({
-            url: 'http://127.0.0.1:8000/api/child/update-status/' + childId,
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify({ status: 'INACTIVE' }),
-            success: function(response) {
-                // Remove the child row from the table
-                $('#childrenTableBody').find(`tr:has(button[onclick="confirmDelete(${childId})"])`).remove();
-                showMessage('You successfully deleted the record.', 'success');
-            },
-            error: function(xhr, status, error) {
-                console.log('Error deleting child:', error);
-                showMessage('You unsuccessfully deleted the record.', 'danger');
-                $('#error-message').text('Error deleting child. Please try again later.');
-            }
-        });
-    }
+                function showMessage(message, type) {
+                    const messageDiv = $('#message');
+                    messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();
+                    setTimeout(function() {
+                        messageDiv.fadeOut();
+                    }, 5000);
+                }
 
-    function showMessage(message, type) {
-        const messageDiv = $('#message');
-        messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();
-        setTimeout(function() {
-            messageDiv.fadeOut();
-        }, 5000);
-    }
+                function signOut() {
+                    const token = sessionStorage.getItem('token');
 
-
-  </script>
-
-<script>
-
-function signOut() {
-  const token = sessionStorage.getItem('token');
-
-  const data = {};
-
-  fetch('http://127.0.0.1:8000/api/logout', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token // Ensure token is stored and retrieved correctly
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Network response was not ok.');
-    }
-  })
-  .then(data => {
-    console.log('Response:', data);
-    // Redirect to the login page
-    window.location.replace('http://127.0.0.1:8000/caregiver-login');
-  })
-  .catch(error => {
-    console.error('Error during fetch:', error);
-  });
-}
-
-</script>
-</body>
+                    fetch('http://127.0.0.1:8000/api/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Network response was not ok.');
+                        }
+                    })
+                    .then(data => {
+                        window.location.replace('http://127.0.0.1:8000/caregiver-login');
+                    })
+                    .catch(error => console.error('Error during fetch:', error));
+                }
+            });
+        </script>
+    </body>
 
 </html>

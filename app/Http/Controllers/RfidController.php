@@ -18,33 +18,36 @@ class RfidController extends Controller
 {
 
     // Add rfid
-    public function addRfid(Request $request)
-    {
-        try {
-            // Validate fields
-            $validatedData = $request->validate([
+   // Add rfid
+public function addRfid(Request $request)
+{
+    try {
+        // Validate fields
+        $validatedData = $request->validate([
             'number' => 'required|string',
-            ]);
+        ]);
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return new JsonResponse([
-                'errors' => $e->validator->errors()->all()
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        // Create a new child instance
+        // Create a new RFID instance
         $rfid = new Rfid;
-
-        // Assign values from the request to the child object
         $rfid->number = $validatedData['number'];
-  
-        // Save the child to the database
         $rfid->save();
+
         // Return user & token in response
         return response([
             'rfid' => $rfid,
         ], 200);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return new JsonResponse([
+            'errors' => $e->validator->errors()->all()
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+    } catch (\Exception $e) {
+        return new JsonResponse([
+            'errors' => $e->getMessage()
+        ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
     }
+}
+
 
     public function getRfid()
     {
