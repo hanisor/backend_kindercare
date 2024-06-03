@@ -17,36 +17,43 @@ use App\Models\Guardian;
 class RfidController extends Controller
 {
 
-    // Add rfid
    // Add rfid
-public function addRfid(Request $request)
-{
-    try {
-        // Validate fields
-        $validatedData = $request->validate([
-            'number' => 'required|string',
-        ]);
-
-        // Create a new RFID instance
-        $rfid = new Rfid;
-        $rfid->number = $validatedData['number'];
-        $rfid->save();
-
-        // Return user & token in response
-        return response([
-            'rfid' => $rfid,
-        ], 200);
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return new JsonResponse([
-            'errors' => $e->validator->errors()->all()
-        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
-    } catch (\Exception $e) {
-        return new JsonResponse([
-            'errors' => $e->getMessage()
-        ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
-    }
-}
+   public function addRfid(Request $request)
+   {
+       try {
+           // Validate fields
+           $validatedData = $request->validate([
+               'number' => 'required|string',
+           ]);
+   
+           // Check if the RFID already exists
+           if (Rfid::where('number', $validatedData['number'])->exists()) {
+               return new JsonResponse([
+                   'errors' => ['The RFID number already exists.']
+               ], JsonResponse::HTTP_CONFLICT);
+           }
+   
+           // Create a new RFID instance
+           $rfid = new Rfid;
+           $rfid->number = $validatedData['number'];
+           $rfid->save();
+   
+           // Return RFID in response
+           return response([
+               'rfid' => $rfid,
+           ], 200);
+   
+       } catch (\Illuminate\Validation\ValidationException $e) {
+           return new JsonResponse([
+               'errors' => $e->validator->errors()->all()
+           ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+       } catch (\Exception $e) {
+           return new JsonResponse([
+               'errors' => $e->getMessage()
+           ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+       }
+   }
+   
 
 
     public function getRfid()
@@ -73,6 +80,32 @@ public function addRfid(Request $request)
             return response()->json(['message' => 'RFID not found'], 404);
         }
     }
+
+    public function getRfidForDoor($rfid_number)
+{
+    // Retrieve the RFID by its number
+    $rfid = Rfid::where('number', $rfid_number)->first();
+
+    // Check if the RFID exists
+    if ($rfid) {
+        // Check if the RFID is associated with a guardian
+        $guardian = Guardian::where('rfid_id', $rfid->id)->first();
+
+        if ($guardian) {
+            // RFID belongs to a guardian, trigger action to open/close the door lock
+            // You can call a function here to control the door lock, for example:
+            // $this->controlDoorLock($guardian->door_lock_action);
+            // Assume 'door_lock_action' is a column in the guardian table specifying the action to perform
+
+            // For demonstration purposes, let's just return a message indicating the door lock action
+            return response()->json(['message' => 'Door lock action: ' . $guardian->door_lock_action], 200);
+        } else {
+            return response()->json(['message' => 'RFID does not belong to any guardian'], 200);
+        }
+    } else {
+        return response()->json(['message' => 'RFID not found'], 404);
+    }
+}
 
     
     /**

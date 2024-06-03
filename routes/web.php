@@ -95,6 +95,7 @@ Route::get('/typo', function(){
 
 
 Route::post('add-rfid', [RfidController::class, 'addRfid']);
+Route::get('get-rfid-id/{rfid_id}', [RfidController::class, 'getRfidForDoor']);
 
 // Guardian
 // Register 
