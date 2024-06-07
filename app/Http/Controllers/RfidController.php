@@ -82,31 +82,39 @@ class RfidController extends Controller
     }
 
     public function getRfidForDoor($rfid_number)
-{
-    // Retrieve the RFID by its number
-    $rfid = Rfid::where('number', $rfid_number)->first();
-
-    // Check if the RFID exists
-    if ($rfid) {
-        // Check if the RFID is associated with a guardian
-        $guardian = Guardian::where('rfid_id', $rfid->id)->first();
-
-        if ($guardian) {
-            // RFID belongs to a guardian, trigger action to open/close the door lock
-            // You can call a function here to control the door lock, for example:
-            // $this->controlDoorLock($guardian->door_lock_action);
-            // Assume 'door_lock_action' is a column in the guardian table specifying the action to perform
-
-            // For demonstration purposes, let's just return a message indicating the door lock action
-            return response()->json(['message' => 'Door lock action: ' . $guardian->door_lock_action], 200);
+    {
+        // Retrieve the RFID by its number
+        $rfid = Rfid::where('number', $rfid_number)->first();
+    
+        // Check if the RFID exists
+        if ($rfid) {
+            // Check if the RFID is associated with a guardian
+            $guardian = Guardian::where('rfid_id', $rfid->id)->first();
+    
+            if ($guardian) {
+                // Check if the guardian's status is active
+                if ($guardian->status == 'ACTIVE') {
+                    // RFID belongs to an active guardian, trigger action to open/close the door lock
+                    // You can call a function here to control the door lock, for example:
+                    // $this->controlDoorLock($guardian->door_lock_action);
+                    // Assume 'door_lock_action' is a column in the guardian table specifying the action to perform
+    
+                    // For demonstration purposes, let's just return a message indicating the door lock action
+                    return response()->json(['message' => 'Door lock action: ' . $guardian->door_lock_action], 200);
+                } else {
+                    // Guardian is not active
+                    return response()->json(['message' => 'Guardian is not active'], 200);
+                }
+            } else {
+                // RFID does not belong to any guardian
+                return response()->json(['message' => 'RFID does not belong to any guardian'], 200);
+            }
         } else {
-            return response()->json(['message' => 'RFID does not belong to any guardian'], 200);
+            // RFID not found
+            return response()->json(['message' => 'RFID not found'], 404);
         }
-    } else {
-        return response()->json(['message' => 'RFID not found'], 404);
     }
-}
-
+    
     
     /**
      * Display a listing of the resource.

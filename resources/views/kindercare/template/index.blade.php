@@ -261,7 +261,7 @@
             const token = sessionStorage.getItem('token');
 
             function fetchCaregiverCount() {
-                fetch('http://127.0.0.1:8000/api/caregiver-count', {
+                fetch('/api/caregiver-count', {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -292,7 +292,7 @@
             console.log("Caregiver ID:", caregiverId);
 
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/get-caregiverUsername/' + caregiverId,
+                url: '/api/get-caregiverUsername/' + caregiverId,
                 method: 'GET',
                 dataType: 'json', // Specify the expected data type of the response
                 headers: {
@@ -317,7 +317,7 @@
         const token = sessionStorage.getItem('token');
 
         function fetchChildCounts() {
-            fetch('http://127.0.0.1:8000/api/childgroup-count', {
+            fetch('/api/childgroup-count', {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -350,7 +350,7 @@
 
       const data = {};
 
-      fetch('http://127.0.0.1:8000/api/logout', {
+      fetch('/api/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -368,7 +368,7 @@
       .then(data => {
         console.log('Response:', data);
         // Redirect to the login page
-        window.location.replace('http://127.0.0.1:8000/caregiver-login');
+        window.location.replace('/caregiver-login');
       })
       .catch(error => {
         console.error('Error during fetch:', error);

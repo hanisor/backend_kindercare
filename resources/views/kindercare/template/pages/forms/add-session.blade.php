@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const token = sessionStorage.getItem('token');
 
   $.ajax({
-    url: 'http://127.0.0.1:8000/api/caregiver-data', // Update with your actual endpoint
+    url: '/api/caregiver-data', // Update with your actual endpoint
     method: 'GET',
     dataType: 'json',
     headers: {
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
       year: year
     };
 
-    fetch('http://127.0.0.1:8000/api/add-session', {
+    fetch('/api/add-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Function to fetch years for current sessions
   function fetchYearsForCurrentSessions() {
     const token = sessionStorage.getItem('token');
-    fetch('http://127.0.0.1:8000/api/session-year', {
+    fetch('/api/session-year', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
       time: timeSlot
     };
 
-    fetch('http://127.0.0.1:8000/api/add-group', {
+    fetch('/api/add-group', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -406,7 +406,7 @@ function signOut() {
 
   const data = {};
 
-  fetch('http://127.0.0.1:8000/api/logout', {
+  fetch('/api/logout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -424,7 +424,7 @@ function signOut() {
   .then(data => {
     console.log('Response:', data);
     // Redirect to the login page
-    window.location.replace('http://127.0.0.1:8000/caregiver-login');
+    window.location.replace('/caregiver-login');
   })
   .catch(error => {
     console.error('Error during fetch:', error);

@@ -282,7 +282,7 @@
                             date_time_arrive: selectedDate
                         });
 
-                        axios.post('http://127.0.0.1:8000/api/attendanceTable/child', {
+                        axios.post('/api/attendanceTable/child', {
                             child_group_id: group_id,
                             date_time_arrive: selectedDate
                         }, {
@@ -328,7 +328,7 @@
 
                 function getGroupIdByTimeSlot(timeSlot) {
                     const token = sessionStorage.getItem('token');
-                    return fetch('http://127.0.0.1:8000/api/child-group/time?time=' + timeSlot, {
+                    return fetch('/api/child-group/time?time=' + timeSlot, {
                         method: 'GET',
                         headers: {
                             'Authorization': 'Bearer ' + token
@@ -350,7 +350,7 @@
 
                 function getChildGroup(group_id) {
                     const token = sessionStorage.getItem('token');
-                    return fetch('http://127.0.0.1:8000/api/child-group/' + group_id, {
+                    return fetch('/api/child-group/' + group_id, {
                         method: 'GET',
                         headers: {
                             'Authorization': 'Bearer ' + token
@@ -393,7 +393,7 @@
                     const token = sessionStorage.getItem('token');
 
                     $.ajax({
-                        url: 'http://127.0.0.1:8000/api/child/update-status/' + childId,
+                        url: '/api/child/update-status/' + childId,
                         method: 'PUT',
                         headers: {
                             'Authorization': 'Bearer ' + token,
@@ -423,7 +423,7 @@
                 function signOut() {
                     const token = sessionStorage.getItem('token');
 
-                    fetch('http://127.0.0.1:8000/api/logout', {
+                    fetch('/api/logout', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -438,7 +438,7 @@
                         }
                     })
                     .then(data => {
-                        window.location.replace('http://127.0.0.1:8000/caregiver-login');
+                        window.location.replace('/caregiver-login');
                     })
                     .catch(error => console.error('Error during fetch:', error));
                 }

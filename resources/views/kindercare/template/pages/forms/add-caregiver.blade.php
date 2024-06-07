@@ -250,7 +250,7 @@ function addCaregiver() {
         status: status,
     };
 
-    fetch('http://127.0.0.1:8000/caregiver-register', {
+    fetch('/api/caregiver-register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -268,14 +268,14 @@ function addCaregiver() {
         // Success handling
         console.log(data);
         // Redirect to success URL
-        window.location.href = 'http://127.0.0.1:8000/parent-table';
+        window.location.href = '/parent-table';
     })
     .catch(error => {
         // Error handling
         console.error('Error adding guardian:', error);
         // Show error message or handle as needed
         // Redirect to error URL
-        window.location.href = 'http://127.0.0.1:8000/caregiver-homepage';
+        window.location.href = '/caregiver-homepage';
     });
 }
 
@@ -287,7 +287,7 @@ function signOut() {
 
   const data = {};
 
-  fetch('http://127.0.0.1:8000/api/logout', {
+  fetch('/api/logout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -305,7 +305,7 @@ function signOut() {
   .then(data => {
     console.log('Response:', data);
     // Redirect to the login page
-    window.location.replace('http://127.0.0.1:8000/caregiver-login');
+    window.location.replace('/caregiver-login');
   })
   .catch(error => {
     console.error('Error during fetch:', error);

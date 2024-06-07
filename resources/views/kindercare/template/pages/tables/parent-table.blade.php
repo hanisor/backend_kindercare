@@ -229,7 +229,7 @@
             const token = sessionStorage.getItem('token');
 
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/guardian-data', // Adjust the URL to your actual endpoint
+                url: '/api/guardian-data', // Adjust the URL to your actual endpoint
                 method: 'GET',
                 dataType: 'json',
                 headers: {
@@ -242,7 +242,7 @@
                     // Collect promises for RFID data fetching
                     var rfidPromises = data.map(function(guardian) {
                         return $.ajax({
-                            url: 'http://127.0.0.1:8000/api/get-rfid/' + guardian.rfid_id, // Adjust the URL to your actual endpoint
+                            url: '/api/get-rfid/' + guardian.rfid_id, // Adjust the URL to your actual endpoint
                             method: 'GET',
                             dataType: 'json',
                             headers: {
@@ -300,7 +300,7 @@
         const token = sessionStorage.getItem('token');
         
         $.ajax({
-            url: 'http://127.0.0.1:8000/api/guardian/update-status/' + guardianId,
+            url: '/api/guardian/update-status/' + guardianId,
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -336,7 +336,7 @@ function signOut() {
 
   const data = {};
 
-  fetch('http://127.0.0.1:8000/api/logout', {
+  fetch('/api/logout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -354,7 +354,7 @@ function signOut() {
   .then(data => {
     console.log('Response:', data);
     // Redirect to the login page
-    window.location.replace('http://127.0.0.1:8000/caregiver-login');
+    window.location.replace('/caregiver-login');
   })
   .catch(error => {
     console.error('Error during fetch:', error);

@@ -261,7 +261,7 @@ $(document).ready(function() {
         const token = sessionStorage.getItem('token');
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/api/child-group/' + group_id, // Adjust the URL to your actual endpoint
+            url: '/api/child-group/' + group_id, // Adjust the URL to your actual endpoint
             method: 'GET',
             dataType: 'json',
             headers: {
@@ -317,7 +317,7 @@ $(document).ready(function() {
   function getGroupIdByTimeSlot(timeSlot) {
     const token = sessionStorage.getItem('token');
 
-    fetch('http://127.0.0.1:8000/api/child-group/time?time=' + timeSlot, {
+    fetch('/api/child-group/time?time=' + timeSlot, {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + token
@@ -363,7 +363,7 @@ function confirmDelete(childId) {
         console.log("child ID:", childId);
         
         $.ajax({
-            url: 'http://127.0.0.1:8000/api/child/update-status/' + childId,
+            url: '/api/child/update-status/' + childId,
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -401,7 +401,7 @@ function signOut() {
 
   const data = {};
 
-  fetch('http://127.0.0.1:8000/api/logout', {
+  fetch('/api/logout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -419,7 +419,7 @@ function signOut() {
   .then(data => {
     console.log('Response:', data);
     // Redirect to the login page
-    window.location.replace('http://127.0.0.1:8000/caregiver-login');
+    window.location.replace('/caregiver-login');
   })
   .catch(error => {
     console.error('Error during fetch:', error);
