@@ -248,7 +248,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
           const dateInput = document.getElementById('date-input');
                 const timeSlotDropdown = document.getElementById('time-slot-dropdown');
                 const attendanceTableBody = document.getElementById('attendanceTableBody');
@@ -282,7 +282,7 @@
                             date_time_arrive: selectedDate
                         });
 
-                        axios.post('http://127.0.0.1:8000/api/attendance/child', {
+                        axios.post('http://127.0.0.1:8000/api/attendanceTable/child', {
                             child_group_id: group_id,
                             date_time_arrive: selectedDate
                         }, {

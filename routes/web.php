@@ -213,6 +213,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     // Attendance
     Route::get('attendance/{attendanceId}/childgroupid', [AttendanceController::class, 'getChildGroupId']);
     Route::post('attendance/child', [AttendanceController::class, 'getAttendancebyChildGroup']);
+    Route::post('attendanceTable/child', [AttendanceController::class, 'getAttendancebyChildGroupTable']);
     Route::post('attendance/all', [AttendanceController::class, 'getAllAttendance']);
     Route::post('add-attendance-arrival', [AttendanceController::class, 'addAttendanceArrival']);
     Route::post('add-attendance-departure', [AttendanceController::class, 'addAttendanceDeparture']);
