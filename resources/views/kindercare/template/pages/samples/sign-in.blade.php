@@ -42,9 +42,9 @@
             <div class="content-wrapper d-flex align-items-center auth px-0">
                 <div class="row w-100 mx-0">
                     <div class="col-lg-6 mx-auto">
-                        <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                            <div class="brand-logo">
-                                <img src="images/logo.svg" alt="logo">
+                        <div class="auth-form-light text-left py-5 px-4 px-sm-5 text-black">
+                            <div class="brand-logo " >
+                                <img src="images/3.png" alt="logo">
                             </div>
                             <h4>Hello! let's get started</h4>
                             <h6 class="font-weight-light">Sign in to continue.</h6>
@@ -62,7 +62,7 @@
                                 </div>
                                 <div class="my-2 d-flex justify-content-between align-items-center">
                                     <div class="form-check">
-                                        <label class="form-check-label text-muted">
+                                        <label class="form-check-label text-black">
                                             <input type="checkbox" class="form-check-input">
                                             Keep me signed in
                                         </label>

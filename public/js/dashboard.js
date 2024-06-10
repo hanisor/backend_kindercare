@@ -1,3 +1,164 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const token = sessionStorage.getItem('token');
+
+    function fetchCaregiverCount() {
+        fetch('/api/caregiver-count', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('Response status:', response.status); // Log response status
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Fetched caregiver data:', data); // Debugging log
+            document.getElementById('caregiverCount').textContent = data.totalCaregivers;
+            updateCaregiverChart(data.totalCaregivers);
+        })
+        .catch(error => {
+            console.error('Error fetching caregiver count:', error);
+            document.getElementById('caregiverCount').textContent = 'Error';
+        });
+    }
+
+    function updateCaregiverChart(totalCaregivers) {
+        var ctx2 = document.getElementById('totalCaregiver').getContext('2d');
+        var caregiversChart = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: ['Full Day'],
+                datasets: [{
+                    label: 'Number of Caregivers',
+                    data: [totalCaregivers], // Ensure this data matches your API response
+                    backgroundColor: ['#cc65fe'],
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    }
+
+    function fetchChildCounts() {
+        fetch('/api/childgroup-count', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('Response status:', response.status); // Log response status
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Fetched child group data:', data); // Debugging log
+            document.getElementById('morningSessionCount').textContent = data.morningSessionCounts;
+            document.getElementById('afternoonSessionCount').textContent = data.afternoonSessionCounts;
+            document.getElementById('fullDaySessionCount').textContent = data.fullDaySessionCounts;
+            updateChildSessionChart(data);
+        })
+        .catch(error => {
+            console.error('Error fetching group counts:', error);
+            document.getElementById('morningSessionCount').textContent = 'Error';
+            document.getElementById('afternoonSessionCount').textContent = 'Error';
+            document.getElementById('fullDaySessionCount').textContent = 'Error';
+        }); 
+    }
+
+    function updateChildSessionChart(data) {
+        console.log('Child session data:', data); // Debugging log
+        var ctx = document.getElementById('childrenSession').getContext('2d');
+        var morningCount = data.morningSessionCounts.length > 0 ? data.morningSessionCounts[0] : 0;
+        var afternoonCount = data.afternoonSessionCounts.length > 0 ? data.afternoonSessionCounts[0] : 0;
+        var fullDayCount = data.fullDaySessionCounts.length > 0 ? data.fullDaySessionCounts[0] : 0;
+    
+        var childrenSessionChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Morning Session', 'Afternoon Session', 'Full Day Session'],
+                datasets: [{
+                    label: 'Number of Children',
+                    data: [morningCount, afternoonCount, fullDayCount],
+                    backgroundColor: ['#ff6384', '#ff8717', '#ffec17'],
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#000000', // Y-axis labels color
+                            stepSize: 2,     // Increment by 1
+                            callback: function(value, index, values) {
+                                return Number.isInteger(value) ? value : null;
+                            }
+                        },
+                       
+                    },
+                    x: {
+                        ticks: {
+                            color: '#000000' // X-axis labels color
+                        },
+                        title: {
+                            display: true,
+                            text: 'Session Type',
+                            color: '#000000' // X-axis title color
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#000000' // Legend labels color
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    
+
+    fetchCaregiverCount();
+    fetchChildCounts();
+});
+
+
+function signOut() {
+    const token = sessionStorage.getItem('token');
+
+    fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.log('Response status:', response.status); // Log response status
+            throw new Error('Network response was not ok.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response:', data);
+        window.location.replace('/caregiver-login');
+    })
+    .catch(error => {
+        console.error('Error during fetch:', error);
+    });
+}
+
 (function($) {
 	'use strict';
 	$(function() {
@@ -869,7 +1030,7 @@
 				fill: true,
 			}, ],
 		};
-		var invoicesOptions = {
+		var     sOptions = {
 			scales: {
 				yAxes: [{
 					display: false,

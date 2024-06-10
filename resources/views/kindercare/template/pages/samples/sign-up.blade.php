@@ -19,15 +19,15 @@
 </head>
 
 <body>
-  <div class="container-scroller">
+<div class="container-scroller">
     <div class="container-fluid page-body-wrapper full-page-wrapper">
-      <div class="main-panel">
-        <div class="content-wrapper d-flex align-items-center auth px-0">
-          <div class="row w-100 mx-0">
-            <div class="col-lg-4 mx-auto">
-              <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                <div class="brand-logo">
-                  <img src="images/logo.svg" alt="logo">
+        <div class="main-panel">
+            <div class="content-wrapper d-flex align-items-center auth px-0">
+                <div class="row w-100 mx-0">
+                    <div class="col-lg-6 mx-auto">
+                        <div class="auth-form-light text-left py-5 px-4 px-sm-5 text-black">
+                            <div class="brand-logo">
+                  <img src="images/3.png" alt="logo">
                 </div>
                 <h4>New here?</h4>
                 <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
@@ -50,7 +50,7 @@
                   </div>
                   <div class="mb-4">
                     <div class="form-check">
-                      <label class="form-check-label text-muted">
+                      <label class="form-check-label text-black">
                         <input type="checkbox" class="form-check-input">
                         I agree to all Terms & Conditions
                       </label>
@@ -60,7 +60,7 @@
                   </div>
                       <button type="submit" class="btn btn-primary">Submit</button>
                   </div>
-                  <div class="text-center mt-4 font-weight-light">
+                  <div class="text-center mt-4 font-weight-light text-black">
                     <!-- href="caregiver-login" (caregiver-login is the url) -->
                     Already have an account? <a href="caregiver-login" class="text-primary">Login</a>
                   </div>

@@ -39,8 +39,8 @@
               </li>	
             </ul>
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="navbar-brand brand-logo" href="/caregiver-homepage"><img src="images/logo.svg" alt="logo"/></a>
-                <a class="navbar-brand brand-logo-mini" href="/caregiver-homepage"><img src="images/logo-mini.svg" alt="logo"/></a>
+                <a class="navbar-brand brand-logo" href="/caregiver-homepage"><img src="images/4.png" alt="logo"/></a>
+                <a class="navbar-brand brand-logo-mini" href="/caregiver-homepage"><img src="images/4.png" alt="logo"/></a>
             </div>
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item dropdown d-lg-flex d-none">
@@ -48,7 +48,7 @@
                 </li>
                 <li class="nav-item nav-profile dropdown">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown" data-caregiver-id="1">
-                    <span class="nav-profile-name">Loading...</span>
+                    <span class="nav-profile-name">hanis sorhana</span>
                     <span class="online-status"></span>
                     <img src="images/faces/face28.png" alt="profile"/>
                 </a>
@@ -110,9 +110,9 @@
              
               
               <li class="nav-item">
-                  <a href="pages/charts/chartjs.html" class="nav-link">
+                  <a href="/attendance" class="nav-link">
                     <i class="mdi mdi-finance menu-icon"></i>
-                    <span class="menu-title">Charts</span>
+                    <span class="menu-title">Attendance</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>
@@ -149,11 +149,11 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>Full Name</th>
-                                                <th>Identification Number</th>
-                                                <th>Phone Number</th>
-                                                <th>Rfid Number</th>
-                                                <th>Action</th>
+                                            <th><b>Full Name</b></th>
+                                            <th><b>Identification Number</b></th>
+                                            <th><b>Phone Number</b></th>
+                                            <th><b>Rfid Number</b></th>
+                                            <th><b>Action</b></th>
                                             </tr>
                                         </thead>
                                         <tbody id="guardian-table-body">
@@ -169,13 +169,27 @@
             </div>
             <!-- content-wrapper ends -->
             <footer class="footer">
-                <div class="footer-wrap">
-                    <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
-                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
-                    </div>
+          <div class="footer-wrap">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <!-- Contact Info -->
+            <div style="flex: 1; min-width: 200px; margin: 10px;">
+                    <h4 style="color: #343a40; font-size: 18px; margin-bottom: 10px;">Contact Us</h4>
+                    <p style="color: #343a40; font-size: 14px;">
+                        123 KinderCare Street<br>
+                        Happy Town, HT 12345<br>
+                        Phone: (123) 456-7890<br>
+                        Email: <a href="mailto:info@kindercare.com" style="color: #343a40; text-decoration: none;">info@kindercare.com</a>
+                    </p>
                 </div>
-            </footer>
+            </div>
+          
+            <!-- Copyright -->
+            <div style="margin-top: 20px; color: #343a40; font-size: 14px;">
+                &copy; 2024 KinderCare. All rights reserved.
+            </div>
+            </div>
+          </div>
+        </footer>
         </div>
         <!-- main-panel ends -->
     </div>

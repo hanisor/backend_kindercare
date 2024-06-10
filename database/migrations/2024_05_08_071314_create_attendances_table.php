@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->dateTime('date_time_arrive')->nullable();
             $table->dateTime('date_time_leave')->nullable();
-            $table->string('month')->nullable();
             $table->unsignedBigInteger('child_group_id');
             
 

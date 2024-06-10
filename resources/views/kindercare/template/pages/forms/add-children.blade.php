@@ -41,16 +41,16 @@
               </li>	
             </ul>
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="navbar-brand brand-logo" href="/caregiver-homepage"><img src="images/logo.svg" alt="logo"/></a>
-                <a class="navbar-brand brand-logo-mini" href="/caregiver-homepage"><img src="images/logo-mini.svg" alt="logo"/></a>
-            </div>
+                <a class="navbar-brand brand-logo" href="/caregiver-homepage"><img src="images/4.png" alt="logo"/></a>
+                <a class="navbar-brand brand-logo-mini" href="/caregiver-homepage"><img src="images/4.png" alt="logo"/></a>
+            </div>  
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item dropdown d-lg-flex d-none">
                   <button type="button" class="btn btn-inverse-primary btn-sm">Settings</button>
                 </li>
                 <li class="nav-item nav-profile dropdown">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown" data-caregiver-id="1">
-                    <span class="nav-profile-name">Loading...</span>
+                    <span class="nav-profile-name">hanis sorhana</span>
                     <span class="online-status"></span>
                     <img src="images/faces/face28.png" alt="profile"/>
                 </a>
@@ -112,9 +112,9 @@
              
               
               <li class="nav-item">
-                  <a href="pages/charts/chartjs.html" class="nav-link">
+                  <a href="/attendance" class="nav-link">
                     <i class="mdi mdi-finance menu-icon"></i>
-                    <span class="menu-title">Charts</span>
+                    <span class="menu-title">Attendance</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>
@@ -240,18 +240,27 @@
 
      <!-- content-wrapper ends -->
      <footer class="footer">
-            <div class="footer-wrap">
-                <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
-                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
+          <div class="footer-wrap">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <!-- Contact Info -->
+            <div style="flex: 1; min-width: 200px; margin: 10px;">
+                    <h4 style="color: #343a40; font-size: 18px; margin-bottom: 10px;">Contact Us</h4>
+                    <p style="color: #343a40; font-size: 14px;">
+                        123 KinderCare Street<br>
+                        Happy Town, HT 12345<br>
+                        Phone: (123) 456-7890<br>
+                        Email: <a href="mailto:info@kindercare.com" style="color: #343a40; text-decoration: none;">info@kindercare.com</a>
+                    </p>
                 </div>
             </div>
-            </footer>
-        </div>
-        <!-- main-panel ends -->
-        </div>
-        <!-- page-body-wrapper ends -->
-    </div>
+          
+            <!-- Copyright -->
+            <div style="margin-top: 20px; color: #343a40; font-size: 14px;">
+                &copy; 2024 KinderCare. All rights reserved.
+            </div>
+            </div>
+          </div>
+        </footer>
     <!-- container-scroller -->
     <!-- base:js -->
     <script src="vendors/base/vendor.bundle.base.js"></script>
@@ -274,7 +283,7 @@
       const query = document.getElementById('guardian-search').value;
       const token = sessionStorage.getItem('token');
       
-      fetch(`http://127.0.0.1:8000/api/guardian-byKeyword?keyword=${query}`, {
+      fetch(`/api/guardian-byKeyword?keyword=${query}`, {
         method: 'GET',
         dataType: 'json',
         headers: {
@@ -325,7 +334,7 @@
         allergy: allergy,
         status: status
       };
-      fetch('http://127.0.0.1:8000/api/add-child', {
+      fetch('/api/add-child', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -357,7 +366,7 @@
   function getGroupIdByTimeSlot(childId, timeSlot) {
     const token = sessionStorage.getItem('token');
 
-    fetch('http://127.0.0.1:8000/api/child-group/time?time=' + timeSlot,  {
+    fetch('/api/child-group/time?time=' + timeSlot,  {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
@@ -385,7 +394,7 @@ function addChildToGroup(childId, groupId) {
   };
   console.log("Data to add child to group:", data);
 
-  fetch('http://127.0.0.1:8000/api/child-group', {
+  fetch('/api/child-group', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -397,7 +406,7 @@ function addChildToGroup(childId, groupId) {
   .then(data => {
     console.log("Response from adding child to group:", data);
     if (data && data.message === 'Child and group added successfully') {
-      window.location.href = 'http://127.0.0.1:8000/children-table';
+      window.location.href = '/children-table';
     } else {
       console.error('Error adding child to group:', data && data.message ? data.message : 'Unknown error');
     }
@@ -414,7 +423,7 @@ function signOut() {
 
   const data = {};
 
-  fetch('http://127.0.0.1:8000/api/logout', {
+  fetch('/api/logout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -432,7 +441,7 @@ function signOut() {
   .then(data => {
     console.log('Response:', data);
     // Redirect to the login page
-    window.location.replace('http://127.0.0.1:8000/caregiver-login');
+    window.location.replace('/caregiver-login');
   })
   .catch(error => {
     console.error('Error during fetch:', error);

@@ -41,8 +41,8 @@
               </li>	
             </ul>
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="navbar-brand brand-logo" href="/caregiver-homepage"><img src="images/logo.svg" alt="logo"/></a>
-                <a class="navbar-brand brand-logo-mini" href="/caregiver-homepage"><img src="images/logo-mini.svg" alt="logo"/></a>
+                <a class="navbar-brand brand-logo" href="/caregiver-homepage"><img src="images/4.png" alt="logo"/></a>
+                <a class="navbar-brand brand-logo-mini" href="/caregiver-homepage"><img src="images/4.png" alt="logo"/></a>
             </div>
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item dropdown d-lg-flex d-none">
@@ -143,89 +143,105 @@
 			<div class="main-panel">
 				<div class="content-wrapper">
         <div class="row justify-content-center">
-          <div class="col-lg-2 grid-margin stretch-card">
-              <div class="card">
-                  <div class="card-body pb-0">
-                      <div class="d-flex align-items-center justify-content-between">
-                          <h2 id="caregiverCount" class="text-success font-weight-bold">Loading...</h2>
-                          <i class="mdi mdi-account-outline mdi-18px text-dark"></i>
-                      </div>
-                  </div>
-                  <canvas id="newClient"></canvas>
-                  <div class="line-chart-row-title">MY CAREGIVER</div>
-              </div>
-          </div>
-          <div class="col-lg-2 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body pb-0">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h2 id="morningSessionCount" class="text-danger font-weight-bold">Loading...</h2>
-                        <i class="mdi mdi-refresh mdi-18px text-dark"></i>
-                    </div>
-                </div>
-                <canvas id="allProducts"></canvas>
-                <div class="line-chart-row-title">Morning Session</div>
-            </div>
-        </div>
         <div class="col-lg-2 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body pb-0">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h2 id="afternoonSessionCount" class="text-info font-weight-bold">Loading...</h2>
-                        <i class="mdi mdi-file-document-outline mdi-18px text-dark"></i>
-                    </div>
-                </div>
-                <canvas id="invoices"></canvas>
-                <div class="line-chart-row-title">Afternoon Session</div>
+    <div class="card">
+        <div class="card-body pb-0" style="background-color: #d4edda;">
+            <div class="d-flex align-items-center justify-content-between">
+                <h2 id="caregiverCount" class="text-success font-weight-bold">Loading...</h2>
+                <i class="mdi mdi-account-outline mdi-18px text-success"></i>
             </div>
         </div>
-        <div class="col-lg-2 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body pb-0">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h2 id="fullDaySessionCount" class="text-warning font-weight-bold">Loading...</h2>
-                        <i class="mdi mdi-folder-outline mdi-18px text-dark"></i>
-                    </div>
-                </div>
-                <canvas id="projects"></canvas>
-                <div class="line-chart-row-title">Full Day Session</div>
+        <canvas id="newClient"></canvas>
+        <div class="line-chart-row-title text-success">MY CAREGIVER</div>
+    </div>
+</div>
+<div class="col-lg-2 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0" style="background-color: #ffadad;">
+            <div class="d-flex align-items-center justify-content-between">
+                <h2 id="morningSessionCount" class="text-danger font-weight-bold">Loading...</h2>
+                <i class="mdi mdi-refresh mdi-18px text-danger"></i>
             </div>
         </div>
+        <canvas id="allProducts"></canvas>
+        <div class="line-chart-row-title text-danger">Morning Session</div>
+    </div>
+</div>
+<div class="col-lg-2 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0" style="background-color: #ffd6a5;">
+            <div class="d-flex align-items-center justify-content-between">
+                <h2 id="afternoonSessionCount" class="text-dark-orange font-weight-bold">Loading...</h2>
+                <i class="mdi mdi-file-document-outline mdi-18px text-dark-orange"></i>
+            </div>
+        </div>
+        <canvas id="invoices"></canvas>
+        <div class="line-chart-row-title text-dark-orange">Afternoon Session</div>
+    </div>
+</div>
+
+<div class="col-lg-2 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0" style="background-color: #fdffb6;">
+            <div class="d-flex align-items-center justify-content-between">
+                <h2 id="fullDaySessionCount" class="text-warning font-weight-bold">Loading...</h2>
+                <i class="mdi mdi-folder-outline mdi-18px text-warning"></i>
+            </div>
+        </div>
+        <canvas id="projects"></canvas>
+        <div class="line-chart-row-title text-warning">Full Day Session</div>
+    </div>
+</div>
+
 					<div class="row">
-						<div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
+          <div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
 							<div class="card">
 								<div class="card-body">
-									<div class="d-flex align-items-center justify-content-between">
-										<h4 class="card-title">Support Tracker</h4>
-										<h4 class="text-success font-weight-bold">Tickets<span class="text-dark ms-3">163</span></h4>
+									<div class="d-lg-flex align-items-center justify-content-between mb-4">
+										<h4 class="card-title">Children Sessions</h4>
 									</div>
-									<div id="support-tracker-legend" class="support-tracker-legend"></div>
-									<canvas id="supportTracker"></canvas>
+									<div class="childrenSession padding-reduced">
+                      <canvas id="childrenSession"></canvas>
+                  </div>
 								</div>
-							</div>
-						</div>
+              </div>
+          </div>
 						<div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
 							<div class="card">
 								<div class="card-body">
 									<div class="d-lg-flex align-items-center justify-content-between mb-4">
-										<h4 class="card-title">Product Orders</h4>
-										<p class="text-dark">+5.2% vs last 7 days</p>
+										<h4 class="card-title">Total Caregivers</h4>
 									</div>
-									<div class="product-order-wrap padding-reduced">
-										<div id="productorder-gage" class="gauge productorder-gage"></div>
-									</div>
+									<div class="totalCaregiver padding-reduced">
+                      <canvas id="totalCaregiver"></canvas>
+                  </div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+</div>
 				<!-- content-wrapper ends -->
 				<!-- partial:partials/_footer.html -->
 				<footer class="footer">
           <div class="footer-wrap">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
-              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
+            <!-- Contact Info -->
+            <div style="flex: 1; min-width: 200px; margin: 10px;">
+                    <h4 style="color: #343a40; font-size: 18px; margin-bottom: 10px;">Contact Us</h4>
+                    <p style="color: #343a40; font-size: 14px;">
+                        123 KinderCare Street<br>
+                        Happy Town, HT 12345<br>
+                        Phone: (123) 456-7890<br>
+                        Email: <a href="mailto:info@kindercare.com" style="color: #343a40; text-decoration: none;">info@kindercare.com</a>
+                    </p>
+                </div>
+            </div>
+          
+            <!-- Copyright -->
+            <div style="margin-top: 20px; color: #343a40; font-size: 14px;">
+                &copy; 2024 KinderCare. All rights reserved.
+            </div>
             </div>
           </div>
         </footer>
