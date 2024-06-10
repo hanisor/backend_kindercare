@@ -93,8 +93,12 @@ Route::get('/typo', function(){
     return view('kindercare.template.pages.ui-features.typography');
 });
 
+// routes/web.php
 
-Route::post('add-rfid', [RfidController::class, 'addRfid']);
+Route::post('read_rfid', [RfidController::class, 'storerfid']);
+Route::get('/rfid/latest', [RFIDController::class, 'fetch']);
+
+
 Route::get('get-rfid-id/{rfid_id}', [RfidController::class, 'getRfidForDoor']);
 
 // Guardian
@@ -176,7 +180,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
 
     // Rfid
-    //Route::post('add-rfid', [RfidController::class, 'addRfid']);
+    Route::post('add-rfid', [RfidController::class, 'addRfid']);
     Route::get('get-rfid', [RfidController::class, 'getRfid']);
     Route::get('guardian-data', [GuardianController::class, 'getGuardian']);
     Route::get('get-rfid/{rfid_id}', [RfidController::class, 'getRfidName']);

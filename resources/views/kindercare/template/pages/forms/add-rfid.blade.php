@@ -1,21 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>RFID</title>
-  <!-- base:css -->
   <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/base/vendor.bundle.base.css">
-  <!-- endinject -->
-  <!-- plugin css for this page -->
   <link rel="stylesheet" href="vendors/select2/select2.min.css">
   <link rel="stylesheet" href="vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
-  <!-- End plugin css for this page -->
-  <!-- inject:css -->
   <link rel="stylesheet" href="css/style.css">
-  <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
 </head>
 
@@ -38,32 +31,32 @@
               </li>
             </ul>
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-            <a class="navbar-brand brand-logo" href="/caregiver-homepage">
+              <a class="navbar-brand brand-logo" href="/caregiver-homepage">
                 <img src="images/4.png" alt="logo" width="300" height="300"/>
-            </a>
+              </a>
               <a class="navbar-brand brand-logo-mini" href="/caregiver-homepage"><img src="images/4.png" alt="logo"/></a>
             </div>
             <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item dropdown d-lg-flex d-none">
-                  <button type="button" class="btn btn-inverse-primary btn-sm">Settings</button>
-                </li>
-                <li class="nav-item nav-profile dropdown">
+              <li class="nav-item dropdown d-lg-flex d-none">
+                <button type="button" class="btn btn-inverse-primary btn-sm">Settings</button>
+              </li>
+              <li class="nav-item nav-profile dropdown">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown" data-caregiver-id="1">
-                    <span class="nav-profile-name">hanis sorhana</span>
-                    <span class="online-status"></span>
-                    <img src="images/faces/face28.png" alt="profile"/>
+                  <span class="nav-profile-name">hanis sorhana</span>
+                  <span class="online-status"></span>
+                  <img src="images/faces/face28.png" alt="profile"/>
                 </a>
-                  <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                      <a class="dropdown-item">
-                        <i class="mdi mdi-settings text-primary"></i>
-                        Settings
-                      </a>
-                      <a class="dropdown-item d-flex align-items-center" href="#" onClick="signOut()">
-                      <i class="mdi mdi-logout text-primary"></i>
-                        <span>Sign Out</span>
-                      </a>
-                  </div>
-                </li>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                  <a class="dropdown-item">
+                    <i class="mdi mdi-settings text-primary"></i>
+                    Settings
+                  </a>
+                  <a class="dropdown-item d-flex align-items-center" href="#" onClick="signOut()">
+                    <i class="mdi mdi-logout text-primary"></i>
+                    <span>Sign Out</span>
+                  </a>
+                </div>
+              </li>
             </ul>
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle">
               <span class="mdi mdi-menu"></span>
@@ -108,12 +101,12 @@
               </div>
             </li>
             <li class="nav-item">
-                  <a href="/attendance" class="nav-link">
-                    <i class="mdi mdi-finance menu-icon"></i>
-                    <span class="menu-title">Attendance</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-              </li>
+              <a href="/attendance" class="nav-link">
+                <i class="mdi mdi-finance menu-icon"></i>
+                <span class="menu-title">Attendance</span>
+                <i class="menu-arrow"></i>
+              </a>
+            </li>
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="mdi mdi-grid menu-icon"></i>
@@ -151,7 +144,7 @@
                     <label class="col-sm-4 col-form-label">Add RFID Number</label>
                     <div class="col-sm-6">
                       <div id="the-basics">
-                        <input id="rfidNumber" class="rfid form-control" type="text" placeholder="RFID number">
+                        <input id="rfidNumber" class="rfid form-control" type="text" placeholder="RFID number" readonly>
                       </div>
                     </div>
                     <div class="mb-4"></div>
@@ -160,6 +153,9 @@
                         <button type="submit" class="btn btn-primary" onclick="addRfid()">Add RFID</button>
                       </div>
                     </div>
+                  </div>
+                  <div id="errorMessage" class="alert alert-danger d-none" role="alert">
+                    Error fetching RFID number. Please try again.
                   </div>
                 </div>
               </div>
@@ -174,86 +170,69 @@
 <footer class="footer">
   <div class="footer-wrap">
     <div class="d-sm-flex justify-content-center justify-content-sm-between">
-     <!-- Contact Info -->
-     <div style="flex: 1; min-width: 200px; margin: 10px;">
-            <h4 style="color: #343a40; font-size: 18px; margin-bottom: 10px;">Contact Us</h4>
-            <p style="color: #6c757d; font-size: 14px;">
-                123 KinderCare Street<br>
-                Happy Town, HT 12345<br>
-                Phone: (123) 456-7890<br>
-                Email: <a href="mailto:info@kindercare.com" style="color: #6c757d; text-decoration: none;">info@kindercare.com</a>
-            </p>
-        </div>
+      <div style="flex: 1; min-width: 200px; margin: 10px;">
+        <h4 style="color: #343a40; font-size: 18px; margin-bottom: 10px;">Contact Us</h4>
+        <p style="color: #6c757d; font-size: 14px;">
+          123 KinderCare Street<br>
+          Happy Town, HT 12345<br>
+          Phone: (123) 456-7890<br>
+          Email: <a href="mailto:info@kindercare.com" style="color: #6c757d; text-decoration: none;">info@kindercare.com</a>
+        </p>
+      </div>
     </div>
-   
-    <!-- Copyright -->
     <div style="margin-top: 20px; color: #6c757d; font-size: 14px;">
-        &copy; 2024 KinderCare. All rights reserved.
-    </div>
+      &copy; 2024 KinderCare. All rights reserved.
     </div>
   </div>
 </footer>
 
 <script>
-        $(document).ready(function(){
-          const token = sessionStorage.getItem('token');
+  const rfidInput = document.getElementById('rfidNumber');
+  const successMessage = document.getElementById('successMessage');
+  const errorMessage = document.getElementById('errorMessage');
 
-            // Retrieve the caregiver ID from the data attribute
-            var caregiverId = $('#profileDropdown').data('caregiver-id');
-            
-            // Log the caregiver ID to console for debugging
-            console.log("Caregiver ID:", caregiverId);
-
-            $.ajax({
-                url: '/api/get-caregiverUsername/' + caregiverId,
-                method: 'GET',
-                dataType: 'json', // Specify the expected data type of the response
-                headers: {
-                    'Authorization': 'Bearer ' + token // Include the token in the request headers
-                },
-                success: function(data) {
-                    if(data.caregiverUsername) {
-                      console.log("Caregiver data.caregiverUsername:", data.caregiverUsername);
-
-                        $('.nav-profile-name').text(data.caregiverUsername);
-                    }
-                },
-                error: function(error) {
-                    console.log('Error:', error);
-                }
-            });
-
-        });
-    </script>
-
-<script>
-  function addRfid() {
-    const rfidNumber = document.getElementById('rfidNumber').value;
-    fetch('/add-rfid', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ rfid: rfidNumber })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      if (data.success) {
-        document.getElementById('successMessage').classList.remove('d-none');
-        setTimeout(() => {
-          document.getElementById('successMessage').classList.add('d-none');
-        }, 3000);
+  async function fetchRFID() {
+    try {
+      const response = await fetch('/rfid/latest');
+      const data = await response.json();
+      if (data.rfid) {
+        rfidInput.value = data.rfid;
+        errorMessage.classList.add('d-none');
       } else {
-        console.error('RFID registration failed:', data.message);
+        throw new Error('RFID data is empty');
       }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+    } catch (error) {
+      console.error('Error fetching RFID:', error);
+      errorMessage.classList.remove('d-none');
+    }
   }
+
+  async function addRfid() {
+    const rfidNumber = rfidInput.value;
+    if (rfidNumber) {
+      try {
+        const response = await fetch('/api/add-rfid', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+          },
+          body: JSON.stringify({ number: rfidNumber })
+        });
+        const data = await response.json();
+        if (data.rfid) {
+          successMessage.classList.remove('d-none');
+          setTimeout(() => {
+            successMessage.classList.add('d-none');
+          }, 3000);
+        }
+      } catch (error) {
+        console.error('Error adding RFID:', error);
+      }
+    }
+  }
+
+  setInterval(fetchRFID, 2000); // Poll every 2 seconds
 </script>
-
-
 </body>
 </html>

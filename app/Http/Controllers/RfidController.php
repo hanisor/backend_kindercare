@@ -12,48 +12,39 @@ use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\QueryException;
 use App\Models\Guardian;
+use Illuminate\Support\Facades\Cache; // Add this line to import the Cache facade
 
 
 class RfidController extends Controller
 {
 
-   // Add rfid
+   // Add note
    public function addRfid(Request $request)
-   {
-       try {
-           // Validate fields
-           $validatedData = $request->validate([
-               'number' => 'required|string',
-           ]);
-   
-           // Check if the RFID already exists
-           if (Rfid::where('number', $validatedData['number'])->exists()) {
-               return new JsonResponse([
-                   'errors' => ['The RFID number already exists.']
-               ], JsonResponse::HTTP_CONFLICT);
-           }
-   
-           // Create a new RFID instance
-           $rfid = new Rfid;
-           $rfid->number = $validatedData['number'];
-           $rfid->save();
-   
-           // Return RFID in response
-           return response([
-               'rfid' => $rfid,
-           ], 200);
-   
-       } catch (\Illuminate\Validation\ValidationException $e) {
-           return new JsonResponse([
-               'errors' => $e->validator->errors()->all()
-           ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
-       } catch (\Exception $e) {
-           return new JsonResponse([
-               'errors' => $e->getMessage()
-           ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
-       }
-   }
-   
+    {
+        try {
+            // Validate fields
+            $validatedData = $request->validate([
+                'number' => 'required|string',
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'errors' => $e->validator->errors()->all()
+            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Create a new RFID instance
+        $rfid = new Rfid;
+        // Assign values from the request to the RFID object
+        $rfid->number = $validatedData['number'];
+        // Save the RFID to the database
+        $rfid->save();
+
+        // Return RFID data in the response
+        return response()->json([
+            'rfid' => $rfid,
+        ], 200);
+    }
 
 
     public function getRfid()
@@ -113,6 +104,21 @@ class RfidController extends Controller
             // RFID not found
             return response()->json(['message' => 'RFID not found'], 404);
         }
+    }
+
+    public function storerfid(Request $request)
+    {
+        $rfid_id = $request->rfid_id;
+        Cache::put('rfid_id', $rfid_id, 1); // Store for 60 minutes
+    
+        return response()->json(['success' => true, 'rfid' => $rfid_id]);
+    }
+    
+    public function fetch()
+    {
+        $rfid = Cache::get('rfid_id', '');
+
+        return response()->json(['rfid' => $rfid]);
     }
     
     
