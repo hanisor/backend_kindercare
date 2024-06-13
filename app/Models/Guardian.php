@@ -31,9 +31,9 @@ class Guardian extends Authenticatable implements AuthenticatableContract
 
     public function children()
     {
-        return $this->hasMany(Child::class);
+        return $this->hasMany(Child::class, 'guardian_id');
     }
-
+    
     public function notes()
     {
         return $this->hasMany(Note::class);

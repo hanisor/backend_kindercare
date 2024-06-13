@@ -43,11 +43,16 @@ class Child extends Model
 
     public function behaviours()
     {
-        return $this->hasMany(Behaviour::class);
+        return $this->hasMany(Behaviour::class, 'child_id');
     }
 
     public function performances()
     {
         return $this->hasMany(Performance::class);
+    }
+
+    public function guardians()
+    {
+        return $this->belongsTo(Guardian::class, 'guardian_id');
     }
 }

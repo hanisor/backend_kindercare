@@ -57,14 +57,26 @@ class BehaviourController extends Controller
                 $childGroup = ChildGroup::whereHas('group', function($query) use ($caregiver_id) {
                         $query->where('caregiver_id', $caregiver_id);
                     })
-                    ->with('child.behaviours') // Eager load the child and their behaviours
+                    ->with(['child.behaviours', 'child.guardians']) // Eager load the child, their behaviours, and the guardian
                     ->get();
+        
+                // Assign guardian_name
+                $childGroup->each(function ($item) {
+                    if ($item->child->guardian) {
+                        $item->child->behaviours->each(function ($behaviour) use ($item) {
+                            $behaviour->guardian_name = $item->child->guardian_name;
+                        });
+                    }
+                });
+
         
                 return response()->json(['child_group' => $childGroup], 200);
             } catch (\Exception $e) {
                 return response()->json(['message' => 'Failed to fetch child groups and behaviours', 'error' => $e->getMessage()], 500);
             }
         }
+        
+
         
          // Get sickness by child Id
         public function getBehaviourByChildId($child_id)
