@@ -193,7 +193,7 @@
 
   async function fetchRFID() {
     try {
-      const response = await fetch('/rfid/latest');
+      const response = await fetch('/rfid/latest  ');
       const data = await response.json();
       if (data.rfid) {
         rfidInput.value = data.rfid;

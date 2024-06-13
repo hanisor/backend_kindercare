@@ -72,7 +72,7 @@ class RfidController extends Controller
         }
     }
 
-    public function getRfidForDoor($rfid_number)
+    /* public function getRfidForDoor($rfid_number)
     {
         // Retrieve the RFID by its number
         $rfid = Rfid::where('number', $rfid_number)->first();
@@ -105,7 +105,42 @@ class RfidController extends Controller
             return response()->json(['message' => 'RFID not found'], 404);
         }
     }
+ */
 
+ public function getRfidForDoor($rfid_number)
+{
+    // Retrieve the RFID by its number
+    $rfid = Rfid::where('number', $rfid_number)->first();
+
+    // Check if the RFID exists
+    if ($rfid) {
+        // Check if the RFID is associated with a guardian
+        $guardian = Guardian::where('rfid_id', $rfid->id)->first();
+
+        if ($guardian) {
+            // Check if the guardian's status is active
+            if ($guardian->status == 'ACTIVE') {
+                // RFID belongs to an active guardian, trigger action to open/close the door lock
+
+                // Return the door lock action and guardian email
+                return response()->json([
+                    'message' => 'Door lock action: ' . $guardian->door_lock_action,
+                    'email' => $guardian->email // Assuming 'email' is a column in the guardians table
+                ], 200);
+            } else {
+                // Guardian is not active
+                return response()->json(['message' => 'Guardian is not active'], 200);
+            }
+        } else {
+            // RFID does not belong to any guardian
+            return response()->json(['message' => 'RFID does not belong to any guardian'], 200);
+        }
+    } else {
+        // RFID not found
+        return response()->json(['message' => 'RFID not found'], 404);
+    }
+}
+    
     public function storerfid(Request $request)
     {
         $rfid_id = $request->rfid_id;
