@@ -146,6 +146,20 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title">List Of Caregivers</h4>
+                                <div class="col-md-6">
+                                    <div class="form-group row align-items-center">
+                                        <label class="col-sm-3 col-form-label">Session</label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100"
+                                                    id="time-slot-dropdown" name="time-slot-dropdown">
+                                                        <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM
+                                                        </option>
+                                                        <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM
+                                                        </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -153,6 +167,7 @@
                                             <th><b>Full Name</b></th>
                                             <th><b>Identification Number</b></th>
                                             <th><b>Phone Number</b></th>
+                                            <th><b>Age Assigned</b></th>
                                             <th><b>Action</b></th>
                                         </tr>
 
@@ -240,10 +255,12 @@
     $(document).ready(function() {
         const token = sessionStorage.getItem('token');
 
-        function fetchCaregivers() {
+        // Function to fetch caregivers based on timeslot
+        function fetchCaregivers(timeSlot) {
             $.ajax({
-                url: '/api/caregiver-data', // Adjust the URL to your actual endpoint
+                url: '/api/caregiver-time', // Adjust the URL to your actual endpoint
                 method: 'GET',
+                data: { time: timeSlot },
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + token // Include the token in the request headers
@@ -252,15 +269,21 @@
                     var tableBody = $('#caregiver-table-body');
                     tableBody.empty(); // Clear the existing table body
 
-                    data.forEach(function(caregiver) {
-                        var row = `<tr>
-                            <td>${caregiver.name}</td>
-                            <td>${caregiver.ic_number}</td>
-                            <td>${caregiver.phone_number}</td>
-                            <td><button type="button" class="btn btn-danger btn-rounded btn-fw" onclick="confirmDelete(${caregiver.id})">Delete</button></td>
-                        </tr>`;
+                    if (data.caregivers && data.caregivers.length > 0) {
+                        data.caregivers.forEach(function(caregiver) {
+                            var row = `<tr>
+                                <td>${caregiver.name}</td>
+                                <td>${caregiver.ic_number}</td>
+                                <td>${caregiver.phone_number}</td>
+                                <td>${caregiver.age} years old</td>
+                                <td><button type="button" class="btn btn-danger btn-rounded btn-fw" onclick="confirmDelete(${caregiver.id})">Delete</button></td>
+                            </tr>`;
+                            tableBody.append(row);
+                        });
+                    } else {
+                        var row = `<tr><td colspan="4" class="text-center">No caregivers found for the selected timeslot</td></tr>`;
                         tableBody.append(row);
-                    });
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.log('Error fetching caregivers:', error);
@@ -269,79 +292,78 @@
             });
         }
 
-        fetchCaregivers();
+        // Fetch caregivers when timeslot is changed
+        $('#time-slot-dropdown').change(function() {
+            var selectedTimeSlot = $(this).val();
+            fetchCaregivers(selectedTimeSlot);
+        });
+
+        // Trigger fetchCaregivers function for the default timeslot on page load
+        var defaultTimeSlot = $('#time-slot-dropdown').val();
+        fetchCaregivers(defaultTimeSlot);
+
+        // Confirm delete function
+        function confirmDelete(caregiverId) {
+            $('#deleteModal').modal('show');
+            $('#confirmDeleteButton').off('click').on('click', function() {
+                deleteCaregiver(caregiverId);
+                $('#deleteModal').modal('hide');
+            });
+        }
+
+        // Delete caregiver function
+        function deleteCaregiver(caregiverId) {
+            $.ajax({
+                url: '/api/caregiver/update-status/' + caregiverId,
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({ status: 'INACTIVE' }),
+                success: function(response) {
+                    $('#caregiver-table-body').find(`tr:has(button[onclick="confirmDelete(${caregiverId})"])`).remove();
+                    showMessage('You successfully deleted the record.', 'success');
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error deleting caregiver:', error);
+                    showMessage('You unsuccessfully deleted the record.', 'danger');
+                    $('#error-message').text('Error deleting caregiver. Please try again later.');
+                }
+            });
+        }
+
+        // Show message function
+        function showMessage(message, type) {
+            const messageDiv = $('#message');
+            messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();
+            setTimeout(function() {
+                messageDiv.fadeOut();
+            }, 5000);
+        }
+
+        // Sign out function
+        function signOut() {
+            fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token // Ensure token is stored and retrieved correctly
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .then(data => {
+                window.location.replace('/caregiver-login');
+            })
+            .catch(error => {
+                console.error('Error during fetch:', error);
+            });
+        }
     });
-
-    function confirmDelete(caregiverId) {
-        $('#deleteModal').modal('show');
-        $('#confirmDeleteButton').off('click').on('click', function() {
-            deleteCaregiver(caregiverId);
-            $('#deleteModal').modal('hide');
-        });
-    }
-
-    function deleteCaregiver(caregiverId) {
-        const token = sessionStorage.getItem('token');
-        
-        $.ajax({
-            url: '/api/caregiver/update-status/' + caregiverId,
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify({ status: 'INACTIVE' }),
-            success: function(response) {
-                // Remove the caregiver row from the table
-                $('#caregiver-table-body').find(`tr:has(button[onclick="confirmDelete(${caregiverId})"])`).remove();
-                showMessage('You successfully deleted the record.', 'success');
-            },
-            error: function(xhr, status, error) {
-                console.log('Error deleting caregiver:', error);
-                showMessage('You unsuccessfully deleted the record.', 'danger');
-                $('#error-message').text('Error deleting caregiver. Please try again later.');
-            }
-        });
-    }
-
-    function showMessage(message, type) {
-        const messageDiv = $('#message');
-        messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();
-        setTimeout(function() {
-            messageDiv.fadeOut();
-        }, 5000);
-    }
-
-    function signOut() {
-        const token = sessionStorage.getItem('token');
-
-        const data = {};
-
-        fetch('/api/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token // Ensure token is stored and retrieved correctly
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Network response was not ok.');
-            }
-        })
-        .then(data => {
-            console.log('Response:', data);
-            // Redirect to the login page
-            window.location.replace('/caregiver-login');
-        })
-        .catch(error => {
-            console.error('Error during fetch:', error);
-        });
-    }
 </script>
-
-</body>
-</html>

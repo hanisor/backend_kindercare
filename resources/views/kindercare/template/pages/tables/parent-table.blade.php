@@ -144,8 +144,9 @@
                     <div class="col-lg-10 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">List Of Parents</h4>
-                                <div class="table-responsive">
+                            <h4 class="card-title">List Of Parents</h4>
+                                    <input type="text" id="searchBox" class="form-control mb-3" placeholder="Search for parents...">
+                                    <div class="table-responsive">
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -334,6 +335,18 @@
         });
     }
 
+    // Event listener for the search box
+    $('#searchBox').on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+            $("#guardian-table-body tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+
+        // Fetch and display guardians on page load
+        fetchGuardians();
+
+    
     function showMessage(message, type) {
         const messageDiv = $('#message');
         messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();

@@ -90,34 +90,35 @@ class GroupController extends Controller
     }
 
     public function getCaregiverByTimeSlot(Request $request)
-    {
-        try {
-            // Validate the input
-            $validatedData = $request->validate([
-                'time' => 'required|string',
-            ]);
+{
+    try {
+        // Validate the input
+        $validatedData = $request->validate([
+            'time' => 'required|string',
+        ]);
 
-            // Fetch caregivers based on the time slot
-            $caregivers = Caregiver::select('caregivers.*')
-                ->join('groups', 'groups.caregiver_id', '=', 'caregivers.id')
-                ->where('groups.time', $validatedData['time'])
-                ->get();
+        // Fetch caregivers based on the time slot and include the age attribute from the groups table
+        $caregivers = Caregiver::select('caregivers.*', 'groups.age')
+            ->join('groups', 'groups.caregiver_id', '=', 'caregivers.id')
+            ->where('groups.time', $validatedData['time'])
+            ->get();
 
-            // Check if caregivers are found
-            if ($caregivers->isEmpty()) {
-                return response()->json(['message' => 'No caregivers found for the provided time slot'], 404);
-            }
-
-            // Return the caregivers in the response
-            return response()->json(['caregivers' => $caregivers], 200);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'errors' => $e->validator->errors()->all()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to fetch caregivers', 'error' => $e->getMessage()], 500);
+        // Check if caregivers are found
+        if ($caregivers->isEmpty()) {
+            return response()->json(['message' => 'No caregivers found for the provided time slot'], 404);
         }
+
+        // Return the caregivers in the response
+        return response()->json(['caregivers' => $caregivers], 200);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'errors' => $e->validator->errors()->all()
+        ], 422);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to fetch caregivers', 'error' => $e->getMessage()], 500);
     }
+}
+
 
     public function getGroupIdByCaregiverId(Request $request)
 {
