@@ -187,7 +187,18 @@
                           <select id="time-slot-dropdown" class="js-example-basic-single w-100">
                             <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM</option>
                             <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM</option>
-                            <option value="08:00 AM - 06:00 PM">08:00 AM - 06:00 PM</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Age</label>
+                        <div class="col-sm-8">
+                          <select id="age" class="js-example-basic-single w-100">
+                            <option value="2">2 Years Old</option>
+                            <option value="3">3 Years Old</option>
+                            <option value="4">4 Years Old</option>
+                            <option value="5">5 Years Old</option>
+                            <option value="6">6 Years Old</option>
                           </select>
                         </div>
                       </div>
@@ -294,17 +305,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Bind event listener to the form's submit event
   document.getElementById('add-group-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); // Prevent default form submission
 
-   // Get the session ID
-    var sessionId = document.getElementById('year-input').dataset.sessionId;
-    var timeSlot = document.getElementById('time-slot-dropdown').value;
-    var caregiverId = document.getElementById('caregiver-select').value;
+        // Get the session ID
+        var sessionId = document.getElementById('year-input').dataset.sessionId;
+        var timeSlot = document.getElementById('time-slot-dropdown').value;
+        var caregiverIds = Array.from(document.getElementById('caregiver-select').selectedOptions).map(option => option.value);
+        var age = document.getElementById('age').value;
 
-    // Call the addGroup function to add the group asynchronously
-    addGroup(sessionId, timeSlot, caregiverId);
-  });
-
+        // Call the addGroup function to add the group asynchronously
+        addGroup(sessionId, timeSlot, caregiverIds, age);
+    });
   // Fetch active caregivers and populate the select element
   const token = sessionStorage.getItem('token');
 
@@ -389,32 +400,38 @@ document.addEventListener('DOMContentLoaded', function() {
   fetchYearsForCurrentSessions();
 
   // Function to add group asynchronously
-  function addGroup(sessionId, timeSlot, caregiverId) {
-    const token = sessionStorage.getItem('token');
+  function addGroup(sessionId, timeSlot, caregiverIds, age) {
+        const token = sessionStorage.getItem('token');
 
-    // Prepare the data object to send to the server
-    var data = {
-      session_id: sessionId,
-      caregiver_id: caregiverId,
-      time: timeSlot
-    };
+        // Prepare the data object to send to the server
+        var data = {
+            session_id: sessionId,
+            caregiver_ids: caregiverIds, // Note the change here to send as an array
+            time: timeSlot,
+            age: age
+        };
 
-    fetch('/api/add-group', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }
+        fetch('/api/add-group', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                alert('Groups added successfully');
+            } else {
+                alert('Error: ' + data.errors.join(', '));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 });
 </script>
 

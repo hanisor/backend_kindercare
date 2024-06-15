@@ -55,4 +55,9 @@ class Child extends Model
     {
         return $this->belongsTo(Guardian::class, 'guardian_id');
     }
+
+    public function childGroups()
+    {
+        return $this->hasMany(ChildGroup::class);
+    }
 }

@@ -20,6 +20,11 @@ class Group extends Model
         return $this->belongsToMany(Child::class, 'child_groups', 'group_id', 'child_id');
     }
 
+    public function caregivers()
+    {
+        return $this->belongsToMany(Caregiver::class, 'groups');
+    }
+
     public $timestamps = false;
 
 }

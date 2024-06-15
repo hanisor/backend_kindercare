@@ -35,6 +35,12 @@ class Caregiver extends Authenticatable implements AuthenticatableContract
     {
         return $this->hasMany(Note::class);
     }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'groups');
+    }
+
      public $timestamps = false;
 
 }

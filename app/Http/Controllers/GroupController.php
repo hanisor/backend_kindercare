@@ -9,6 +9,8 @@ use App\Models\Group;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
+use App\Models\Caregiver;
+
 
 class GroupController extends Controller
 {
@@ -19,35 +21,46 @@ class GroupController extends Controller
             // Validate fields
             $validatedData = $request->validate([
                 'session_id' => 'required|integer|exists:kinder_sessions,id',
-                'caregiver_id' => 'required|integer|exists:caregivers,id',
-                'time' => 'required|string', // Assuming the time range will be provided as a string
+                'caregiver_ids' => 'required|array',
+                'caregiver_ids.*' => 'integer|exists:caregivers,id',
+                'time' => 'required|string',
+                'age' => 'required|integer',
             ]);
-    
-            // Create a new Group instance
-            $group = new Group;
-    
-            // Assign values from the request to the Group object
-            $group->session_id = $validatedData['session_id'];
-            $group->caregiver_id = $validatedData['caregiver_id'];
-            $group->time = $validatedData['time']; // Save the time range as provided
-    
-            // Save the Group to the database
-            $group->save();
-    
-            // Return a success response
+
+            $session_id = $validatedData['session_id'];
+            $time = $validatedData['time'];
+            $age = $validatedData['age'];
+
+            $groups = [];
+
+            foreach ($validatedData['caregiver_ids'] as $caregiver_id) {
+                $groups[] = [
+                    'session_id' => $session_id,
+                    'caregiver_id' => $caregiver_id,
+                    'time' => $time,
+                    'age' => $age,
+                    
+                ];
+            }
+
+            // Insert multiple records at once
+            Group::insert($groups);
+
             return response()->json([
                 'success' => true,
-                'message' => 'Group added successfully',
-                'group' => $group,
+                'message' => 'Groups added successfully',
+                'groups' => $groups,
             ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Handle validation errors
             return response()->json([
                 'success' => false,
-                'errors' => $e->validator->errors()->all()
+                'errors' => $e->validator->errors()->all(),
             ], 422);
         }
     }
+
+    
+
 
 
     public function getGroupIdByTimeSlot(Request $request)
@@ -76,6 +89,35 @@ class GroupController extends Controller
         }
     }
 
+    public function getCaregiverByTimeSlot(Request $request)
+    {
+        try {
+            // Validate the input
+            $validatedData = $request->validate([
+                'time' => 'required|string',
+            ]);
+
+            // Fetch caregivers based on the time slot
+            $caregivers = Caregiver::select('caregivers.*')
+                ->join('groups', 'groups.caregiver_id', '=', 'caregivers.id')
+                ->where('groups.time', $validatedData['time'])
+                ->get();
+
+            // Check if caregivers are found
+            if ($caregivers->isEmpty()) {
+                return response()->json(['message' => 'No caregivers found for the provided time slot'], 404);
+            }
+
+            // Return the caregivers in the response
+            return response()->json(['caregivers' => $caregivers], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'errors' => $e->validator->errors()->all()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch caregivers', 'error' => $e->getMessage()], 500);
+        }
+    }
 
     public function getGroupIdByCaregiverId(Request $request)
 {
@@ -100,6 +142,40 @@ class GroupController extends Controller
         ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
     } catch (\Exception $e) {
         return response()->json(['message' => 'Failed to fetch group ID', 'error' => $e->getMessage()], 500);
+    }
+}
+
+public function getGroupIds(Request $request)
+{
+    try {
+        // Validate the input
+        $validatedData = $request->validate([
+            'time' => 'required|string',
+              'caregiver_id' => 'nullable|exists:caregivers,id', // Caregiver ID is optional
+        ]);
+
+        // Fetch group IDs based on time slot and caregiver ID
+        $groupsQuery = Group::where('time', $validatedData['time']);
+
+        if (!empty($validatedData['caregiver_id'])) {
+            $groupsQuery->where('caregiver_id', $validatedData['caregiver_id']);
+        }
+
+        $groupIds = $groupsQuery->pluck('id');
+
+        // Debug: Log the group IDs
+        \Log::info('Group IDs:', $groupIds->toArray());
+
+        if ($groupIds->isEmpty()) {
+            return response()->json(['message' => 'No groups found for the given time and caregiver'], 404);
+        }
+
+        // Return the group IDs in response
+        return response()->json(['group_ids' => $groupIds], 200);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['errors' => $e->validator->errors()->all()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to fetch group IDs', 'error' => $e->getMessage()], 500);
     }
 }
 

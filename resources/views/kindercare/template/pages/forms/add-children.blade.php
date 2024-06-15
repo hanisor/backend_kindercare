@@ -198,7 +198,7 @@
                         <div class="form-group row">
                           <label class="col-sm-3 col-form-label" for="date_of_birth">Date of Birth</label>
                           <div class="col-sm-9">
-                          <input type="text" class="form-control" id="date_of_birth" name="date_of_birth" placeholder="dd/mm/yyyy"/>
+                          <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" placeholder="dd/mm/yyyy"/>
                           </div>
                         </div>
                       </div>
@@ -353,7 +353,7 @@
     // After adding the child, retrieve the group ID based on the selected time slot
     const childId = data.message.id; // Store the child_id
     console.log("childId:", childId);
-    getGroupIdByTimeSlot(childId, timeSlot); // Pass child_id and timeSlot to the function
+    addChildToGroup(childId, timeSlot); // Pass child_id and timeSlot to the function
   } else {
     console.error('Error adding childdd:', data.message);
   }
@@ -363,34 +363,12 @@
     .catch(error => console.error('Error adding childddddd:', error));
 
 
-  function getGroupIdByTimeSlot(childId, timeSlot) {
-    const token = sessionStorage.getItem('token');
-
-    fetch('/api/child-group/time?time=' + timeSlot,  {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log("Response from retrieving group ID:", data);
-      if (data.group_id) {
-        // After retrieving the group ID, add the child to the group
-        addChildToGroup(childId, data.group_id);
-      } else {
-        console.error('Error retrieving group ID:', data.message);
-      }
-    })
-    .catch(error => console.error('Error retrieving group ID:', error));
-  }
-
-function addChildToGroup(childId, groupId) {
+function addChildToGroup(childId, timeSlot) {
   const token = sessionStorage.getItem('token');
 
   const data = {
     child_id: childId, // Access the global childId variable
-    group_id: groupId
+    time: timeSlot
   };
   console.log("Data to add child to group:", data);
 

@@ -20,7 +20,7 @@
   <link rel="shortcut icon" href="images/favicon.png" />
 </head>
 
-<body>
+<body onload="generatePassword()">
 <div class="container-scroller">
     <!-- partial:partials/_horizontal-navbar.html -->
         
@@ -38,7 +38,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="search" aria-label="search" aria-describedby="search">
                 </div>
-              </li>	
+              </li>  
             </ul>
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo" href="/caregiver-homepage"><img src="images/4.png" alt="logo"/></a>
@@ -250,18 +250,29 @@
   <script src="js/select2.js"></script>
   <!-- End custom js for this page-->
 
+<script>
+function generatePassword() {
+    var length = 12; // Define the desired length of the password
+    var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+<>?";
+    var password = "";
+    for (var i = 0, n = charset.length; i < length; ++i) {
+        password += charset.charAt(Math.floor(Math.random() * n));
+    }
+    document.getElementById('password').value = password;
+}
 
-
-  <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const token = sessionStorage.getItem('token');
+    generatePassword();
 
-  fetch('/api/get-rfid', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    })    .then(response => response.json())
+    // Your existing code for fetching RFID data
+    const token = sessionStorage.getItem('token');
+    fetch('/api/get-rfid', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(response => response.json())
     .then(data => {
         const rfidSelect = document.getElementById('rfid_id');
         data.forEach(rfid => {
@@ -331,9 +342,6 @@ function addGuardian() {
     });
 }
 
-  </script>
-   <script>
-
 function signOut() {
   const token = sessionStorage.getItem('token');
 
@@ -363,7 +371,6 @@ function signOut() {
     console.error('Error during fetch:', error);
   });
 }
-
 </script>
 </body>
 

@@ -282,7 +282,7 @@ function addCaregiver() {
         // Success handling
         console.log(data);
         // Redirect to success URL
-        window.location.href = '/parent-table';
+        window.location.href = '/caregiver-table';
     })
     .catch(error => {
         // Error handling
