@@ -224,54 +224,54 @@ public function addAttendanceDeparture(Request $request)
     
     
     public function getAttendancebyChildGroupTable(Request $request)
-{
-    try {
-        // Validate fields
-        $validatedData = $request->validate([
-            'child_group_id' => 'required|exists:child_groups,id',
-            'date_time_arrive' => 'required|date',
-        ]);
-        
-        // Parse the selected date
-        $selectedDate = $validatedData['date_time_arrive'];
-
-        // Get the list of children in the specified child group
-        $children = DB::table('children')
-            ->join('child_groups', 'children.id', '=', 'child_groups.child_id')
-            ->where('child_groups.group_id', $validatedData['child_group_id'])
-            ->select('children.id', 'children.name as child_name')
-            ->get();
-
-        // Initialize the attendance data structure
-        $attendanceByDay = [];
-
-        // Fetch attendance data for each child for the selected date
-        foreach ($children as $child) {
-            // Check if the child has an attendance record for the selected date
-            $attendance = DB::table('attendances')
-                ->where('child_group_id', $child->id) // Assuming the relationship is defined by 'child_group_id'
-                ->whereDate('date_time_arrive', $selectedDate)
-                ->first();
-
-
-            if ($attendance) {
-                // If attendance record exists, add it to the array
-                $attendanceByDay[$selectedDate][] = [
-                    'child_name' => $child->child_name,
-                    'date_time_arrive' => $attendance->date_time_arrive,
-                    'date_time_leave' => $attendance->date_time_leave,
-                    // Include other attendance fields as needed
-                ];
-            } else {
-                // If no attendance record, mark the child as absent
-                $attendanceByDay[$selectedDate][] = [
-                    'child_name' => $child->child_name,
-                    'attendance' => 'Absent',
-                ];
+    {
+        try {
+            // Validate fields
+            $validatedData = $request->validate([
+                'child_group_id' => 'required|exists:groups,id',
+                'date_time_arrive' => 'required|date',
+            ]);
+    
+            // Parse the selected date
+            $selectedDate = $validatedData['date_time_arrive'];
+    
+            // Get the list of children in the specified child group
+            $children = DB::table('children')
+                ->join('child_groups', 'children.id', '=', 'child_groups.child_id')
+                ->where('child_groups.group_id', $validatedData['child_group_id'])
+                ->select('children.id', 'children.name as child_name', 'child_groups.id as child_group_id')
+                ->get();
+    
+            // Initialize the attendance data structure
+            $attendanceByDay = [];
+    
+            // Fetch attendance data for each child for the selected date
+            foreach ($children as $child) {
+                // Check if the child has an attendance record for the selected date
+                $attendance = DB::table('attendances')
+                    ->where('child_group_id', $child->child_group_id) // Using the child_group_id to fetch attendance records
+                    ->whereDate('date_time_arrive', $selectedDate)
+                    ->first();
+    
+                if ($attendance) {
+                    // If attendance record exists, add it to the array
+                    $attendanceByDay[$selectedDate][] = [
+                        'child_name' => $child->child_name,
+                        'date_time_arrive' => $attendance->date_time_arrive,
+                        'date_time_leave' => $attendance->date_time_leave,
+                        // Include other attendance fields as needed
+                    ];
+                } else {
+                    // If no attendance record, mark the child as absent
+                    $attendanceByDay[$selectedDate][] = [
+                        'child_name' => $child->child_name,
+                        'attendance' => 'Absent',
+                    ];
+                }
             }
-        }
-         // Return the attendance records by day
-         return response()->json(['attendance_by_day' => $attendanceByDay], 200);
+    
+            // Return the attendance records by day
+            return response()->json(['attendance_by_day' => $attendanceByDay], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()->all()], 422);
         } catch (\Exception $e) {
@@ -280,7 +280,7 @@ public function addAttendanceDeparture(Request $request)
         }
     }
     
-
+    
 
 
 /* 

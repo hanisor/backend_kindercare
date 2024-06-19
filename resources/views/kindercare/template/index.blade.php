@@ -147,12 +147,12 @@
     <div class="card">
         <div class="card-body pb-0" style="background-color: #d4edda;">
             <div class="d-flex align-items-center justify-content-between">
-                <h2 id="caregiverCount" class="text-success font-weight-bold">Loading...</h2>
-                <i class="mdi mdi-account-outline mdi-18px text-success"></i>
+              <h2 id="totalCaregiverCount" class="text-primary font-weight-bold">Loading...</h2>
+              <i class="mdi mdi-account-multiple mdi-18px text-primary"></i>
             </div>
         </div>
         <canvas id="newClient"></canvas>
-        <div class="line-chart-row-title text-success">MY CAREGIVER</div>
+        <div class="line-chart-row-title text-success">TOTAL CAREGIVER</div>
     </div>
 </div>
 <div class="col-lg-2 grid-margin stretch-card">
@@ -194,32 +194,31 @@
 </div>
 
 					<div class="row">
-          <div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
-							<div class="card">
-								<div class="card-body">
-									<div class="d-lg-flex align-items-center justify-content-between mb-4">
-										<h4 class="card-title">Children Sessions</h4>
-									</div>
-									<div class="childrenSession padding-reduced">
-                      <canvas id="childrenSession"></canvas>
+            <div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-lg-flex align-items-center justify-content-between mb-4">
+                      <h4 class="card-title">Children Sessions</h4>
+                    </div>
+                    <div class="childrenSession padding-reduced">
+                        <canvas id="childrenSession"></canvas>
+                    </div>
                   </div>
-								</div>
-              </div>
-          </div>
-						<div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
-							<div class="card">
-								<div class="card-body">
-									<div class="d-lg-flex align-items-center justify-content-between mb-4">
-										<h4 class="card-title">Total Caregivers</h4>
-									</div>
-									<div class="totalCaregiver padding-reduced">
-                      <canvas id="totalCaregiver"></canvas>
+                </div>
+            </div>
+            <div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-lg-flex align-items-center justify-content-between mb-4">
+                      <h4 class="card-title">Caregiver Count by Timeslot</h4>
+                    </div>
+                    <div class="caregiverCountByTime padding-reduced">
+                        <canvas id="caregiverCountByTime"></canvas>
+                    </div>
                   </div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+                </div>
+            </div>
+</div>
 </div>
 				<!-- content-wrapper ends -->
 				<!-- partial:partials/_footer.html -->
@@ -273,31 +272,65 @@
     <!-- End custom js for this page-->
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = sessionStorage.getItem('token');
+    document.addEventListener('DOMContentLoaded', function () {
+      const token = sessionStorage.getItem('token');
 
-            function fetchCaregiverCount() {
-                fetch('/api/caregiver-count', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('caregiverCount').textContent = data.totalCaregivers;
-                })
-                .catch(error => {
-                    console.error('Error fetching caregiver count:', error);
-                    document.getElementById('caregiverCount').textContent = 'Error';
-                });
+      function fetchCaregiverCountByTime() {
+        fetch('/api/caregiver-count', {
+            method: 'GET',
+            headers: {
+              'Authorization': 'Bearer ' + token
+            },
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
             }
+            return response.json();
+          })
+          .then(data => {
+            renderCaregiverCountChart(data.caregiverCountsByTime);
+            // Update total caregiver count
+            document.getElementById('totalCaregiverCount').textContent = data.totalCaregiverCount;
+          })
+          .catch(error => {
+            console.error('Error fetching caregiver count by time:', error);
+          });
+      }
 
-            fetchCaregiverCount();
+      function renderCaregiverCountChart(caregiverCounts) {
+        const times = caregiverCounts.map(item => item.time);
+        const counts = caregiverCounts.map(item => item.caregiver_count);
+
+        const ctx = document.getElementById('caregiverCountByTime').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: times,
+            datasets: [{
+              label: 'Caregiver Count',
+              data: counts,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1 // Adjust step size to 1 unit increments
+                }
+              }
+            }
+          }
         });
-    </script>
+      }
 
-    <script>
+      fetchCaregiverCountByTime();
+    });
+  </script>
         $(document).ready(function(){
           const token = sessionStorage.getItem('token');
 

@@ -144,7 +144,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-10 grid-margin stretch-card">
                         <div class="card">
-                            <div class="card-body">
+                        <div class="card-body">
                                 <h4 class="card-title">Children Attendance</h4>
                                 <div class="table-responsive">
                                 <div class="col-md-6">
@@ -155,18 +155,30 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group row align-items-center">
-                                            <label class="col-sm-3 col-form-label">Session</label>
-                                            <div class="col-sm-9">
-                                                <select class="js-example-basic-single w-100" id="time-slot-dropdown" name="time-slot-dropdown">
-                                                    <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM</option>
-                                                    <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM</option>
-                                                    <option value="08:00 AM - 06:00 PM">08:00 AM - 06:00 PM</option>
-                                                </select>
+
+                                <div class="col-md-6">
+                                                <div class="form-group row align-items-center">
+                                                    <label class="col-sm-3 col-form-label">Session</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="js-example-basic-single w-100"
+                                                            id="time-slot-dropdown" name="time-slot-dropdown">
+                                                            <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM
+                                                            </option>
+                                                            <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row align-items-center">
+                                                    <label class="col-sm-3 col-form-label">Caregiver</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="js-example-basic-single w-100"
+                                                            id="caregiver-dropdown" name="caregiver-dropdown">
+                                                            <!-- Caregiver options will be populated here -->
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
                                     <table class="table">
                                         <thead>
                                             <tr class="header-row">
@@ -188,6 +200,7 @@
                             </div>
                           </div>
                         </div>
+
             <!-- content-wrapper ends -->
             <footer class="footer">
           <div class="footer-wrap">
@@ -263,201 +276,221 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-          const dateInput = document.getElementById('date-input');
-                const timeSlotDropdown = document.getElementById('time-slot-dropdown');
-                const attendanceTableBody = document.getElementById('attendanceTableBody');
-                const errorMessage = document.getElementById('error-message');
+        const dateInput = document.getElementById('date-input');
+        const timeSlotDropdown = document.getElementById('time-slot-dropdown');
+        const attendanceTableBody = document.getElementById('attendanceTableBody');
+        const errorMessage = document.getElementById('error-message');
+        const caregiverDropdown = document.getElementById('caregiver-dropdown');
 
-                function fetchAttendance() {
-                  const selectedDate = dateInput.value;
-                    const selectedTimeSlot = timeSlotDropdown.value;
-
-            
-
-                    // Clear existing table body
-                    attendanceTableBody.innerHTML = '';
-
-                    // Display a loading message
-                    const loadingRow = document.createElement('tr');
-                    const loadingCell = document.createElement('td');
-                    loadingCell.colSpan = 5;
-                    loadingCell.textContent = 'Loading...';
-                    loadingRow.appendChild(loadingCell);
-                    attendanceTableBody.appendChild(loadingRow);
-
-                    getGroupIdByTimeSlot(selectedTimeSlot).then(group_id => {
-                        const token = sessionStorage.getItem('token');
-                        if (!token) {
-                            errorMessage.textContent = 'Unauthorized. Please log in again.';
-                            return;
+        // Function to fetch caregivers for a given time slot
+        function fetchCaregivers(timeSlot) {
+            const token = sessionStorage.getItem('token');
+            $.ajax({
+                url: '/api/caregiver-time',
+                method: 'GET',
+                data: { time: timeSlot },
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(response) {
+                    if (response.caregivers && response.caregivers.length > 0) {
+                        populateCaregiversDropdown(response.caregivers);
+                        const selectedCaregiverId = caregiverDropdown.value;
+                        if (selectedCaregiverId) {
+                            handleGroupAndAttendance(timeSlot, selectedCaregiverId);
                         }
-                        console.log({
-                            child_group_id: group_id,
-                            date_time_arrive: selectedDate
-                        });
-
-                        axios.post('/api/attendanceTable/child', {
-                            child_group_id: group_id,
-                            date_time_arrive: selectedDate
-                        }, {
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        }).then(response => {
-                          console.log('Response from backend:', response.data);
-
-                            attendanceTableBody.innerHTML = '';
-                            const attendanceData = response.data.attendance_by_day;
-
-                            if (attendanceData && Object.keys(attendanceData).length > 0) {
-                              // Update the table body accordingly
-                                for (const [date, records] of Object.entries(attendanceData)) {
-                                    records.forEach(record => {
-                                        const row = document.createElement('tr');
-                                        const status = record.date_time_arrive ? 'Present' : 'Absent'; // Check if date_time_arrive is defined
-                                        const statusClass = status === 'Present' ? 'badge-success' : 'badge-danger'; // Determine status class
-                                        row.innerHTML = `
-                                            <td>${date}</td>
-                                            <td>${record.child_name}</td>
-                                            <td>${record.date_time_arrive || 'No Record'}</td> <!-- Display 'No Record' if date_time_arrive is undefined -->
-                                            <td>${record.date_time_leave || 'No Record'}</td> <!-- Display 'No Record' if date_time_leave is undefined -->
-                                            <td><label class="badge ${statusClass}">${status}</label></td> <!-- Add label with appropriate class -->
-                                        `;
-                                        attendanceTableBody.appendChild(row);
-                                    });
-                                }
-                            } else {
-                                const noDataRow = document.createElement('tr');
-                                const noDataCell = document.createElement('td');
-                                noDataCell.colSpan = 5;
-                                noDataCell.textContent = 'No data available for the selected date and session.';
-                                noDataRow.appendChild(noDataCell);
-                                attendanceTableBody.appendChild(noDataRow);
-                            }
-                        }).catch(error => {
-                            errorMessage.textContent = 'An error occurred while fetching attendance data. Please try again.';
-                        });
-                    });
-                }
-
-                function getGroupIdByTimeSlot(timeSlot) {
-                    const token = sessionStorage.getItem('token');
-                    return fetch('/api/child-group/time?time=' + timeSlot, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + token
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.group_id) {
-                            return data.group_id;
-                        } else {
-                            throw new Error('Error retrieving group ID: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error retrieving group ID:', error);
-                        errorMessage.textContent = 'Error retrieving group ID. Please try again later.';
-                    });
-                }
-
-                function getChildGroup(group_id) {
-                    const token = sessionStorage.getItem('token');
-                    return fetch('/api/child-group/' + group_id, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + token
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.child_group) {
-                            const childIDs = data.child_group.map(child => child.id);
-                            const childGroupPromises = childIDs.map(child_id => fetchChildGroupId(child_id, group_id));
-                            return Promise.all(childGroupPromises).then(child_group_ids => child_group_ids[0]); // Assuming we need only one child_group_id
-                        } else {
-                            throw new Error('Invalid data format: Missing child_group key');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching children:', error);
-                        errorMessage.textContent = 'Error fetching children. Please try again later.';
-                    });
-                }
-                timeSlotDropdown.addEventListener('change', fetchAttendance);
-
-                // Event listener for date input change
-            dateInput.addEventListener('change', fetchAttendance);
-
-              // Initialize attendance display with current date
-              const currentDate = new Date().toISOString().split('T')[0];
-              dateInput.value = currentDate;
-              fetchAttendance();
-         
-                function confirmDelete(childId) {
-                    $('#deleteModal').modal('show');
-                    $('#confirmDeleteButton').off('click').on('click', function() {
-                        deleteChild(childId);
-                        $('#deleteModal').modal('hide');
-                    });
-                }
-
-                function deleteChild(childId) {
-                    const token = sessionStorage.getItem('token');
-
-                    $.ajax({
-                        url: '/api/child/update-status/' + childId,
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': 'Bearer ' + token,
-                            'Content-Type': 'application/json'
-                        },
-                        data: JSON.stringify({ status: 'INACTIVE' }),
-                        success: function(response) {
-                            $('#childrenTableBody').find(`tr:has(button[onclick="confirmDelete(${childId})"])`).remove();
-                            showMessage('You successfully deleted the record.', 'success');
-                        },
-                        error: function(xhr, status, error) {
-                            console.log('Error deleting child:', error);
-                            showMessage('You unsuccessfully deleted the record.', 'danger');
-                            $('#error-message').text('Error deleting child. Please try again later.');
-                        }
-                    });
-                }
-
-                function showMessage(message, type) {
-                    const messageDiv = $('#message');
-                    messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();
-                    setTimeout(function() {
-                        messageDiv.fadeOut();
-                    }, 5000);
-                }
-
-                function signOut() {
-                    const token = sessionStorage.getItem('token');
-
-                    fetch('/api/logout', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + token
-                        }
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json();
-                        } else {
-                            throw new Error('Network response was not ok.');
-                        }
-                    })
-                    .then(data => {
-                        window.location.replace('/caregiver-login');
-                    })
-                    .catch(error => console.error('Error during fetch:', error));
+                    } else {
+                        $('#caregiver-dropdown').empty().append('<option>No caregivers found</option>');
+                        $('#attendanceTableBody').empty().append('<tr><td colspan="5">No caregivers available</td></tr>');
+                    }
+                },
+                error: function() {
+                    $('#caregiver-dropdown').empty().append('<option>Error fetching caregivers</option>');
+                    $('#attendanceTableBody').empty().append('<tr><td colspan="5">Error fetching caregivers</td></tr>');
                 }
             });
-        </script>
+        }
+
+       // Function to fetch group ID based on time slot and caregiver ID
+    function getGroupId(timeSlot, caregiverId) {
+        const token = sessionStorage.getItem('token');
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/api/groupid-time-caregiver',
+                method: 'GET',
+                data: { 
+                    time: timeSlot,
+                    caregiver_id: caregiverId 
+                },
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function(data) {
+                    let groupIds = data.group_ids;
+
+                    // Automatically fetch children for the first group
+                    if (groupIds.length > 0) {
+                        resolve(groupIds[0]); // Resolve the promise with the first group ID
+                    } else {
+                        reject('No group IDs found');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error fetching group IDs:', error);
+                    reject('Error fetching group IDs: ' + error.responseText);
+                }
+            });
+        });
+    }
+
+    // Helper function to format time in 12-hour format
+    function formatTime(time) {
+        if (!time) return 'No Record';
+        const [hours, minutes, seconds] = time.split(':');
+        let hour = parseInt(hours);
+        const period = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12; // Convert to 12-hour format
+        return `${hour}:${minutes}:${seconds} ${period}`;
+    }
+
+    
+        // Function to fetch attendance
+        function fetchAttendance(groupId) {
+            const selectedDate = dateInput.value;
+
+            // Clear existing table body
+            attendanceTableBody.innerHTML = '';
+
+            // Display a loading message
+            const loadingRow = document.createElement('tr');
+            const loadingCell = document.createElement('td');
+            loadingCell.colSpan = 5;
+            loadingCell.textContent = 'Loading...';
+            loadingRow.appendChild(loadingCell);
+            attendanceTableBody.appendChild(loadingRow);
+
+            const token = sessionStorage.getItem('token');
+            if (!token) {
+                errorMessage.textContent = 'Unauthorized. Please log in again.';
+                return;
+            }
+
+            axios.post('/api/attendanceTable/child', {
+                child_group_id: groupId,
+                date_time_arrive: selectedDate
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => {
+                console.log('Response from backend:', response.data);
+
+                attendanceTableBody.innerHTML = '';
+                const attendanceData = response.data.attendance_by_day;
+
+                if (attendanceData && Object.keys(attendanceData).length > 0) {
+                    // Update the table body accordingly
+                    for (const [date, records] of Object.entries(attendanceData)) {
+                        records.forEach(record => {
+                            const row = document.createElement('tr');
+                            const status = record.date_time_arrive ? 'Present' : 'Absent'; // Check if date_time_arrive is defined
+                            const statusClass = status === 'Present' ? 'badge-success' : 'badge-danger'; // Determine status class
+                            row.innerHTML = `
+                                <td>${date}</td>
+                                <td>${record.child_name}</td>
+                                <td>${formatTime(record.date_time_arrive)}</td> <!-- Format arrival time -->
+                                <td>${formatTime(record.date_time_leave)}</td> <!-- Format departure time -->
+                                <td><label class="badge ${statusClass}">${status}</label></td> <!-- Add label with appropriate class -->
+                            `;
+                            attendanceTableBody.appendChild(row);
+                        });
+                    }
+                } else {
+                    const noDataRow = document.createElement('tr');
+                    const noDataCell = document.createElement('td');
+                    noDataCell.colSpan = 5;
+                    noDataCell.textContent = 'No data available for the selected date and session.';
+                    noDataRow.appendChild(noDataCell);
+                    attendanceTableBody.appendChild(noDataRow);
+                }
+            }).catch(error => {
+                errorMessage.textContent = 'An error occurred while fetching attendance data. Please try again.';
+            });
+        }
+
+        // Function to handle group ID and attendance
+        function handleGroupAndAttendance(timeSlot, caregiverId) {
+            getGroupId(timeSlot, caregiverId)
+                .then(groupId => {
+                    fetchAttendance(groupId);
+                })
+                .catch(error => console.error(error));
+        }
+
+
+        // Function to populate caregivers dropdown
+        function populateCaregiversDropdown(caregivers) {
+            var dropdown = $('#caregiver-dropdown');
+            dropdown.empty();
+            dropdown.append('<option value="">Select Caregiver</option>');
+            caregivers.forEach(function(caregiver) {
+                dropdown.append('<option value="' + caregiver.id + '">' + caregiver.name + '</option>');
+            });
+        }
+
+        // Event listener for caregiver dropdown change
+        $('#caregiver-dropdown').change(function() {
+            const selectedCaregiverId = $(this).val();
+            const selectedTimeSlot = timeSlotDropdown.value;
+            if (selectedCaregiverId) {
+                handleGroupAndAttendance(selectedTimeSlot, selectedCaregiverId);
+            }
+        });
+
+        // Event listener for time slot dropdown change
+        $('#time-slot-dropdown').change(function() {
+            const selectedTimeSlot = $(this).val();
+            fetchCaregivers(selectedTimeSlot);
+        });
+
+        // Event listener for date input change
+        dateInput.addEventListener('change', function() {
+            const selectedCaregiverId = caregiverDropdown.value;
+            const selectedTimeSlot = timeSlotDropdown.value;
+            if (selectedCaregiverId) {
+                handleGroupAndAttendance(selectedTimeSlot, selectedCaregiverId);
+            }
+        });
+
+        // Initialize attendance display with current date
+        const currentDate = new Date().toISOString().split('T')[0];
+        dateInput.value = currentDate;
+
+        // Fetch caregivers for the initial time slot on page load
+        const initialTimeSlot = timeSlotDropdown.value;
+        fetchCaregivers(initialTimeSlot);
+
+        function signOut() {
+            const token = sessionStorage.getItem('token');
+
+            fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .then(data => {
+                window.location.replace('/caregiver-login');
+            })
+            .catch(error => console.error('Error during fetch:', error));
+        }
+    });
+</script>
+
     </body>
 
 </html>

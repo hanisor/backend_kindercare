@@ -193,6 +193,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     // Group
     Route::get('child-group/time', [GroupController::class, 'getGroupIdByTimeSlot']);
     Route::get('caregiver-time', [GroupController::class, 'getCaregiverByTimeSlot']);
+    Route::get('caregiver-groupid', [GroupController::class, 'getCaregiverIdByGroupId']);
     Route::get('groupid-time-caregiver', [GroupController::class, 'getGroupIds']);
     Route::post('get-group', [GroupController::class, 'getGroupIdByCaregiverId']); 
     Route::post('add-group', [GroupController::class, 'addGroup']);
@@ -200,9 +201,10 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     // Child Group
     Route::get('child-group/{group_id}', [ChildGroupController::class, 'getChildGroup']);
     Route::get('child-group/childId/{child_id}', [ChildGroupController::class, 'getChildGroupbyChildId']);
-    Route::get('child-group/caregiverId', [ChildGroupController::class, 'getChildGroupfromCaregiverId']);
+    Route::get('child-group/caregiverId/{caregiver_id}', [ChildGroupController::class, 'getChildGroupfromCaregiverId']);
     Route::get('child-group/caregiver', [ChildGroupController::class, 'getChildrenByCaregiver']);
     Route::get('child-by-group', [ChildGroupController::class, 'getChildIds']);
+    Route::get('group-by-child', [ChildGroupController::class, 'getGroupIdByChildId']);
     Route::post('get-child-group-id', [ChildGroupController::class, 'getChildGroupId']);
     Route::get('get-child-group-time', [ChildGroupController::class, 'getChildGroupbytime']);
     Route::get('childgroup-count', [ChildGroupController::class, 'getChildCountInGroups']);

@@ -11,7 +11,7 @@ use App\Http\Requests\UpdateCaregiverRequest;
 use Illuminate\Support\Facades\Auth; // import the Auth facade
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Support\Facades\DB;
 
 class CaregiverController extends Controller
 {
@@ -203,9 +203,26 @@ class CaregiverController extends Controller
     }
 
     public function getCaregiverCount() {
-        $caregiverCount = Caregiver::where('status', 'ACTIVE')->count();
-        return response()->json(['totalCaregivers' => $caregiverCount]);
+        // Query to get counts by timeslot
+        $caregiverCounts = DB::table('groups')
+            ->join('caregivers', 'groups.caregiver_id', '=', 'caregivers.id')
+            ->select('groups.time', DB::raw('count(caregivers.id) as caregiver_count'))
+            ->where('caregivers.status', 'ACTIVE')
+            ->groupBy('groups.time')
+            ->get();
+    
+        // Query to get total count of active caregivers
+        $totalCaregiverCount = DB::table('caregivers')
+            ->where('status', 'ACTIVE')
+            ->count();
+    
+        // Return JSON response with both counts
+        return response()->json([
+            'caregiverCountsByTime' => $caregiverCounts,
+            'totalCaregiverCount' => $totalCaregiverCount
+        ]);
     }
+    
     
 
     public function getCaregiverName($caregiver_id)

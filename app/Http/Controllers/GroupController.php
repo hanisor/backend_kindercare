@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Models\Caregiver;
+use Illuminate\Support\Facades\DB;
 
 
 class GroupController extends Controller
@@ -101,6 +102,7 @@ class GroupController extends Controller
         $caregivers = Caregiver::select('caregivers.*', 'groups.age')
             ->join('groups', 'groups.caregiver_id', '=', 'caregivers.id')
             ->where('groups.time', $validatedData['time'])
+            ->where('caregivers.status', 'ACTIVE')
             ->get();
 
         // Check if caregivers are found
@@ -119,6 +121,37 @@ class GroupController extends Controller
     }
 }
 
+
+public function getCaregiverIdByGroupId(Request $request)
+{
+    try {
+        // Validate the input
+        $validatedData = $request->validate([
+            'group_id' => 'required|exists:groups,id',
+        ]);
+
+        $group_id = $validatedData['group_id'];
+
+        // Fetch the caregiver name associated with the group
+        $caregiver = DB::table('groups')
+                    ->join('caregivers', 'groups.caregiver_id', '=', 'caregivers.id')
+                    ->where('groups.id', $group_id)
+                    ->select('caregivers.name')
+                    ->first();
+
+        // Check if a caregiver name is found
+        if (is_null($caregiver)) {
+            return response()->json(['message' => 'No caregiver found for the provided group ID'], 404);
+        }
+
+        // Return the caregiver name in response
+        return response()->json(['name' => $caregiver->name], 200);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['errors' => $e->validator->errors()->all()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to fetch caregiver details', 'error' => $e->getMessage()], 500);
+    }
+}
 
     public function getGroupIdByCaregiverId(Request $request)
 {
@@ -179,6 +212,7 @@ public function getGroupIds(Request $request)
         return response()->json(['message' => 'Failed to fetch group IDs', 'error' => $e->getMessage()], 500);
     }
 }
+
 
 
     /**

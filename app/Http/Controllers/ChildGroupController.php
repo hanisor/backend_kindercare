@@ -12,6 +12,7 @@ use App\Models\Group;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon; // Make sure you import Carbon
 use App\Models\Child;  // Import the Child model
+use Illuminate\Support\Facades\DB;
 
 class ChildGroupController extends Controller
 {
@@ -62,37 +63,66 @@ class ChildGroupController extends Controller
     }
 
     public function getChildrenByCaregiver(Request $request)
+    {
+        try {
+            // Validate the input
+            $validatedData = $request->validate([
+                'caregiver_id' => 'required|exists:caregivers,id',
+            ]);
+
+            $caregiverId = $validatedData['caregiver_id'];
+
+            // Fetch the groups managed by the caregiver
+            $groups = Group::where('caregiver_id', $caregiverId)->pluck('id');
+
+            // Fetch the children associated with these groups
+            $children = Child::select('children.*')
+                ->join('child_groups', 'children.id', '=', 'child_groups.child_id')
+                ->whereIn('child_groups.group_id', $groups)
+                ->get();
+
+            // Check if children are found
+            if ($children->isEmpty()) {
+                return response()->json(['message' => 'No children found for the provided caregiver ID'], 404);
+            }
+
+            // Return the children data in response
+            return response()->json(['children' => $children], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->validator->errors()->all()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch children', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getGroupIdByChildId(Request $request)
 {
     try {
-        // Validate the input
-        $validatedData = $request->validate([
-            'caregiver_id' => 'required|exists:caregivers,id',
+        // Validate the input from the query parameter
+        $request->validate([
+            'child_id' => 'required|exists:children,id',
         ]);
 
-        $caregiverId = $validatedData['caregiver_id'];
+        // Fetch the child_id from query parameters
+        $child_id = $request->query('child_id');
 
-        // Fetch the groups managed by the caregiver
-        $groups = Group::where('caregiver_id', $caregiverId)->pluck('id');
+        // Fetch the group IDs associated with the child
+        $groupIds = DB::table('child_groups')->where('child_id', $child_id)->pluck('group_id');
 
-        // Fetch the children associated with these groups
-        $children = Child::select('children.*')
-            ->join('child_groups', 'children.id', '=', 'child_groups.child_id')
-            ->whereIn('child_groups.group_id', $groups)
-            ->get();
-
-        // Check if children are found
-        if ($children->isEmpty()) {
-            return response()->json(['message' => 'No children found for the provided caregiver ID'], 404);
+        // Check if any group IDs are found
+        if ($groupIds->isEmpty()) {
+            return response()->json(['message' => 'No groups found for the provided child ID'], 404);
         }
 
-        // Return the children data in response
-        return response()->json(['children' => $children], 200);
+        // Return the group IDs in response
+        return response()->json(['group_ids' => $groupIds], 200);
     } catch (\Illuminate\Validation\ValidationException $e) {
         return response()->json(['errors' => $e->validator->errors()->all()], 422);
     } catch (\Exception $e) {
-        return response()->json(['message' => 'Failed to fetch children', 'error' => $e->getMessage()], 500);
+        return response()->json(['message' => 'Failed to fetch group IDs', 'error' => $e->getMessage()], 500);
     }
 }
+
 
     public function getChildGroup($group_id)
     {
@@ -197,7 +227,10 @@ public function getChildIds(Request $request)
         // Fetch child records based on group ID, eager load the guardian relationship
         $children = Child::whereHas('childGroups', function($query) use ($validatedData) {
             $query->where('group_id', $validatedData['group_id']);
-        })->with('guardians')->get();
+        })
+        ->where('status', 'ACTIVE') // Add condition to check for active status
+        ->with('guardians')
+        ->get();
 
         // Check if no children found
         if ($children->isEmpty()) {
@@ -226,8 +259,35 @@ public function getChildIds(Request $request)
     }
 }
 
+public function getChildGroupfromCaregiverId($caregiver_id)
+{
+// Retrieve the parent by their ID
+$group = Group::find($caregiver_id);
 
+    // Check if the parent exists
+    if ($group) {
+        try {
+            $group = ChildGroup::select(
+                'children.id', 
+                'children.name', 
+                'children.my_kid_number',
+                'children.date_of_birth',
+                'children.gender',
+                'children.allergy',
+                'guardians.name as guardian_name' // Alias the guardian's name column
+                )
+            ->join('children', 'children.id', '=', 'child_groups.child_id')
+            ->join('groups', 'groups.id', '=', 'child_groups.group_id')
+            ->leftJoin('guardians', 'guardians.id', '=', 'children.guardian_id') // Left join to get guardian's name
+            ->where('child_groups.group_id', $caregiver_id) // Add a condition to filter by group ID
+            ->get();
 
+            return response()->json(['group' => $group], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch child groups', 'error' => $e->getMessage()], 500);
+        }
+    }
+}
     public function getChildCountInGroups()
 {
     $morningSessionCounts = Group::where('time', ['08:00 AM - 03:00 PM'])

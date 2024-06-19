@@ -200,7 +200,6 @@
                                             <tbody id="childrenTableBody">
                                                 <!-- Dynamic rows will be appended here by JavaScript -->
                                             </tbody>
-                                        </table
                                         </table>
                                         <div id="error-message" class="text-danger"></div>
                                     </div>
@@ -259,7 +258,6 @@
             </div>
         </div>
     </div>
-
     <!-- base:js -->
     <script src="../../vendors/base/vendor.bundle.base.js"></script>
     <!-- endinject -->
@@ -273,8 +271,8 @@
     <!-- Custom js for this page-->
     <!-- End custom js for this page -->
 
-    <!-- Custom script to fetch and display guardians -->
-    <!-- Custom script to fetch and display children and their guardians -->
+    <!-- Custom script to fetch and display caregivers -->
+    <!-- Custom script to fetch and display children and their caregivers -->
 
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -302,6 +300,31 @@
                 });
             }
 
+            function fetchGroupIdbyTimeAndCaregiver(timeslot, caregiverId) {
+                const token = sessionStorage.getItem('token');
+                $.ajax({
+                    url: '/api/groupid-time-caregiver',
+                    method: 'GET',
+                    data: { 
+                        time: timeslot,
+                        caregiver_id: caregiverId 
+                    },
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    success: function(data) {
+                        let groupIds = data.group_ids;
+
+                        // Automatically fetch children for the first group
+                        if (groupIds.length > 0) {
+                            fetchChildrenByGroupId(groupIds[0]);
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error fetching group IDs:', error);
+                        alert('Error fetching group IDs: ' + error.responseText);
+                    }
+                });
+            }
+
             function fetchChildrenByGroupId(groupId) {
                 const token = sessionStorage.getItem('token');
                 $.ajax({
@@ -317,7 +340,6 @@
                         }
                     },
                     error: function () {
-                        // Instead of showing an error message, we handle no data case
                         $('#childrenTableBody').empty().append('<tr><td colspan="9">No children found for the selected group</td></tr>');
                     }
                 });
@@ -338,7 +360,6 @@
                         }
                     },
                     error: function () {
-                        // Instead of showing an error message, we handle no data case
                         $('#childrenTableBody').empty().append('<tr><td colspan="9">No children found for the selected time slot</td></tr>');
                     }
                 });
@@ -381,41 +402,68 @@
             });
 
             $('#caregiver-dropdown').change(function () {
-                const selectedGroupId = $(this).val();
-                if (selectedGroupId === 'all') {
-                    const selectedTimeSlot = $('#time-slot-dropdown').val();
+                const selectedCaregiverId = $(this).val();
+                const selectedTimeSlot = $('#time-slot-dropdown').val();
+                if (selectedCaregiverId === 'all') {
                     fetchChildrenByTimeSlot(selectedTimeSlot);
                 } else {
-                    fetchChildrenByGroupId(selectedGroupId);
+                    fetchGroupIdbyTimeAndCaregiver(selectedTimeSlot, selectedCaregiverId);
                 }
             });
 
-            $('#confirmDeleteButton').click(function () {
-                const childId = $(this).data('child-id');
+            // Function to confirm delete action
+            window.confirmDelete = function (childId) {
+                $('#deleteModal').modal('show');
+                $('#confirmDeleteButton').off('click').on('click', function () {
+                    deleteChild(childId);
+                    $('#deleteModal').modal('hide');
+                });
+            };
+
+            // Function to delete a child record
+            function deleteChild(childId) {
                 const token = sessionStorage.getItem('token');
                 $.ajax({
-                    url: `/api/child/${childId}`,
-                    method: 'DELETE',
-                    headers: { 'Authorization': 'Bearer ' + token },
-                    success: function () {
-                        $('#deleteModal').modal('hide');
-                        const selectedTimeSlot = $('#time-slot-dropdown').val();
-                        const selectedGroupId = $('#caregiver-dropdown').val();
-                        fetchChildrenByTimeSlot(selectedTimeSlot);
-                        fetchChildrenByGroupId(selectedGroupId);
+                    url: '/api/child/update-status/' + childId,
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
                     },
-                    error: function () {
-                        $('#message').removeClass('alert-success').addClass('alert-danger').text('Error deleting child').show();
+                    data: JSON.stringify({ status: 'INACTIVE' }),
+                    success: function (response) {
+                        // Remove the child row from the table
+                        $('#childrenTableBody').find(`tr:has(button[onclick="confirmDelete(${childId})"])`).remove();
+                        showMessage('You successfully deleted the record.', 'success');
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error deleting child:', error);
+                        showMessage('You unsuccessfully deleted the record.', 'danger');
+                        $('#error-message').text('Error deleting child. Please try again later.');
                     }
                 });
-            });
+            }
+
+            // Function to show a message
+            function showMessage(message, type) {
+                const messageDiv = $('#message');
+                messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();
+                setTimeout(function () {
+                    messageDiv.fadeOut();
+                }, 5000);
+            }
 
             // Initial fetch
             const initialTimeSlot = $('#time-slot-dropdown').val();
             fetchCaregivers(initialTimeSlot);
             fetchChildrenByTimeSlot(initialTimeSlot);
-
         });
+
+        function signOut() {
+            // Clear the session storage and redirect to login page
+            sessionStorage.clear();
+            window.location.href = '/login';
+        }
     </script>
 </body>
 

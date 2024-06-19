@@ -65,8 +65,14 @@ public function getChildrenByGuardianId($guardian_id)
 
     // Check if the parent exists
     if ($guardian) {
-        // Retrieve all active children associated with this parent
-        $children = $guardian->children()->where('status', 'ACTIVE')->get();
+        // Retrieve all active children associated with this parent and join with child_groups, groups, and caregivers
+        $children = $guardian->children()
+            ->where('children.status', 'ACTIVE')
+            ->join('child_groups', 'children.id', '=', 'child_groups.child_id')
+            ->join('groups', 'child_groups.group_id', '=', 'groups.id')
+            ->join('caregivers', 'groups.caregiver_id', '=', 'caregivers.id')
+            ->select('children.*', 'groups.id as group_id', 'caregivers.name as caregiver_name')
+            ->get();
 
         return response()->json([
             'children' => $children,
@@ -102,32 +108,32 @@ public function getChildrenByGuardianId($guardian_id)
     }
     
 
-    // Update child status
-    public function updateChildStatus(Request $request, $id)
-    {
-        // validate the request data
-        $request->validate([
-            'status' => 'required|in:INACTIVE', // Update the validation rule to require and only accept 'Taken'
-            // Add validation rules for other fields you want to update
-        ]);
+    /// Update child status
+public function updateChildStatus(Request $request, $id)
+{
+    // validate the request data
+    $request->validate([
+        'status' => 'required|in:INACTIVE', // Update the validation rule to require and only accept 'INACTIVE'
+        // Add validation rules for other fields you want to update
+    ]);
 
-        // retrieve the sickness record by ID
-        $child = Child::find($id);
+    // retrieve the child record by ID
+    $child = Child::find($id);
 
-        // check if the sickness record exists
-        if (!$child) {
-            return response()->json(['message' => 'child record not found'], 404);
-        }
-
-        // Update the status field
-        $child->status = $request->input('status');
-
-        // Save the changes to the database
-        $child->save();
-
-        // Return a success response
-        return response()->json(['message' => 'child record updated successfully', 'child' => $child]);
+    // check if the child record exists
+    if (!$child) {
+        return response()->json(['message' => 'Child record not found'], 404);
     }
+
+    // Update the status field
+    $child->status = $request->input('status');
+
+    // Save the changes to the database
+    $child->save();
+
+    // Return a success response
+    return response()->json(['message' => 'Child record updated successfully', 'child' => $child]);
+}
 
     /**
      * Display a listing of the resource.
