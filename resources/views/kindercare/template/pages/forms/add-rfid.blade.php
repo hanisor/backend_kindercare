@@ -154,9 +154,7 @@
                       </div>
                     </div>
                   </div>
-                  <div id="errorMessage" class="alert alert-danger d-none" role="alert">
-                    Error fetching RFID number. Please try again.
-                  </div>
+                  
                 </div>
               </div>
               </div>
@@ -193,7 +191,7 @@
 
   async function fetchRFID() {
     try {
-      const response = await fetch('/rfid/latest  ');
+      const response = await fetch('/rfid/latest');
       const data = await response.json();
       if (data.rfid) {
         rfidInput.value = data.rfid;
