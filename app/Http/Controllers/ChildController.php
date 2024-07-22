@@ -10,6 +10,7 @@ use App\Http\Requests\StoreChildRequest;
 use App\Http\Requests\UpdateChildRequest;
 use Illuminate\Http\JsonResponse;
 use App\Models\Guardian;
+use Illuminate\Support\Facades\Log;
 
 
 class ChildController extends Controller
@@ -107,6 +108,81 @@ public function getChildrenByGuardianId($guardian_id)
         return response()->json($children);
     }
     
+    public function getChildById($childId) {
+        // Retrieve child record by child ID where the child's status is ACTIVE
+        $child = Child::where('id', $childId)
+                      ->where('status', 'ACTIVE')
+                      ->first();
+        
+        if ($child) {
+            return response()->json($child);
+        } else {
+            return response()->json(['message' => 'Child not found or inactive'], 404);
+        }
+    }
+    
+    
+
+  public function updateChild(Request $request, $id)
+{
+    try {
+        // Log incoming request data
+        Log::info('Received update request for child ID: ' . $id);
+        Log::info('Request Data: ', $request->all());
+
+        // retrieve the child by ID
+        $child = Child::find($id);
+
+        // check if the child exists
+        if (!$child) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // validate the request data
+        $validatedData = $request->validate([
+            'name' => 'sometimes|required|string',
+            'my_kid_number' => 'sometimes|required|string',
+            'date_of_birth' => 'sometimes|required|string',
+            'gender' => 'sometimes|required|string',
+            'allergy' => 'sometimes|required|string',
+            'status' => 'sometimes|required|string',
+            // Add validation rules for other fields you want to update
+        ]);
+
+        // Log validated data
+        Log::info('Validated Data: ', $validatedData);
+
+        // Update the child's attributes if they are provided in the request
+        foreach ($validatedData as $key => $value) {
+            if (!is_null($value)) {
+                $child->$key = $value;
+            }
+        }
+
+        // Save the changes to the database
+        $child->save();
+
+        // Return a success response
+        return response()->json(['message' => 'User updated successfully', 'child' => $child]);
+    } catch (ValidationException $exception) {
+        // Handle validation errors
+        Log::error('Validation Error: ' . $exception->getMessage());
+        return response()->json(['message' => $exception->getMessage()], 422);
+    } catch (QueryException $exception) {
+        // Check if the exception is due to unique constraint violation
+        if ($exception->errorInfo[1] === 1062) {
+            Log::error('Database Error: Phone number already exists');
+            return response()->json(['message' => 'Phone number already exists'], 422);
+        }
+        // Handle other types of database errors if needed
+        Log::error('Database Error: ' . $exception->getMessage());
+        return response()->json(['message' => 'Database error'], 500);
+    } catch (\Exception $exception) {
+        // Handle unexpected errors
+        Log::error('Unexpected Error: ' . $exception->getMessage());
+        return response()->json(['message' => 'Unexpected error occurred'], 500);
+    }
+}
 
     /// Update child status
 public function updateChildStatus(Request $request, $id)

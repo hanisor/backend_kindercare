@@ -339,80 +339,92 @@
         });
     }
 
-    // Helper function to format time in 12-hour format
-    function formatTime(time) {
-        if (!time) return 'No Record';
-        const [hours, minutes, seconds] = time.split(':');
-        let hour = parseInt(hours);
-        const period = hour >= 12 ? 'PM' : 'AM';
-        hour = hour % 12 || 12; // Convert to 12-hour format
-        return `${hour}:${minutes}:${seconds} ${period}`;
-    }
+   // Helper function to format time in 12-hour format with local timezone conversion
+function formatTime(utcTime) {
+    if (!utcTime) return 'No Record';
+    
+    // Parse the UTC time string
+    const date = new Date(utcTime);
+    
+    // Convert to local time string
+    const options = {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+    };
+    
+    // Use the local timezone
+    return date.toLocaleTimeString('en-US', options);
+}
+
+
 
     
-        // Function to fetch attendance
-        function fetchAttendance(groupId) {
-            const selectedDate = dateInput.value;
+         // Function to fetch attendance
+    function fetchAttendance(groupId) {
+        const selectedDate = dateInput.value;
 
-            // Clear existing table body
-            attendanceTableBody.innerHTML = '';
+        // Clear existing table body
+        attendanceTableBody.innerHTML = '';
 
-            // Display a loading message
-            const loadingRow = document.createElement('tr');
-            const loadingCell = document.createElement('td');
-            loadingCell.colSpan = 5;
-            loadingCell.textContent = 'Loading...';
-            loadingRow.appendChild(loadingCell);
-            attendanceTableBody.appendChild(loadingRow);
+        // Display a loading message
+        const loadingRow = document.createElement('tr');
+        const loadingCell = document.createElement('td');
+        loadingCell.colSpan = 5;
+        loadingCell.textContent = 'Loading...';
+        loadingRow.appendChild(loadingCell);
+        attendanceTableBody.appendChild(loadingRow);
 
-            const token = sessionStorage.getItem('token');
-            if (!token) {
-                errorMessage.textContent = 'Unauthorized. Please log in again.';
-                return;
-            }
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+            errorMessage.textContent = 'Unauthorized. Please log in again.';
+            return;
+        }
 
-            axios.post('/api/attendanceTable/child', {
-                child_group_id: groupId,
-                date_time_arrive: selectedDate
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(response => {
-                console.log('Response from backend:', response.data);
+        axios.post('/api/attendanceTable/child', {
+    child_group_id: groupId,
+    date_time_arrive: selectedDate
+}, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
+    console.log('Response from backend:', response.data);
 
-                attendanceTableBody.innerHTML = '';
-                const attendanceData = response.data.attendance_by_day;
+    attendanceTableBody.innerHTML = '';
+    const attendanceData = response.data.attendance_by_day;
 
-                if (attendanceData && Object.keys(attendanceData).length > 0) {
-                    // Update the table body accordingly
-                    for (const [date, records] of Object.entries(attendanceData)) {
-                        records.forEach(record => {
-                            const row = document.createElement('tr');
-                            const status = record.date_time_arrive ? 'Present' : 'Absent'; // Check if date_time_arrive is defined
-                            const statusClass = status === 'Present' ? 'badge-success' : 'badge-danger'; // Determine status class
-                            row.innerHTML = `
-                                <td>${date}</td>
-                                <td>${record.child_name}</td>
-                                <td>${formatTime(record.date_time_arrive)}</td> <!-- Format arrival time -->
-                                <td>${formatTime(record.date_time_leave)}</td> <!-- Format departure time -->
-                                <td><label class="badge ${statusClass}">${status}</label></td> <!-- Add label with appropriate class -->
-                            `;
-                            attendanceTableBody.appendChild(row);
-                        });
-                    }
-                } else {
-                    const noDataRow = document.createElement('tr');
-                    const noDataCell = document.createElement('td');
-                    noDataCell.colSpan = 5;
-                    noDataCell.textContent = 'No data available for the selected date and session.';
-                    noDataRow.appendChild(noDataCell);
-                    attendanceTableBody.appendChild(noDataRow);
-                }
-            }).catch(error => {
-                errorMessage.textContent = 'An error occurred while fetching attendance data. Please try again.';
+    if (attendanceData && Object.keys(attendanceData).length > 0) {
+        // Update the table body accordingly
+        for (const [date, records] of Object.entries(attendanceData)) {
+            records.forEach(record => {
+                const row = document.createElement('tr');
+                const status = record.date_time_arrive ? 'Present' : 'Absent'; // Check if date_time_arrive is defined
+                const statusClass = status === 'Present' ? 'badge-success' : 'badge-danger'; // Determine status class
+                row.innerHTML = `
+                    <td>${date}</td>
+                    <td>${record.child_name}</td>
+                    <td>${formatTime(record.date_time_arrive)}</td> <!-- Format arrival time -->
+                    <td>${formatTime(record.date_time_leave)}</td> <!-- Format departure time -->
+                    <td><label class="badge ${statusClass}">${status}</label></td> <!-- Add label with appropriate class -->
+                `;
+                attendanceTableBody.appendChild(row);
             });
         }
+    } else {
+        const noDataRow = document.createElement('tr');
+        const noDataCell = document.createElement('td');
+        noDataCell.colSpan = 5;
+        noDataCell.textContent = 'No data available for the selected date and session.';
+        noDataRow.appendChild(noDataCell);
+        attendanceTableBody.appendChild(noDataRow);
+    }
+}).catch(error => {
+    errorMessage.textContent = 'An error occurred while fetching attendance data. Please try again.';
+});
+
+    }
 
         // Function to handle group ID and attendance
         function handleGroupAndAttendance(timeSlot, caregiverId) {

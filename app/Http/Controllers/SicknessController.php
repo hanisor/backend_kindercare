@@ -61,7 +61,7 @@ class SicknessController extends Controller
         // Check if the parent exists
         if ($child) {
             // Retrieve all children associated with this parent
-            $sicknesses = $child->sicknesses()->get();
+            $sicknesses = $child->sicknesses()->where('status', 'Pending')->get();
 
             return response()->json([
                 'sicknesses' => $sicknesses,

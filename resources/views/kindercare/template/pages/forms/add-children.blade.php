@@ -219,7 +219,6 @@
                           <select class="js-example-basic-single w-100" id="time-slot-dropdown" name= "time-slot-dropdown">
                             <option value="08:00 AM - 03:00 PM">08:00 AM - 03:00 PM</option>
                             <option value="02:00 PM - 06:00 PM">02:00 PM - 06:00 PM</option>
-                            <option value="08:00 AM - 06:00 PM">08:00 AM - 06:00 PM</option>
                           </select>
                         </div>
                       </div>

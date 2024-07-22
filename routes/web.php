@@ -139,10 +139,11 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
     // Children
     Route::get('child/by-guardianId/{guardian_id}', [ChildController::class, 'getChildrenByGuardianId']);
-    Route::get('child-data', [ChildController::class, 'getChild']);
     Route::get('child-with-guardianName', [ChildController::class, 'getGuardianNameforChild']);
+    Route::get('child-byId/{childId}', [ChildController::class, 'getChildById']);
     Route::post('add-child', [ChildController::class, 'add_child']);
     Route::put('child/update-status/{id}', [ChildController::class,'updateChildStatus']);
+    Route::put('child/update-profile/{id}', [ChildController::class,'updateChild']);
 
 
     // Sickness

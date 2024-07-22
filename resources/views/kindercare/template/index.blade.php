@@ -180,18 +180,7 @@
     </div>
 </div>
 
-<div class="col-lg-2 grid-margin stretch-card">
-    <div class="card">
-        <div class="card-body pb-0" style="background-color: #fdffb6;">
-            <div class="d-flex align-items-center justify-content-between">
-                <h2 id="fullDaySessionCount" class="text-warning font-weight-bold">Loading...</h2>
-                <i class="mdi mdi-folder-outline mdi-18px text-warning"></i>
-            </div>
-        </div>
-        <canvas id="projects"></canvas>
-        <div class="line-chart-row-title text-warning">Full Day Session</div>
-    </div>
-</div>
+
 
 					<div class="row">
             <div class="col-sm-6 grid-margin grid-margin-md-0 stretch-card">
@@ -201,7 +190,7 @@
                       <h4 class="card-title">Children Sessions</h4>
                     </div>
                     <div class="childrenSession padding-reduced">
-                        <canvas id="childrenSession"></canvas>
+                    <canvas id="childrenSession"></canvas>
                     </div>
                   </div>
                 </div>
@@ -331,36 +320,7 @@
       fetchCaregiverCountByTime();
     });
   </script>
-        $(document).ready(function(){
-          const token = sessionStorage.getItem('token');
 
-            // Retrieve the caregiver ID from the data attribute
-            var caregiverId = $('#profileDropdown').data('caregiver-id');
-            
-            // Log the caregiver ID to console for debugging
-            console.log("Caregiver ID:", caregiverId);
-
-            $.ajax({
-                url: '/api/get-caregiverUsername/' + caregiverId,
-                method: 'GET',
-                dataType: 'json', // Specify the expected data type of the response
-                headers: {
-                    'Authorization': 'Bearer ' + token // Include the token in the request headers
-                },
-                success: function(data) {
-                    if(data.caregiverUsername) {
-                      console.log("Caregiver data.caregiverUsername:", data.caregiverUsername);
-
-                        $('.nav-profile-name').text(data.caregiverUsername);
-                    }
-                },
-                error: function(error) {
-                    console.log('Error:', error);
-                }
-            });
-
-        });
-    </script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const token = sessionStorage.getItem('token');
@@ -376,13 +336,11 @@
             .then(data => {
                 document.getElementById('morningSessionCount').textContent = data.morningSessionCounts;
                 document.getElementById('afternoonSessionCount').textContent = data.afternoonSessionCounts;
-                document.getElementById('fullDaySessionCount').textContent = data.fullDaySessionCounts;
             })
             .catch(error => {
                 console.error('Error fetching group counts:', error);
                 document.getElementById('morningSessionCount').textContent = 'Error';
                 document.getElementById('afternoonSessionCount').textContent = 'Error';
-                document.getElementById('fullDaySessionCount').textContent = 'Error';
             }); 
         }
 
