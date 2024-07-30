@@ -283,6 +283,7 @@ $group = Group::find($caregiver_id);
         }
     }
 }
+
     public function getChildCountInGroups()
 {
     $morningSessionCounts = Group::where('time', ['08:00 AM - 03:00 PM'])

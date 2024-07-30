@@ -178,6 +178,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::put('caregiver/update-profile/{id}', [CaregiverController::class,'updateCaregiver']);
     Route::post('logout', [CaregiverController::class, 'logout']);
     Route::put('caregiver/update-status/{id}', [CaregiverController::class,'updateCaregiverStatus']);
+    Route::get('get-caregiver/{guardian_id}', [CaregiverController::class, 'getCaregiverByChildren']);
 
 
     // Rfid
@@ -210,6 +211,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
     Route::get('get-child-group-time', [ChildGroupController::class, 'getChildGroupbytime']);
     Route::get('childgroup-count', [ChildGroupController::class, 'getChildCountInGroups']);
     Route::post('child-group', [ChildGroupController::class, 'addChildGroup']);
+    Route::get('child-group/{caregiver_id}/{parent_id}', [ChildGroupController::class, 'getChildFromCaregiverId']);
 
     // Behaviour
     Route::get('behaviour/by-childId/{child_id}', [BehaviourController::class, 'getBehaviourByChildId']);

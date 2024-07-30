@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth; // import the Auth facade
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use App\Models\Guardian;
+
 
 class CaregiverController extends Controller
 {
@@ -223,6 +225,41 @@ class CaregiverController extends Controller
         ]);
     }
     
+    public function getCaregiverByChildren($guardian_id)
+    {
+        try {
+            // Validate the input
+            $guardian = Guardian::find($guardian_id);
+            if (!$guardian) {
+                return response()->json(['message' => 'Invalid guardian ID'], 404);
+            }
+    
+            // Fetch the children associated with the guardian
+            $children = DB::table('children')->where('guardian_id', $guardian_id)->pluck('id');
+    
+            // Fetch the groups associated with the children
+            $groups = DB::table('child_groups')->whereIn('child_id', $children)->pluck('group_id');
+    
+            // Fetch the caregivers associated with these groups
+            $caregivers = Caregiver::select('caregivers.*')
+                ->join('groups', 'caregivers.id', '=', 'groups.caregiver_id')
+                ->whereIn('groups.id', $groups)
+                ->get();
+    
+            // Check if caregivers are found
+            if ($caregivers->isEmpty()) {
+                return response()->json(['message' => 'No caregivers found for the provided guardian ID'], 404);
+            }
+    
+            // Return the caregivers data in response
+            return response()->json(['caregivers' => $caregivers], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch caregivers', 'error' => $e->getMessage()], 500);
+        }
+    }
+    
+
+
     
 
     public function getCaregiverName($caregiver_id)

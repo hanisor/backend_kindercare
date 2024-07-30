@@ -86,7 +86,7 @@ class NoteController extends Controller
         if ($caregiver) {
             // Retrieve all note associated with this caregiver
             // $notes = $guardian->notes() (this notes is from model Guardian) ->get();
-            $unreadNotes = $caregiver->notes()->where('status', 'UNREAD')->get();
+            $unreadNotes = $caregiver->notes()->get();
 
             return response()->json([
                 'notes' => $unreadNotes,
