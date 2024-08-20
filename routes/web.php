@@ -15,6 +15,7 @@ use App\Http\Controllers\ChildGroupController;
 use App\Http\Controllers\BehaviourController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 
 use App\Models\Guardian;
@@ -125,6 +126,13 @@ Route::post('/caregiver-register', [CaregiverController::class,'registerCaregive
 Route::get('/caregiver-login',  [CaregiverController::class, 'caregiverLogin']) -> name('signin');
 Route::post('/login', [CaregiverController::class,'login']) -> name ('login.post');
 
+Route::post('/api/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+// Example of Laravel's built-in routes for password reset
+Route::get('password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])
+    ->name('password.reset');
+Route::post('password/reset', [ForgotPasswordController::class, 'reset']);
+
+
 Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
 
@@ -234,3 +242,17 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
 
 });
 
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

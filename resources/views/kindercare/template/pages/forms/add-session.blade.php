@@ -21,6 +21,11 @@
 </head>
 
 <body>
+<div id="customAlert" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); width:80%; max-width: 500px; background-color:#f8d7da; color:#721c24; padding:20px 30px; border-radius:8px; border:1px solid #f5c6cb; box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2); z-index:1000; text-align:center;">
+    <span id="alertMessage" style="font-size:16px; display:block; margin-bottom:10px;"></span>
+    <button onclick="closeAlert()" style="background-color:#721c24; color:#ffffff; border:none; border-radius:4px; padding:8px 16px; font-size:14px; cursor:pointer;">Close</button>
+</div>
+
   <div class="container-scroller">
     <!-- partial:partials/_horizontal-navbar.html -->
         
@@ -166,6 +171,8 @@
                   </div>
                 </div>
               </div>
+           
+
 
               <div class="col-md-6 grid-margin grid-margin-md-0 stretch-card">
                 <div class="card">
@@ -401,37 +408,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Function to add group asynchronously
   function addGroup(sessionId, timeSlot, caregiverIds, age) {
-        const token = sessionStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
-        // Prepare the data object to send to the server
-        var data = {
-            session_id: sessionId,
-            caregiver_ids: caregiverIds, // Note the change here to send as an array
-            time: timeSlot,
-            age: age
-        };
+  var data = {
+    session_id: sessionId,
+    caregiver_ids: caregiverIds,
+    time: timeSlot,
+    age: age
+  };
 
-        fetch('/api/add-group', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            if (data.success) {
-                alert('Groups added successfully');
-            } else {
-                alert('Error: ' + data.errors.join(', '));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+  fetch('/api/add-group', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    if (data.success) {
+      showAlert('Group added successfully!');
+    } else {
+      alert('Error: ' + data.errors.join(', '));
     }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showAllert('An error occurred while adding the group.');
+  });
+}
+
 });
 </script>
 
@@ -468,6 +476,51 @@ function signOut() {
 }
 
 </script>
+<script>
+function showAlert(message) {
+  document.getElementById('alertMessage').innerText = message;
+  document.getElementById('customAlert').style.display = 'block';
+}
+
+function closeAlert() {
+  document.getElementById('customAlert').style.display = 'none';
+}
+
+// Example function to demonstrate the custom alert
+function addGroup(sessionId, timeSlot, caregiverIds, age) {
+  const token = sessionStorage.getItem('token');
+
+  var data = {
+    session_id: sessionId,
+    caregiver_ids: caregiverIds,
+    time: timeSlot,
+    age: age
+  };
+
+  fetch('/api/add-group', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    if (data.success) {
+      showAlert('Group added successfully!');
+    } else {
+      showAlert('Error: ' + data.errors.join(', '));
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showAlert('An error occurred while adding the group.');
+  });
+}
+</script>
+
 </body>
 
 </html>

@@ -199,7 +199,6 @@
     <!-- page-body-wrapper ends -->
 </div>
 <!-- container-scroller -->
-
 <!-- Modal for delete confirmation -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -210,7 +209,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="color: black;">
                 Are you sure you want to delete this caregiver?
             </div>
             <div class="modal-footer">
@@ -235,33 +234,37 @@
     const token = sessionStorage.getItem('token');
 
     function confirmDelete(caregiverId) {
-        $('#deleteModal').modal('show');
-        $('#confirmDeleteButton').off('click').on('click', function() {
-            deleteCaregiver(caregiverId);
-            $('#deleteModal').modal('hide');
-        });
-    }
+    $('#deleteModal').modal('show');
+    $('#confirmDeleteButton').off('click').on('click', function() {
+        deleteCaregiver(caregiverId);
+        $('#deleteModal').modal('hide');
+    });
+    $('#deleteModal').find('.btn-secondary').off('click').on('click', function() {
+        $('#deleteModal').modal('hide');
+        $('#message').hide(); // Hide message if any
+    });
+}
 
-    function deleteCaregiver(caregiverId) {
-        $.ajax({
-            url: '/api/caregiver/update-status/' + caregiverId,
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify({ status: 'INACTIVE' }),
-            success: function(response) {
-                $('#caregiver-table-body').find(`tr:has(button[onclick="confirmDelete(${caregiverId})"])`).remove();
-                showMessage('You successfully deleted the record.', 'success');
-            },
-            error: function(xhr, status, error) {
-                console.log('Error deleting caregiver:', error);
-                showMessage('You unsuccessfully deleted the record.', 'danger');
-                $('#error-message').text('Error deleting caregiver. Please try again later.');
-            }
-        });
-    }
+function deleteCaregiver(caregiverId) {
+    $.ajax({
+        url: '/api/caregiver/update-status/' + caregiverId,
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({ status: 'INACTIVE' }),
+        success: function(response) {
+            $('#caregiver-table-body').find(`tr:has(button[onclick="confirmDelete(${caregiverId})"])`).remove();
+            showMessage('You successfully deleted the record.', 'success');
+        },
+        error: function(xhr, status, error) {
+            console.log('Error deleting caregiver:', error);
+            showMessage('You unsuccessfully deleted the record.', 'danger');
+            $('#error-message').text('Error deleting caregiver. Please try again later.');
+        }
+    });
+}
 
     function showMessage(message, type) {
         const messageDiv = $('#message');

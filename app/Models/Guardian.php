@@ -29,6 +29,12 @@ class Guardian extends Authenticatable implements AuthenticatableContract
         'rfid_id'
     ];
 
+     // Hidden attributes
+     protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+    
     public function children()
     {
         return $this->hasMany(Child::class, 'guardian_id');

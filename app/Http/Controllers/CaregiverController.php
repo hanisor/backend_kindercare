@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Password;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -369,6 +370,8 @@ class CaregiverController extends Controller
         return response()->json(['message' => 'caregiver record updated successfully', 'caregiver' => $caregiver]);
     }
 
+
+    
     /**
      * Display a listing of the resource.
      */

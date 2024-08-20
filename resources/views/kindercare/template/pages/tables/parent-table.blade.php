@@ -303,37 +303,39 @@
         fetchGuardians();
     });
 
-    function confirmDelete(guardianId) {
-        $('#deleteModal').modal('show');
-        $('#confirmDeleteButton').off('click').on('click', function() {
-            deleteGuardian(guardianId);
-            $('#deleteModal').modal('hide');
-        });
-    }
+    function confirmDelete(caregiverId) {
+    $('#deleteModal').modal('show');
+    $('#confirmDeleteButton').off('click').on('click', function() {
+        deleteCaregiver(caregiverId);
+        $('#deleteModal').modal('hide');
+    });
+    $('#deleteModal').find('.btn-secondary').off('click').on('click', function() {
+        $('#deleteModal').modal('hide');
+        $('#message').hide(); // Hide message if any
+    });
+}
 
-    function deleteGuardian(guardianId) {
-        const token = sessionStorage.getItem('token');
-        
-        $.ajax({
-            url: '/api/guardian/update-status/' + guardianId,
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify({ status: 'INACTIVE' }),
-            success: function(response) {
-                // Remove the guardian row from the table
-                $('#guardian-table-body').find(`tr:has(button[onclick="confirmDelete(${guardianId})"])`).remove();
-                showMessage('You successfully deleted the record.', 'success');
-            },
-            error: function(xhr, status, error) {
-                console.log('Error deleting guardian:', error);
-                showMessage('You unsuccessfully deleted the record.', 'danger');
-                $('#error-message').text('Error deleting guardian. Please try again later.');
-            }
-        });
-    }
+function deleteCaregiver(caregiverId) {
+    $.ajax({
+        url: '/api/guardian/update-status/' + guardianId,
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({ status: 'INACTIVE' }),
+        success: function(response) {
+            $('#guardian-table-body').find(`tr:has(button[onclick="confirmDelete(${guardianId})"])`).remove();
+            showMessage('You successfully deleted the record.', 'success');
+        },
+        error: function(xhr, status, error) {
+            console.log('Error deleting caregiver:', error);
+            showMessage('You unsuccessfully deleted the record.', 'danger');
+            $('#error-message').text('Error deleting caregiver. Please try again later.');
+        }
+    });
+}
+
 
     // Event listener for the search box
     $('#searchBox').on('keyup', function() {

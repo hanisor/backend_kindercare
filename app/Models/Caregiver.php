@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Laravel\Sanctum\hasApiTokens;
 use Illuminate\Foundation\Auth\User;
 
+
 class Caregiver extends Authenticatable implements AuthenticatableContract
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -24,6 +25,12 @@ class Caregiver extends Authenticatable implements AuthenticatableContract
         'image',
         'status',
         'role',
+    ];
+
+     // Hidden attributes
+     protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     public function scopeByEmail($query, $email)
@@ -42,5 +49,4 @@ class Caregiver extends Authenticatable implements AuthenticatableContract
     }
 
      public $timestamps = false;
-
 }

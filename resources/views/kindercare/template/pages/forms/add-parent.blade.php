@@ -21,6 +21,43 @@
 </head>
 
 <body onload="generatePassword()">
+ <!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-success">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="successModalLabel">Registration Successful</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="color: black;">
+        <p class="mb-0">The parent has been successfully registered. You can now proceed to the parent table.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="redirectToParentTable()">Go to Parent Table</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="errorModalLabel">Registration Failed</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="color: black;">
+        <p class="mb-0">Please fill in all the required fields to proceed with registration.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="container-scroller">
     <!-- partial:partials/_horizontal-navbar.html -->
         
@@ -251,8 +288,10 @@
   <!-- End custom js for this page-->
 
 <script>
+// Function to generate a password
+// Function to generate a password
 function generatePassword() {
-    var length = 12; // Define the desired length of the password
+    var length = 12;
     var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+<>?";
     var password = "";
     for (var i = 0, n = charset.length; i < length; ++i) {
@@ -261,10 +300,10 @@ function generatePassword() {
     document.getElementById('password').value = password;
 }
 
+// Load RFID options when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     generatePassword();
 
-    // Your existing code for fetching RFID data
     const token = sessionStorage.getItem('token');
     fetch('/api/get-rfid', {
         method: 'GET',
@@ -278,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data.forEach(rfid => {
             const option = document.createElement('option');
             option.value = rfid.id;
-            option.textContent = rfid.number; // Assuming 'number' is the field you want to display
+            option.textContent = rfid.number;
             rfidSelect.appendChild(option);
         });
     })
@@ -286,11 +325,10 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error fetching RFIDs:', error);
     });
 });
-    
 
+// Function to validate form and register a guardian
 function addGuardian() {
-    var status = "ACTIVE";
-    var role = "PARENT";
+    // Collect form data
     var name = document.getElementById('name').value;
     var ic_number = document.getElementById('ic_number').value;
     var phone_number = document.getElementById('phone_number').value;
@@ -300,25 +338,34 @@ function addGuardian() {
     var image = document.getElementById('image').files[0];
     var rfid_id = document.getElementById('rfid_id').value;
 
-    const data = {
-        name: name,
-        ic_number: ic_number,
-        phone_number: phone_number,
-        email: email,
-        username: username,
-        password: password,
-        image: image,
-        role: role,
-        status: status,
-        rfid_id: rfid_id
-    };
+    // Validate the form fields
+    if (!name || !ic_number || !phone_number || !email || !username || !password || !rfid_id) {
+        // Show error modal if validation fails
+        var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+        return;
+    }
 
+    // Prepare the data
+    var formData = new FormData();
+    formData.append('name', name);
+    formData.append('ic_number', ic_number);
+    formData.append('phone_number', phone_number);
+    formData.append('email', email);
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('image', image);
+    formData.append('role', 'PARENT');
+    formData.append('status', 'ACTIVE');
+    formData.append('rfid_id', rfid_id);
+
+    // Send the request to register the guardian
     fetch('/api/guardian-register', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
         },
-        body: JSON.stringify(data)
+        body: formData
     })
     .then(response => {
         if (response.ok) {
@@ -328,49 +375,49 @@ function addGuardian() {
         }
     })
     .then(data => {
-        // Success handling
-        console.log(data);
-        // Redirect to success URL
-        window.location.href = '/parent-table';
+        // Show success modal if registration is successful
+        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
     })
     .catch(error => {
-        // Error handling
-        console.error('Error adding guardian:', error);
-        // Show error message or handle as needed
-        // Redirect to error URL
-        window.location.href = '/caregiver-homepage';
+        // Show error modal if there's an error
+        var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
     });
 }
 
-function signOut() {
-  const token = sessionStorage.getItem('token');
-
-  const data = {};
-
-  fetch('/api/logout', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token // Ensure token is stored and retrieved correctly
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Network response was not ok.');
-    }
-  })
-  .then(data => {
-    console.log('Response:', data);
-    // Redirect to the login page
-    window.location.replace('/caregiver-login');
-  })
-  .catch(error => {
-    console.error('Error during fetch:', error);
-  });
+// Function to redirect to parent table after success
+function redirectToParentTable() {
+    window.location.href = '/parent-table';
 }
+
+// Function to handle sign-out
+function signOut() {
+    const token = sessionStorage.getItem('token');
+
+    fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Network response was not ok.');
+        }
+    })
+    .then(data => {
+        window.location.replace('/caregiver-login');
+    })
+    .catch(error => {
+        console.error('Error during fetch:', error);
+    });
+}
+
+
 </script>
 </body>
 

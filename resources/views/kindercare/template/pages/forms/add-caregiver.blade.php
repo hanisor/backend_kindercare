@@ -21,6 +21,43 @@
 </head>
 
 <body>
+  <!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-success">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="successModalLabel">Success</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="color: black;">
+        <p class="mb-0">The caregiver has been successfully registered.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="redirectToCaregiverTable()">Go to Caregiver Table</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="color: black;">
+        <p class="mb-0">Please fill in all required fields.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container-scroller">
     <!-- partial:partials/_horizontal-navbar.html -->
         
@@ -237,13 +274,11 @@
   <script src="js/select2.js"></script>
   <!-- End custom js for this page-->
 
+<!-- Include Bootstrap JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-
-  <script>
-
+<script>
 function addCaregiver() {
-    var status = "ACTIVE";
-    var role = "CAREGIVER";
     var name = document.getElementById('name').value;
     var ic_number = document.getElementById('ic_number').value;
     var phone_number = document.getElementById('phone_number').value;
@@ -252,48 +287,56 @@ function addCaregiver() {
     var password = document.getElementById('password').value;
     var image = document.getElementById('image').files[0];
 
-    const data = {
-        name: name,
-        ic_number: ic_number,
-        phone_number: phone_number,
-        email: email,
-        username: username,
-        password: password,
-        image: image,
-        role: role,
-        status: status,
-    };
+    if (!name || !ic_number || !phone_number || !email || !username || !password) {
+        $('#errorModal').modal('show');
+        return;
+    }
+
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        $('#errorModal').modal('show');
+        return;
+    }
+
+    var formData = new FormData();
+    formData.append('name', name);
+    formData.append('ic_number', ic_number);
+    formData.append('phone_number', phone_number);
+    formData.append('email', email);
+    formData.append('username', username);
+    formData.append('password', password);
+    if (image) {
+        formData.append('image', image);
+    }
+    formData.append('role', 'CAREGIVER');
+    formData.append('status', 'ACTIVE');
 
     fetch('/api/caregiver-register', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        body: formData
     })
     .then(response => {
         if (response.ok) {
             return response.json();
         } else {
-            throw new Error('Failed to add guardian');
+            throw new Error('Failed to add caregiver');
         }
     })
     .then(data => {
-        // Success handling
-        console.log(data);
-        // Redirect to success URL
-        window.location.href = '/caregiver-table';
+        $('#successModal').modal('show');
     })
     .catch(error => {
-        // Error handling
-        console.error('Error adding guardian:', error);
-        // Show error message or handle as needed
-        // Redirect to error URL
-        window.location.href = '/caregiver-homepage';
+        console.error('Error adding caregiver:', error);
+        $('#errorModal').modal('show');
     });
 }
 
-  </script>
+function redirectToCaregiverTable() {
+    window.location.href = '/caregiver-table'; // Adjust the URL if necessary
+}
+</script>
+
+
    <script>
 
 function signOut() {
