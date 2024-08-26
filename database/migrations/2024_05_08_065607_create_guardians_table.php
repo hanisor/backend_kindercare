@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('email')->nullable()->unique();
             $table->string('username')->nullable(); 	
             $table->string('password')->nullable();
-            $table->binary('image')->nullable(); // Make the 'image' field nullable
             $table->string('role')->nullable();
             $table->string('status')->nullable();
             $table->string('remember_token')->nullable();

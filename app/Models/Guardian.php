@@ -24,7 +24,6 @@ class Guardian extends Authenticatable implements AuthenticatableContract
         'username',
         'email',
         'password',
-        'image',
         'status',
         'role',
         'rfid_id'

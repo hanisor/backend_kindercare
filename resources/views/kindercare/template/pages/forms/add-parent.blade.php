@@ -209,10 +209,6 @@
                           <label for="password">Password</label>
                           <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                         </div>
-                        <div class="form-group">
-                          <label for="image">Image</label>
-                          <input type="file" class="form-control-file" id="image" name="image">
-                        </div>
                        <!-- Fixed role and status fields -->
                         <input type="hidden" id="role" name="role" value="PARENT">
                         <input type="hidden" id="status" name="status" value="ACTIVE">
@@ -335,7 +331,6 @@ function addGuardian() {
     var email = document.getElementById('email').value;
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
-    var image = document.getElementById('image').files[0];
     var rfid_id = document.getElementById('rfid_id').value;
 
     // Validate the form fields
@@ -354,7 +349,6 @@ function addGuardian() {
     formData.append('email', email);
     formData.append('username', username);
     formData.append('password', password);
-    formData.append('image', image);
     formData.append('role', 'PARENT');
     formData.append('status', 'ACTIVE');
     formData.append('rfid_id', rfid_id);

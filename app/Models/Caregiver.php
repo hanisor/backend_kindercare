@@ -23,7 +23,6 @@ class Caregiver extends Authenticatable implements AuthenticatableContract
         'username',
         'email',
         'password',
-        'image',
         'status',
         'role',
     ];

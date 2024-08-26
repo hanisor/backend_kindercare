@@ -110,6 +110,17 @@ class GroupController extends Controller
             return response()->json(['message' => 'No caregivers found for the provided time slot'], 404);
         }
 
+        // Log the caregivers
+        \Log::info('Caregivers:', $caregivers->toArray());
+
+        // Encode the caregivers data to UTF-8
+        $caregivers = $caregivers->map(function ($caregiver) {
+            $caregiver->name = utf8_encode($caregiver->name);
+            $caregiver->ic_number = utf8_encode($caregiver->ic_number);
+            $caregiver->phone_number = utf8_encode($caregiver->phone_number);
+            return $caregiver;
+        });
+
         // Return the caregivers in the response
         return response()->json(['caregivers' => $caregivers], 200);
     } catch (\Illuminate\Validation\ValidationException $e) {
@@ -117,9 +128,11 @@ class GroupController extends Controller
             'errors' => $e->validator->errors()->all()
         ], 422);
     } catch (\Exception $e) {
+        \Log::error('Failed to fetch caregivers: ' . $e->getMessage());
         return response()->json(['message' => 'Failed to fetch caregivers', 'error' => $e->getMessage()], 500);
     }
 }
+
 
 
 public function getCaregiverIdByGroupId(Request $request)

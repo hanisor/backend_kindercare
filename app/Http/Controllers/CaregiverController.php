@@ -42,7 +42,6 @@ class CaregiverController extends Controller
             'password' => 'required|string|min:6',
             'status' => 'required|string',
             'role' => 'required|string',
-            'image' => 'nullable|image', // Allow the image field to be optional
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -59,7 +58,6 @@ class CaregiverController extends Controller
             'email' => $attrs['email'],
             'username' => $attrs['username'],
             'password' => bcrypt($attrs['password']),
-            'image' => $request->file('image') ? $request->file('image')->store('images') : null,
             'status' => 'ACTIVE', // Fixed value
             'role' => 'CAREGIVER',
         ]);
@@ -86,8 +84,7 @@ class CaregiverController extends Controller
             'password' => 'required|string|min:6',
             'status' => 'required|string',
             'role' => 'required|string',
-            'remember_token' => 'nullable|string', // Allow the image field to be optional
-            'image' => 'nullable|image', // Allow the image field to be optional
+            'remember_token' => 'nullable|string', 
         ]);
 
          // Assign default values for status and role
@@ -296,7 +293,6 @@ class CaregiverController extends Controller
                 'phone_number' => 'sometimes|required|string|unique:caregivers,phone_number,'.$id,
                 'username' => 'sometimes|required|string',
                 'email' => 'sometimes|required|string|unique:caregivers,email,'.$id,
-                'image' => 'sometimes|nullable|image', // Allow the image field to be optional
                 'status' => 'sometimes|required|string',
                 // Add validation rules for other fields you want to update
             ]);

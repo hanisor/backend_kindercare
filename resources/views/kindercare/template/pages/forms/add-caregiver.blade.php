@@ -20,7 +20,7 @@
   <link rel="shortcut icon" href="images/favicon.png" />
 </head>
 
-<body>
+<body onload="generatePassword()">
   <!-- Success Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -209,10 +209,7 @@
                           <label for="password">Password</label>
                           <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                         </div>
-                        <div class="form-group">
-                          <label for="image">Image</label>
-                          <input type="file" class="form-control-file" id="image" name="image">
-                        </div>
+                  
                        <!-- Fixed role and status fields -->
                         <input type="hidden" id="role" name="role" value="PARENT">
                         <input type="hidden" id="status" name="status" value="ACTIVE">
@@ -277,7 +274,46 @@
 <!-- Include Bootstrap JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+
 <script>
+    // Function to generate a random password with a minimum of 8 characters
+    function generateRandomPassword(length = 8) {
+      const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return password;
+    }
+
+    // Auto-fill the password field on page load
+    window.onload = function () {
+      const passwordField = document.getElementById("password");
+      passwordField.value = generateRandomPassword();
+    };
+
+    // Form validation and submission
+    document.getElementById("registerParent").addEventListener("click", function (event) {
+      event.preventDefault();
+      var name = document.getElementById("name").value;
+      var email = document.getElementById("email").value;
+      var password = document.getElementById("password").value;
+
+      if (name === "" || email === "" || password === "") {
+        // Show error modal if any field is empty
+        var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+        errorModal.show();
+      } else {
+        // Show success modal on successful registration
+        var successModal = new bootstrap.Modal(document.getElementById("successModal"));
+        successModal.show();
+      }
+    });
+
+    function redirectToCaregiverTable() {
+      window.location.href = "/caregiver-table";
+    }
+
 function addCaregiver() {
     var name = document.getElementById('name').value;
     var ic_number = document.getElementById('ic_number').value;
@@ -285,7 +321,6 @@ function addCaregiver() {
     var email = document.getElementById('email').value;
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
-    var image = document.getElementById('image').files[0];
 
     if (!name || !ic_number || !phone_number || !email || !username || !password) {
         $('#errorModal').modal('show');
@@ -305,9 +340,6 @@ function addCaregiver() {
     formData.append('email', email);
     formData.append('username', username);
     formData.append('password', password);
-    if (image) {
-        formData.append('image', image);
-    }
     formData.append('role', 'CAREGIVER');
     formData.append('status', 'ACTIVE');
 

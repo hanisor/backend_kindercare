@@ -135,9 +135,9 @@ class GuardianController extends Controller
     
             // validate the request data
             $validatedData = $request->validate([
+                'name' => 'sometimes|required|string',
                 'phone_number' => 'sometimes|required|string|unique:guardians,phone_number,'.$id,
                 'username' => 'sometimes|required|string',
-                'image' => 'sometimes|nullable|image', // Allow the image field to be optional
                 'status' => 'sometimes|required|string',
                 // Add validation rules for other fields you want to update
             ]);
