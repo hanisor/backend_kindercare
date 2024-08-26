@@ -98,8 +98,8 @@
                 </div>
                 <h4>Hello! let's get started</h4>
                 <h6 class="font-weight-light">Sign in to continue.</h6>
-                <form action="{{route('login.post')}}" method="POST" class="ms-auto me-auto mt-auto" style="width: 500px" id="loginForm">
-                  @csrf
+                <form action="{{ route('login.test') }}" method="POST" class="ms-auto me-auto mt-auto" style="width: 500px" id="loginForm">
+                @csrf
                   <div class="form-group">
                     <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Username">
                   </div>
@@ -209,7 +209,7 @@
           password: password
         };
 
-        fetch('/login', {
+        fetch('/caregiver-login-test', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

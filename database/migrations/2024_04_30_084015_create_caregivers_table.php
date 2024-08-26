@@ -22,6 +22,8 @@ return new class extends Migration
             $table->binary('image')->nullable(); // Make the 'image' field nullable
             $table->string('role')->nullable();
             $table->string('status')->nullable();
+            $table->string('remember_token')->nullable();
+
         });
     }
 

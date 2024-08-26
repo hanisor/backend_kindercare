@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Laravel\Sanctum\hasApiTokens;
 use Illuminate\Foundation\Auth\User;
+use App\Notifications\CustomResetPassword;
 
 
 class Caregiver extends Authenticatable implements AuthenticatableContract
@@ -49,4 +50,10 @@ class Caregiver extends Authenticatable implements AuthenticatableContract
     }
 
      public $timestamps = false;
+
+     public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPassword($token));
+    }
+
 }

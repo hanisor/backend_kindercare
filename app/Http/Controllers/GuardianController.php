@@ -32,6 +32,7 @@ class GuardianController extends Controller
             'password' => 'required|string|min:6',
             'status' => 'nullable|string',
             'role' => 'nullable|string',
+            'remember_token' => 'nullable|string',
             'image' => 'nullable|image', // Allow the image field to be optional
             'rfid_id' => 'required|integer|exists:rfids,id'
 
@@ -54,7 +55,8 @@ class GuardianController extends Controller
             'image' => $request->file('image') ? $request->file('image')->store('images') : null,
             'status' => $attrs['status'],// Fixed value
             'role' =>  $attrs['role'],
-            'rfid_id' => $attrs['rfid_id']
+            'rfid_id' => $attrs['rfid_id'],
+            'remember_token' => null, // Explicitly set remember_token to null
         ]);
 
          // Check if the guardian was successfully created

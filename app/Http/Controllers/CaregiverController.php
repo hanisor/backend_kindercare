@@ -86,6 +86,7 @@ class CaregiverController extends Controller
             'password' => 'required|string|min:6',
             'status' => 'required|string',
             'role' => 'required|string',
+            'remember_token' => 'nullable|string', // Allow the image field to be optional
             'image' => 'nullable|image', // Allow the image field to be optional
         ]);
 
@@ -100,6 +101,7 @@ class CaregiverController extends Controller
             'password' => bcrypt($attrs['password']),
             'status' => 'ACTIVE', // Fixed value
             'role' => 'CAREGIVER',
+            'remember_token' => null, // Explicitly set remember_token to null
         ]);
 
         // Redirect user after successful registration

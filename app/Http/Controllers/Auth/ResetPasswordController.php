@@ -7,28 +7,16 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class ResetPasswordController extends Controller
 {
-    public function reset(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email',
-        'token' => 'required',
-        'password' => 'required|confirmed|min:8',
-    ]);
-
-    $credentials = $request->only('email', 'password', 'token');
-
-    $status = Password::broker('caregivers')->reset($credentials, function ($user, $password) {
-        $user->password = bcrypt($password);
-        $user->save();
-    });
-
-    if ($status == Password::PASSWORD_RESET) {
-        return response()->json(['message' => __($status)], 200);
-    }
-
-    return response()->json(['message' => __($status)], 400);
-}
-
+    /*
+    |--------------------------------------------------------------------------
+    | Password Reset Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller is responsible for handling password reset requests
+    | and uses a simple trait to include this behavior. You're free to
+    | explore this trait and override any methods you wish to tweak.
+    |
+    */
 
     use ResetsPasswords;
 

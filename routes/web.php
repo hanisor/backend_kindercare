@@ -124,13 +124,15 @@ Route::post('/caregiver-register', [CaregiverController::class,'registerCaregive
 
 // Login
 Route::get('/caregiver-login',  [CaregiverController::class, 'caregiverLogin']) -> name('signin');
-Route::post('/login', [CaregiverController::class,'login']) -> name ('login.post');
+Route::post('/caregiver-login-test', [CaregiverController::class, 'login'])->name('login.test');
 
 Route::post('/api/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 // Example of Laravel's built-in routes for password reset
-Route::get('password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])
+Route::get('/api/password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])
     ->name('password.reset');
-Route::post('password/reset', [ForgotPasswordController::class, 'reset']);
+Route::post('/api/password/reset', [ForgotPasswordController::class, 'resetPassword']);
+
+
 
 
 Route::prefix('api')->middleware(['auth:sanctum'])->group(function() {
