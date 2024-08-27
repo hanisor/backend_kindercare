@@ -298,53 +298,59 @@ function deleteCaregiver(caregiverId) {
     }
 
     $(document).ready(function() {
-        // Function to fetch caregivers based on timeslot
-        function fetchCaregivers(timeSlot) {
-            $.ajax({
-                url: '/api/caregiver-time',
-                method: 'GET',
-                data: { time: timeSlot },
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                },
-                success: function(data) {
-                    var tableBody = $('#caregiver-table-body');
-                    tableBody.empty();
+    // Function to fetch caregivers based on timeslot
+    function fetchCaregivers(timeSlot) {
+        $.ajax({
+            url: '/api/caregiver-time',
+            method: 'GET',
+            data: { time: timeSlot },
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function(data) {
+                var tableBody = $('#caregiver-table-body');
+                tableBody.empty();
 
-                    if (data.caregivers && data.caregivers.length > 0) {
-                        data.caregivers.forEach(function(caregiver) {
-                            var row = `<tr>
-                                <td>${caregiver.name}</td>
-                                <td>${caregiver.ic_number}</td>
-                                <td>${caregiver.phone_number}</td>
-                                <td>${caregiver.age} years old</td>
-                                <td><button type="button" class="btn btn-danger btn-rounded btn-fw" onclick="confirmDelete(${caregiver.id})">Delete</button></td>
-                            </tr>`;
-                            tableBody.append(row);
-                        });
-                    } else {
-                        var row = `<tr><td colspan="4" class="text-center">No caregivers found for the selected timeslot</td></tr>`;
+                if (data.caregivers && data.caregivers.length > 0) {
+                    // Sort caregivers by age from 2 years old to 6 years old
+                    data.caregivers.sort(function(a, b) {
+                        return a.age - b.age;
+                    });
+
+                    data.caregivers.forEach(function(caregiver) {
+                        var row = `<tr>
+                            <td>${caregiver.name}</td>
+                            <td>${caregiver.ic_number}</td>
+                            <td>${caregiver.phone_number}</td>
+                            <td>${caregiver.age} years old</td>
+                            <td><button type="button" class="btn btn-danger btn-rounded btn-fw" onclick="confirmDelete(${caregiver.id})">Delete</button></td>
+                        </tr>`;
                         tableBody.append(row);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log('Error fetching caregivers:', error);
-                    $('#error-message').text('Error fetching caregivers. Please try again later.');
+                    });
+                } else {
+                    var row = `<tr><td colspan="5" class="text-center">No caregivers found for the selected timeslot</td></tr>`;
+                    tableBody.append(row);
                 }
-            });
-        }
-
-        // Fetch caregivers when timeslot is changed
-        $('#time-slot-dropdown').change(function() {
-            var selectedTimeSlot = $(this).val();
-            fetchCaregivers(selectedTimeSlot);
+            },
+            error: function(xhr, status, error) {
+                console.log('Error fetching caregivers:', error);
+                $('#error-message').text('Error fetching caregivers. Please try again later.');
+            }
         });
+    }
 
-        // Trigger fetchCaregivers function for the default timeslot on page load
-        var defaultTimeSlot = $('#time-slot-dropdown').val();
-        fetchCaregivers(defaultTimeSlot);
+    // Fetch caregivers when timeslot is changed
+    $('#time-slot-dropdown').change(function() {
+        var selectedTimeSlot = $(this).val();
+        fetchCaregivers(selectedTimeSlot);
     });
+
+    // Trigger fetchCaregivers function for the default timeslot on page load
+    var defaultTimeSlot = $('#time-slot-dropdown').val();
+    fetchCaregivers(defaultTimeSlot);
+});
+
 </script>
 <!-- End custom js for this page-->
 

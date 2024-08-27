@@ -238,6 +238,8 @@
 <!-- Custom script to fetch and display guardians -->
 <script>
     $(document).ready(function() {
+        const token = sessionStorage.getItem('token'); // Retrieve the token here globally
+
         // Function to fetch and display guardian data
         function fetchGuardians() {
             // Retrieve the token from sessionStorage
@@ -303,21 +305,25 @@
         fetchGuardians();
     });
 
-    function confirmDelete(caregiverId) {
-    $('#deleteModal').modal('show');
-    $('#confirmDeleteButton').off('click').on('click', function() {
-        deleteCaregiver(caregiverId);
-        $('#deleteModal').modal('hide');
-    });
-    $('#deleteModal').find('.btn-secondary').off('click').on('click', function() {
-        $('#deleteModal').modal('hide');
-        $('#message').hide(); // Hide message if any
-    });
-}
+    function confirmDelete(guardianId) {
+        $('#deleteModal').modal('show');
+        $('#confirmDeleteButton').off('click').on('click', function() {
+            deleteCaregiver(guardianId); // Use guardianId directly
+            $('#deleteModal').modal('hide');
+        });
+    }
 
-function deleteCaregiver(caregiverId) {
+    function deleteCaregiver(caregiverId) {
+    // Retrieve the token from sessionStorage
+    const token = sessionStorage.getItem('token');
+    
+    if (!token) {
+        showMessage('You are not authorized. Please log in again.', 'danger');
+        return;
+    }
+
     $.ajax({
-        url: '/api/guardian/update-status/' + guardianId,
+        url: '/api/guardian/update-status/' + caregiverId,
         method: 'PUT',
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -325,7 +331,7 @@ function deleteCaregiver(caregiverId) {
         },
         data: JSON.stringify({ status: 'INACTIVE' }),
         success: function(response) {
-            $('#guardian-table-body').find(`tr:has(button[onclick="confirmDelete(${guardianId})"])`).remove();
+            $('#guardian-table-body').find(`tr:has(button[onclick="confirmDelete(${caregiverId})"])`).remove();
             showMessage('You successfully deleted the record.', 'success');
         },
         error: function(xhr, status, error) {
@@ -349,7 +355,7 @@ function deleteCaregiver(caregiverId) {
         fetchGuardians();
 
     
-    function showMessage(message, type) {
+        function showMessage(message, type) {
         const messageDiv = $('#message');
         messageDiv.removeClass('alert-success alert-danger').addClass('alert-' + type).text(message).show();
         setTimeout(function() {

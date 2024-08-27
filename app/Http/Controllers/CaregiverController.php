@@ -244,6 +244,7 @@ class CaregiverController extends Controller
             $caregivers = Caregiver::select('caregivers.*')
                 ->join('groups', 'caregivers.id', '=', 'groups.caregiver_id')
                 ->whereIn('groups.id', $groups)
+                ->where('caregivers.status', 'active') // Add condition for active status
                 ->get();
     
             // Check if caregivers are found

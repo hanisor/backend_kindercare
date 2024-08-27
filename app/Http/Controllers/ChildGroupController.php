@@ -275,6 +275,7 @@ $group = Group::find($caregiver_id);
             ->join('groups', 'groups.id', '=', 'child_groups.group_id')
             ->leftJoin('guardians', 'guardians.id', '=', 'children.guardian_id') // Left join to get guardian's name
             ->where('child_groups.group_id', $caregiver_id) // Add a condition to filter by group ID
+            ->where('children.status', 'active') // Filter by active children status
             ->get();
 
             return response()->json(['group' => $group], 200);

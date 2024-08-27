@@ -51,30 +51,33 @@ class BehaviourController extends Controller
         }
 
         public function getChildBehavioursFromCaregiverId($caregiver_id)
-        {
-            try {
-                // Retrieve the child group associated with the caregiver ID
-                $childGroup = ChildGroup::whereHas('group', function($query) use ($caregiver_id) {
-                        $query->where('caregiver_id', $caregiver_id);
-                    })
-                    ->with(['child.behaviours', 'child.guardians']) // Eager load the child, their behaviours, and the guardian
-                    ->get();
-        
-                // Assign guardian_name
-                $childGroup->each(function ($item) {
-                    if ($item->child->guardian) {
-                        $item->child->behaviours->each(function ($behaviour) use ($item) {
-                            $behaviour->guardian_name = $item->child->guardian_name;
-                        });
-                    }
-                });
+{
+    try {
+        // Retrieve the child group associated with the caregiver ID, ensuring child status is active
+        $childGroup = ChildGroup::whereHas('group', function($query) use ($caregiver_id) {
+                $query->where('caregiver_id', $caregiver_id);
+            })
+            ->whereHas('child', function($query) {
+                $query->where('status', 'active'); // Add condition to filter active children
+            })
+            ->with(['child.behaviours', 'child.guardians']) // Eager load the child, their behaviours, and the guardian
+            ->get();
 
-        
-                return response()->json(['child_group' => $childGroup], 200);
-            } catch (\Exception $e) {
-                return response()->json(['message' => 'Failed to fetch child groups and behaviours', 'error' => $e->getMessage()], 500);
+        // Assign guardian_name
+        $childGroup->each(function ($item) {
+            if ($item->child->guardian) {
+                $item->child->behaviours->each(function ($behaviour) use ($item) {
+                    $behaviour->guardian_name = $item->child->guardian_name;
+                });
             }
-        }
+        });
+
+        return response()->json(['child_group' => $childGroup], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to fetch child groups and behaviours', 'error' => $e->getMessage()], 500);
+    }
+}
+
         
 
         

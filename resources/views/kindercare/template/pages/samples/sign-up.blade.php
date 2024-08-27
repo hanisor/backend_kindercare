@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
@@ -29,52 +28,52 @@
                     <div class="col-lg-6 mx-auto">
                         <div class="auth-form-light text-left py-5 px-4 px-sm-5 text-black">
                             <div class="brand-logo">
-                  <img src="images/3.png" alt="logo">
-                </div>
-                <h4>New here?</h4>
-                <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
-                <form action="{{route('register.post')}}" method="POST" class="ms-auto me-auto mt-auto" style="width: 500px" enctype="multipart/form-data" id="registerForm">
-                  @csrf
+                                <img src="images/3.png" alt="logo">
+                            </div>
+                            <h4>New here?</h4>
+                            <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
+                            <form action="{{route('register.post')}}" method="POST" class="ms-auto me-auto mt-auto" style="width: 500px" enctype="multipart/form-data" id="registerForm">
+                              @csrf
 
-                  <input type="hidden" name="status" value="ACTIVE">
-                  <input type="hidden" name="role" value="CAREGIVER">
-                  <div class="mb-3">
-                      <label class="form-label">Username</label>
-                      <input type="text" class="form-control" name="username" value="{{ old('username') }}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Email address</label>
-                      <input type="email" class="form-control" name="email" value="{{ old('email') }}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Password</label>
-                      <input type="password" class="form-control" name="password" id="password">
-                      <small id="passwordHelp" class="form-text text-muted">Password must be at least 7 characters long and contain both letters and numbers.</small>
-                  </div>
-                  <div class="mb-4">
-                    <div class="form-check">
-                      <label class="form-check-label text-black">
-                        <input type="checkbox" class="form-check-input">
-                        I agree to all Terms & Conditions
-                      </label>
+                              <input type="hidden" name="status" value="ACTIVE">
+                              <input type="hidden" name="role" value="CAREGIVER">
+                              <div class="mb-3">
+                                  <label class="form-label">Username</label>
+                                  <input type="text" class="form-control" name="username" value="{{ old('username') }}">
+                              </div>
+                              <div class="mb-3">
+                                  <label class="form-label">Email address</label>
+                                  <input type="email" class="form-control" name="email" value="{{ old('email') }}">
+                              </div>
+                              <div class="mb-3">
+                                  <label class="form-label">Password</label>
+                                  <input type="password" class="form-control" name="password" id="password">
+                                  <small id="passwordHelp" class="form-text text-muted">Password must be at least 7 characters long and contain both letters and numbers.</small>
+                              </div>
+                              <div class="mb-4">
+                                <div class="form-check">
+                                  <label class="form-check-label text-black">
+                                    <input type="checkbox" class="form-check-input">
+                                    I agree to all Terms & Conditions
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="mt-3">
+                                  <button type="submit" class="btn btn-primary">Submit</button>
+                              </div>
+                              <div class="text-center mt-4 font-weight-light text-black">
+                                Already have an account? <a href="caregiver-login" class="text-primary">Login</a>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="mt-3">
-                      <button type="submit" class="btn btn-primary">Submit</button>
-                  </div>
-                  <div class="text-center mt-4 font-weight-light text-black">
-                    Already have an account? <a href="caregiver-login" class="text-primary">Login</a>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+                </div>
+            <!-- content-wrapper ends -->
         </div>
-      </div>
-      <!-- content-wrapper ends -->
-    </div>
     <!-- page-body-wrapper ends -->
-  </div>
+    </div>
   
   <!-- Modal for Empty Fields -->
   <div class="modal fade" id="emptyFieldsModal" tabindex="-1" role="dialog" aria-labelledby="emptyFieldsModalLabel" aria-hidden="true">
@@ -185,5 +184,4 @@
   </script>
 
 </body>
-
 </html>

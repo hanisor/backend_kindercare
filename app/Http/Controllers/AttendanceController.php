@@ -240,6 +240,7 @@ public function addAttendanceDeparture(Request $request)
             ->join('child_groups', 'children.id', '=', 'child_groups.child_id')
             ->where('child_groups.group_id', $validatedData['child_group_id'])
             ->select('children.id', 'children.name as child_name', 'child_groups.id as child_group_id')
+            ->where('children.status', 'active') // Filter only active children
             ->get();
 
         // Initialize the attendance data structure
