@@ -78,31 +78,31 @@ class SicknessController extends Controller
     
 
     // Update sickness status
-    public function updateSicknessStatus(Request $request, $id)
-    {
-        // validate the request data
-        $request->validate([
-            'status' => 'required|in:Taken', // Update the validation rule to require and only accept 'Taken'
-            // Add validation rules for other fields you want to update
-        ]);
+public function updateSicknessStatus(Request $request, $id)
+{
+    // Validate the request data
+    $request->validate([
+        'status' => 'required|in:Taken,Pending', // Update to accept both 'Taken' and 'Pending'
+        // Add validation rules for other fields you want to update
+    ]);
 
-        // retrieve the sickness record by ID
-        $sickness = Sickness::find($id);
+    // Retrieve the sickness record by ID
+    $sickness = Sickness::find($id);
 
-        // check if the sickness record exists
-        if (!$sickness) {
-            return response()->json(['message' => 'Sickness record not found'], 404);
-        }
-
-        // Update the status field
-        $sickness->status = $request->input('status');
-
-        // Save the changes to the database
-        $sickness->save();
-
-        // Return a success response
-        return response()->json(['message' => 'Sickness record updated successfully', 'sickness' => $sickness]);
+    // Check if the sickness record exists
+    if (!$sickness) {
+        return response()->json(['message' => 'Sickness record not found'], 404);
     }
+
+    // Update the status field
+    $sickness->status = $request->input('status');
+
+    // Save the changes to the database
+    $sickness->save();
+
+    // Return a success response
+    return response()->json(['message' => 'Sickness record updated successfully', 'sickness' => $sickness]);
+}
 
     public function getSickness($caregiver_id)
         {
